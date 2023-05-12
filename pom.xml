@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>moyu-framework</artifactId>
+        <groupId>io.github.moyu-group</groupId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+    <modules>
+        <module>moyu-auth-service</module>
+        <module>moyu-auth-common</module>
+        <module>moyu-auth-start</module>
+    </modules>
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.moyu</groupId>
+    <artifactId>moyu-auth</artifactId>
+
+    <name>moyu-auth</name>
+    <version>1.0.0-SNAPSHOT</version>
+    <description>MoYu 统一登录中心</description>
+
+    <packaging>pom</packaging>
+
+    <properties>
+        <java.version>17</java.version>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <moyu-web.version>1.0.0-SNAPSHOT</moyu-web.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.moyu</groupId>
+                <artifactId>moyu-auth-common</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.moyu</groupId>
+                <artifactId>moyu-auth-service</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <!-- MoYu Web开发能力快速集成 -->
+            <dependency>
+                <groupId>io.github.moyu-group</groupId>
+                <artifactId>moyu-web-autoconfiguers</artifactId>
+                <version>${moyu-web.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <!-- MoYu-Group专有仓库
+        如果 maven 的 settings.xml 配置文件中 mirrorOf 配置为 <mirrorOf>*</mirrorOf> 则自定义仓库配置不会生效
+        需要改为 <mirrorOf>*,!moyu-group-snapshots,moyu-group-releases</mirrorOf>
+    -->
+    <repositories>
+        <repository>
+            <id>moyu-group-snapshots</id>
+            <name>moyu-group-repository-snapshots</name>
+            <url>https://maven.ffis.me/snapshots</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>moyu-group-releases</id>
+            <name>moyu-group-repository-releases</name>
+            <url>https://maven.ffis.me/releases</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
+</project>
