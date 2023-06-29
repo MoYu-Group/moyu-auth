@@ -16,7 +16,7 @@ moyu:
     #是否启用
     enabled: true
     #日志切点
-    pointcut-expression: execution(* org.moyu.auth..controller..*(..))
+    pointcut-expression: execution(* io.github.moyuauth..controller..*(..))
     #接口参数截取长度
     paramsMaxLength: 2000
 logging:

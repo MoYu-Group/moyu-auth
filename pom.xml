@@ -13,9 +13,8 @@
     </modules>
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.moyu</groupId>
+    <groupId>io.github.moyu-auth</groupId>
     <artifactId>moyu-auth</artifactId>
-
     <name>moyu-auth</name>
     <version>1.0.0-SNAPSHOT</version>
     <description>MoYu 统一登录中心</description>
@@ -32,12 +31,12 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>org.moyu</groupId>
+                <groupId>io.github.moyu-auth</groupId>
                 <artifactId>moyu-auth-common</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.moyu</groupId>
+                <groupId>io.github.moyu-auth</groupId>
                 <artifactId>moyu-auth-service</artifactId>
                 <version>${project.version}</version>
             </dependency>
