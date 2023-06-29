@@ -1,4 +1,4 @@
-package io.github.moyuauth.controller;
+package io.github.moyugroup.auth.controller;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;

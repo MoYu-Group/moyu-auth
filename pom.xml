@@ -2,10 +2,11 @@
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>moyu-framework</artifactId>
         <groupId>io.github.moyu-group</groupId>
+        <artifactId>moyu-framework</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
+
     <modules>
         <module>moyu-auth-service</module>
         <module>moyu-auth-common</module>
@@ -13,7 +14,6 @@
     </modules>
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>io.github.moyu-auth</groupId>
     <artifactId>moyu-auth</artifactId>
     <name>moyu-auth</name>
     <version>1.0.0-SNAPSHOT</version>
@@ -25,26 +25,19 @@
         <java.version>17</java.version>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
-        <moyu-web.version>1.0.0-SNAPSHOT</moyu-web.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>io.github.moyu-auth</groupId>
+                <groupId>io.github.moyu-group.moyu-auth</groupId>
                 <artifactId>moyu-auth-common</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>io.github.moyu-auth</groupId>
+                <groupId>io.github.moyu-group.moyu-auth</groupId>
                 <artifactId>moyu-auth-service</artifactId>
                 <version>${project.version}</version>
-            </dependency>
-            <!-- MoYu Web开发能力快速集成 -->
-            <dependency>
-                <groupId>io.github.moyu-group</groupId>
-                <artifactId>moyu-web-autoconfiguers</artifactId>
-                <version>${moyu-web.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

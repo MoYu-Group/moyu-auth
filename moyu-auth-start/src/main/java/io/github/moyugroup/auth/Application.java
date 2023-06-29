@@ -1,4 +1,4 @@
-package io.github.moyuauth;
+package io.github.moyugroup.auth;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -10,7 +10,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  */
 @SpringBootApplication(
     //扫描MoYu框架中的类
-        scanBasePackages = {"io.github.moyuauth", "io.github.moyugroup"}
+        scanBasePackages = {"io.github.moyugroup"}
 )
 public class Application {
 
