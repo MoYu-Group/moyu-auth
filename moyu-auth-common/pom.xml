@@ -18,6 +18,11 @@
             <groupId>io.github.moyu-group.moyu-framework</groupId>
             <artifactId>moyu-web-autoconfiguers</artifactId>
         </dependency>
+        <!-- spring oauth2 授权服务器 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-oauth2-authorization-server</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

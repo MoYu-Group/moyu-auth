@@ -8,6 +8,7 @@
     </parent>
 
     <modules>
+        <module>moyu-auth-client-demo</module>
         <module>moyu-auth-service</module>
         <module>moyu-auth-common</module>
         <module>moyu-auth-start</module>
