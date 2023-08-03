@@ -13,4 +13,5 @@ public class HelloController {
     public String helleWorld() {
         return "hello Moyu-Auth-Server !!!";
     }
+
 }
