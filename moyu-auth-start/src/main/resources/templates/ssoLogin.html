@@ -14,11 +14,8 @@
 <div class="container">
     <form action="/ssoLogin" class="form-signin" method="post">
         <h2 class="form-signin-heading">欢迎登录</h2>
-        <div th:if="${param.error}">
+        <div th:if="${!#strings.isEmpty(errorMessage)}">
             <div class="alert alert-danger" role="alert" th:text="${errorMessage}"></div>
-        </div>
-        <div th:if="${param.logout}">
-            <div class="alert alert-success" role="alert">您已退出登录</div>
         </div>
         <p>
             <label class="sr-only" for="username">用户名</label>

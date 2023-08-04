@@ -20,7 +20,6 @@ public class LoginController {
 
     /**
      * 登录页
-     * TODO RememberMe
      *
      * @return
      */
@@ -45,6 +44,6 @@ public class LoginController {
             if (exception instanceof AuthenticationException authenticationException)
                 return authenticationException.getMessage();
         }
-        return "Invalid credentials";
+        return null;
     }
 }
