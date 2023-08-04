@@ -1,16 +1,12 @@
-package io.github.moyugroup.auth.common.config;
+package io.github.moyugroup.auth.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
@@ -39,6 +35,7 @@ public class SpringSecurityConfig {
                                         new AntPathRequestMatcher("/open/**"),
                                         new AntPathRequestMatcher("/error"),
                                         new AntPathRequestMatcher("/health"),
+                                        new AntPathRequestMatcher("/ssoLogin.html"),
                                         new AntPathRequestMatcher("/**/*.ico"),
                                         new AntPathRequestMatcher("/**/*.jpg"),
                                         new AntPathRequestMatcher("/css/**")).permitAll()
@@ -51,24 +48,11 @@ public class SpringSecurityConfig {
                         .loginProcessingUrl("/ssoLogin").permitAll()
                 )
                 .logout(logout -> logout.logoutUrl("/ssoLogout"))
+                .rememberMe(config -> config
+                        .alwaysRemember(true)
+                        .tokenValiditySeconds(60 * 60 * 24))
         ;
         return http.build();
-    }
-
-    /**
-     * 暂时配置一个基于内存的用户，框架在用户认证时会默认调用
-     *
-     * @param passwordEncoder 密码解析器
-     * @return UserDetailsService
-     */
-    @Bean
-    public UserDetailsService userDetailsService(PasswordEncoder passwordEncoder) {
-        UserDetails userDetails = User.withUsername("admin")
-                .password(passwordEncoder.encode("123123"))
-                .roles("USER")
-                .authorities("app", "web")
-                .build();
-        return new InMemoryUserDetailsManager(userDetails);
     }
 
     /**
