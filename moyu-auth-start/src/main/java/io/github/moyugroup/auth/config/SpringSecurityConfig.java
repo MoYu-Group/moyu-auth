@@ -5,11 +5,14 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.session.SessionRegistry;
+import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
+import org.springframework.security.web.session.HttpSessionEventPublisher;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 /**
@@ -35,7 +38,8 @@ public class SpringSecurityConfig {
     @Bean
     public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http,
                                                           UserDetailsService userDetailsService,
-                                                          HttpSessionRequestCache httpSessionRequestCache) throws Exception {
+                                                          HttpSessionRequestCache httpSessionRequestCache,
+                                                          SessionRegistry sessionRegistry) throws Exception {
         http
                 .authorizeHttpRequests((authorize) ->
                         // 不需要登录的端点和资源
@@ -69,6 +73,12 @@ public class SpringSecurityConfig {
                         .userDetailsService(userDetailsService)
                 )
                 .requestCache(cache -> cache.requestCache(httpSessionRequestCache))
+                // session 并发控制和管理
+                .sessionManagement(session -> session
+                        .maximumSessions(1)
+                        .sessionRegistry(sessionRegistry)
+                        .expiredUrl(LOGIN_PAGE_URL)
+                )
         ;
         return http.build();
     }
@@ -88,6 +98,16 @@ public class SpringSecurityConfig {
         HttpSessionRequestCache requestCache = new HttpSessionRequestCache();
         requestCache.setMatchingRequestParameterName(null);
         return requestCache;
+    }
+
+    @Bean
+    public HttpSessionEventPublisher httpSessionEventPublisher() {
+        return new HttpSessionEventPublisher();
+    }
+
+    @Bean
+    public SessionRegistry sessionRegistry() {
+        return new SessionRegistryImpl();
     }
 
 }
