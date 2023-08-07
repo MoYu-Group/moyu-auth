@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 /**
@@ -32,7 +33,9 @@ public class SpringSecurityConfig {
      * @throws Exception 异常
      */
     @Bean
-    public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http, UserDetailsService userDetailsService) throws Exception {
+    public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http,
+                                                          UserDetailsService userDetailsService,
+                                                          HttpSessionRequestCache httpSessionRequestCache) throws Exception {
         http
                 .authorizeHttpRequests((authorize) ->
                         // 不需要登录的端点和资源
@@ -65,6 +68,7 @@ public class SpringSecurityConfig {
                         .tokenValiditySeconds(60 * 60 * 24)
                         .userDetailsService(userDetailsService)
                 )
+                .requestCache(cache -> cache.requestCache(httpSessionRequestCache))
         ;
         return http.build();
     }
@@ -77,6 +81,13 @@ public class SpringSecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public HttpSessionRequestCache httpSessionRequestCache() {
+        HttpSessionRequestCache requestCache = new HttpSessionRequestCache();
+        requestCache.setMatchingRequestParameterName(null);
+        return requestCache;
     }
 
 }
