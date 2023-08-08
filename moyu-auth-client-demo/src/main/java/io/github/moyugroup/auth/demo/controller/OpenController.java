@@ -1,4 +1,4 @@
-package io.github.moyugroup.auth.controller;
+package io.github.moyugroup.auth.demo.controller;
 
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.util.StrUtil;
@@ -42,6 +42,7 @@ public class OpenController {
 
     @GetMapping("buildLogin")
     public Result<?> buildLogin() {
+
         return Result.success();
     }
 

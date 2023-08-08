@@ -1,10 +1,19 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>moyu-auth-client</title>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
+    <meta content="" name="description">
+    <meta content="" name="author">
+    <title>moyu-auth-demo</title>
 </head>
 <body>
-welcome moyu-auth-client !!!
+<div>Hello <span th:text="${name}">, thymeleaf</span>!</div>
+<div>sessionId:<span th:text="${sessionId}"></span></div>
+<div>welcome moyu-auth-demo</div>
+
+<form method="post" th:action="@{/logout}">
+    <input type="submit" value="注销"/>
+</form>
 </body>
 </html>
