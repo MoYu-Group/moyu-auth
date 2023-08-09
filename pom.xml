@@ -9,9 +9,7 @@
 
     <modules>
         <module>moyu-auth-client-demo</module>
-        <module>moyu-auth-service</module>
-        <module>moyu-auth-common</module>
-        <module>moyu-auth-start</module>
+        <module>moyu-auth-server</module>
     </modules>
 
     <modelVersion>4.0.0</modelVersion>
@@ -31,16 +29,7 @@
 
     <dependencyManagement>
         <dependencies>
-            <dependency>
-                <groupId>io.github.moyu-group.moyu-auth</groupId>
-                <artifactId>moyu-auth-common</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.github.moyu-group.moyu-auth</groupId>
-                <artifactId>moyu-auth-service</artifactId>
-                <version>${project.version}</version>
-            </dependency>
+
         </dependencies>
     </dependencyManagement>
 

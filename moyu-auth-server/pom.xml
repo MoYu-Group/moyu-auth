@@ -10,12 +10,18 @@
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.github.moyu-group.moyu-auth</groupId>
-    <artifactId>moyu-auth-start</artifactId>
+    <artifactId>moyu-auth-server</artifactId>
 
     <dependencies>
+        <!-- MoYu Web开发能力快速集成 -->
         <dependency>
-            <groupId>io.github.moyu-group.moyu-auth</groupId>
-            <artifactId>moyu-auth-service</artifactId>
+            <groupId>io.github.moyu-group.moyu-framework</groupId>
+            <artifactId>moyu-web-autoconfiguers</artifactId>
+        </dependency>
+        <!-- spring security -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
     </dependencies>
 
