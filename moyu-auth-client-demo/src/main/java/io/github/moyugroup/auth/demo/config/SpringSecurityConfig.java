@@ -10,6 +10,7 @@ import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.DefaultSecurityFilterChain;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
@@ -63,7 +64,7 @@ public class SpringSecurityConfig {
                 .formLogin(form -> form
                         .loginPage(LOGIN_PAGE_URL)
                         .failureUrl(LOGIN_PAGE_URL)
-                        .loginProcessingUrl(LOGIN_PAGE_API)
+                        .loginProcessingUrl(LOGIN_PAGE_API).disable()
                 )
                 // 自定义注销登录页
                 .logout(logout -> logout
@@ -85,7 +86,8 @@ public class SpringSecurityConfig {
                 // MoYu 认证配置
                 .apply(new MoYuAuthConfigurer<>())
         ;
-        return http.build();
+        DefaultSecurityFilterChain build = http.build();
+        return build;
     }
 
     /**

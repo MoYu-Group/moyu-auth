@@ -92,7 +92,7 @@ public class MoYuAuthConfigurer<H extends HttpSecurityBuilder<H>> extends Abstra
      * 无参构造，初始化过滤器
      */
     public MoYuAuthConfigurer() {
-        setLoginPage("/login");
+        setLoginPage("/authorized");
         this.authFilter = new MoYuClientAuthenticationFilter();
     }
 
@@ -107,7 +107,7 @@ public class MoYuAuthConfigurer<H extends HttpSecurityBuilder<H>> extends Abstra
         return new AntPathRequestMatcher(loginProcessingUrl, "POST");
     }
 
-    public MoYuAuthConfigurer successHandler(String forwardUrl) {
+    public MoYuAuthConfigurer<H> successHandler(String forwardUrl) {
         this.successHandler = new ForwardAuthenticationSuccessHandler(forwardUrl);
         return this;
     }
@@ -125,7 +125,7 @@ public class MoYuAuthConfigurer<H extends HttpSecurityBuilder<H>> extends Abstra
 
     @SuppressWarnings("unchecked")
     protected final void registerAuthenticationEntryPoint(HttpSecurity http, AuthenticationEntryPoint authenticationEntryPoint) {
-        ExceptionHandlingConfigurer exceptionHandling = http.getConfigurer(ExceptionHandlingConfigurer.class);
+        ExceptionHandlingConfigurer<H> exceptionHandling = http.getConfigurer(ExceptionHandlingConfigurer.class);
         if (exceptionHandling == null) {
             return;
         }
@@ -172,7 +172,7 @@ public class MoYuAuthConfigurer<H extends HttpSecurityBuilder<H>> extends Abstra
         if (rememberMeServices != null) {
             this.authFilter.setRememberMeServices(rememberMeServices);
         }
-        SecurityContextConfigurer securityContextConfigurer = http.getConfigurer(SecurityContextConfigurer.class);
+        SecurityContextConfigurer<H> securityContextConfigurer = http.getConfigurer(SecurityContextConfigurer.class);
         if (securityContextConfigurer != null && securityContextConfigurer.isRequireExplicitSave()) {
             SecurityContextRepository securityContextRepository = securityContextConfigurer
                     .getSecurityContextRepository();
@@ -183,7 +183,7 @@ public class MoYuAuthConfigurer<H extends HttpSecurityBuilder<H>> extends Abstra
         http.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class);
     }
 
-    protected MoYuAuthConfigurer loginPage(String loginPage) {
+    protected MoYuAuthConfigurer<H> loginPage(String loginPage) {
         setLoginPage(loginPage);
         this.customLoginPage = true;
         return this;
