@@ -2,9 +2,10 @@ package io.github.moyugroup.auth.demo.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.config.annotation.web.configurers.MoYuAuthConfigurer;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -27,6 +28,11 @@ public class SpringSecurityConfig {
     public static final String LOGIN_PAGE_API = "/login";
     public static final String LOGIN_OUT_API = "/logout";
 
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return (web) -> web.ignoring().requestMatchers("/css/**", "/favicon.ico");
+    }
+
     /**
      * 用于身份验证的 Spring Security 过滤器链
      *
@@ -37,22 +43,22 @@ public class SpringSecurityConfig {
     @Bean
     public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http,
                                                           HttpSessionRequestCache httpSessionRequestCache,
-                                                          SessionRegistry sessionRegistry) throws Exception {
+                                                          SessionRegistry sessionRegistry
+    ) throws Exception {
         http
                 .authorizeHttpRequests((authorize) ->
-                        // 不需要登录的端点和资源
+                        // 不需要登录的端点
                         authorize.requestMatchers(
                                         new AntPathRequestMatcher("/open/**"),
                                         new AntPathRequestMatcher("/error"),
                                         new AntPathRequestMatcher("/health"),
+                                        new AntPathRequestMatcher("/logged-out"),
+                                        new AntPathRequestMatcher("/authorized"),
                                         new AntPathRequestMatcher(LOGIN_PAGE_URL),
-                                        new AntPathRequestMatcher(LOGIN_PAGE_API),
-                                        new AntPathRequestMatcher("/**/*.ico"),
-                                        new AntPathRequestMatcher("/**/*.jpg"),
-                                        new AntPathRequestMatcher("/css/**")).permitAll()
+                                        new AntPathRequestMatcher(LOGIN_PAGE_API)).permitAll()
                                 // 其他资源都需要登录
                                 .anyRequest().authenticated())
-                .csrf(Customizer.withDefaults())
+                .csrf(x -> x.disable())
                 // 自定义登录页
                 .formLogin(form -> form
                         .loginPage(LOGIN_PAGE_URL)
@@ -76,6 +82,8 @@ public class SpringSecurityConfig {
                         .sessionRegistry(sessionRegistry)
                         .expiredUrl(LOGIN_PAGE_URL)
                 )
+                // MoYu 认证配置
+                .apply(new MoYuAuthConfigurer<>())
         ;
         return http.build();
     }

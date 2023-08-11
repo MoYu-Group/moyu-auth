@@ -14,4 +14,5 @@ public class HelloController {
         return "hello Moyu-Auth-Server !!!";
     }
 
+
 }

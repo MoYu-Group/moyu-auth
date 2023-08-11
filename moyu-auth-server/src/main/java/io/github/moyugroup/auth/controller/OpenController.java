@@ -6,14 +6,18 @@ import cn.hutool.json.JSONObject;
 import io.github.moyugroup.base.model.pojo.Result;
 import io.github.moyugroup.util.AssertUtil;
 import jakarta.annotation.Resource;
+import jakarta.servlet.Filter;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.session.SessionInformation;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -34,14 +38,25 @@ public class OpenController {
     @Resource
     private SessionRegistry sessionRegistry;
 
+    @Resource
+    private SecurityFilterChain securityFilterChain;
+
+    @Resource
+    private HttpSecurity httpSecurity;
 
     @GetMapping("test")
     public Result<?> helleWorld() {
-        return Result.success("open test");
+        return Result.success("get open test");
+    }
+
+    @PostMapping("postTest")
+    public Result<?> postOpenTest() {
+        return Result.success("post open test");
     }
 
     @GetMapping("buildLogin")
     public Result<?> buildLogin() {
+        List<Filter> filters = securityFilterChain.getFilters();
         return Result.success();
     }
 

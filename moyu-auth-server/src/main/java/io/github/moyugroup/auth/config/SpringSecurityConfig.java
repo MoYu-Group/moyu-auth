@@ -2,9 +2,9 @@ package io.github.moyugroup.auth.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -28,6 +28,11 @@ public class SpringSecurityConfig {
     private static final String LOGIN_PAGE_API = "/ssoLogin";
     private static final String LOGIN_OUT_API = "/ssoLogout";
 
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return (web) -> web.ignoring().requestMatchers("/css/**", "/favicon.ico");
+    }
+
     /**
      * 用于身份验证的 Spring Security 过滤器链
      *
@@ -47,14 +52,12 @@ public class SpringSecurityConfig {
                                         new AntPathRequestMatcher("/open/**"),
                                         new AntPathRequestMatcher("/error"),
                                         new AntPathRequestMatcher("/health"),
+                                        new AntPathRequestMatcher("/logged-out"),
                                         new AntPathRequestMatcher(LOGIN_PAGE_URL),
-                                        new AntPathRequestMatcher(LOGIN_PAGE_API),
-                                        new AntPathRequestMatcher("/**/*.ico"),
-                                        new AntPathRequestMatcher("/**/*.jpg"),
-                                        new AntPathRequestMatcher("/css/**")).permitAll()
+                                        new AntPathRequestMatcher(LOGIN_PAGE_API)).permitAll()
                                 // 其他资源都需要登录
                                 .anyRequest().authenticated())
-                .csrf(Customizer.withDefaults())
+                .csrf(csrf -> csrf.disable())
                 // 自定义登录页
                 .formLogin(form -> form
                         .loginPage(LOGIN_PAGE_URL)
