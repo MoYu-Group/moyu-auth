@@ -1,5 +1,6 @@
 package io.github.moyugroup.auth.config;
 
+import io.github.moyugroup.auth.handler.MoYuAuthSuccessHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -63,6 +64,7 @@ public class SpringSecurityConfig {
                         .loginPage(LOGIN_PAGE_URL)
                         .failureUrl(LOGIN_PAGE_URL)
                         .loginProcessingUrl(LOGIN_PAGE_API)
+                        .successHandler(new MoYuAuthSuccessHandler())
                 )
                 // 自定义注销登录页
                 .logout(logout -> logout

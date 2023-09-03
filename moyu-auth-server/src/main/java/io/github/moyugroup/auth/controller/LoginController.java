@@ -2,7 +2,7 @@ package io.github.moyugroup.auth.controller;
 
 import io.github.moyugroup.auth.constant.MoYuAuthConstant;
 import io.github.moyugroup.auth.pojo.vo.AppVO;
-import io.github.moyugroup.auth.service.impl.AppService;
+import io.github.moyugroup.auth.service.AppService;
 import io.github.moyugroup.auth.util.LoginUtil;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
@@ -39,7 +39,7 @@ public class LoginController {
     }
 
     /**
-     * 检查 APP
+     * 检查 AppId
      *
      * @param request
      */

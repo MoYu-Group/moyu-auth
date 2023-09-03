@@ -1,4 +1,4 @@
-package io.github.moyugroup.auth.service.impl;
+package io.github.moyugroup.auth.service;
 
 import cn.hutool.core.map.MapUtil;
 import io.github.moyugroup.auth.pojo.vo.AppVO;

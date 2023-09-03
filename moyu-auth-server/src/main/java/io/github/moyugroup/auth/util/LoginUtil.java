@@ -29,6 +29,7 @@ public class LoginUtil {
         if (Objects.nonNull(session)) {
             Object exception = session.getAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
             if (exception instanceof AuthenticationException authenticationException) {
+                session.removeAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
                 return authenticationException.getMessage();
             }
             Object loginErrorMsg = session.getAttribute(MoYuAuthConstant.LOGIN_ERROR_MESSAGE);
