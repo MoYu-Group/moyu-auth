@@ -1,4 +1,4 @@
-package io.github.moyugroup.auth.service.impl;
+package io.github.moyugroup.auth.facade;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.User;
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
  */
 @Slf4j
 @Service
-public class UserDetailServiceImpl implements UserDetailsService {
+public class UserDetailFacade implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

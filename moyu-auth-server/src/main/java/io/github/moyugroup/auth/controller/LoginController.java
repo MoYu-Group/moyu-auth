@@ -1,9 +1,12 @@
 package io.github.moyugroup.auth.controller;
 
+import io.github.moyugroup.auth.constant.MoYuAuthConstant;
+import io.github.moyugroup.auth.pojo.vo.AppVO;
+import io.github.moyugroup.auth.service.impl.AppService;
+import io.github.moyugroup.auth.util.LoginUtil;
+import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.web.WebAttributes;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,32 +21,38 @@ import java.util.Objects;
 @Controller
 public class LoginController {
 
+    @Resource
+    private AppService appService;
+
     /**
-     * 登录页
+     * 登录页渲染
      *
      * @return
      */
     @GetMapping("/ssoLogin.html")
     public String login(Model model, HttpServletRequest request) {
+        checkAppId(request);
         // 登录异常处理
-        String loginErrorMessage = getLoginErrorMessage(request);
+        String loginErrorMessage = LoginUtil.getLoginErrorMessage(request);
         model.addAttribute("errorMessage", loginErrorMessage);
         return "ssoLogin";
     }
 
     /**
-     * 获取登录错误信息
+     * 检查 APP
      *
      * @param request
-     * @return
      */
-    private String getLoginErrorMessage(HttpServletRequest request) {
-        HttpSession session = request.getSession(false);
-        if (Objects.nonNull(session)) {
-            Object exception = session.getAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
-            if (exception instanceof AuthenticationException authenticationException)
-                return authenticationException.getMessage();
+    private void checkAppId(HttpServletRequest request) {
+        String appId = request.getParameter(MoYuAuthConstant.APP_ID);
+        if (StringUtils.isBlank(appId)) {
+            LoginUtil.setLoginErrorMessage(request, "appId不能为空");
+            return;
         }
-        return null;
+        AppVO appById = appService.getAppById(appId);
+        if (Objects.isNull(appById)) {
+            LoginUtil.setLoginErrorMessage(request, "应用未在统一登录中心注册");
+        }
     }
+
 }
