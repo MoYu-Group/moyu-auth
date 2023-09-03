@@ -1,5 +1,6 @@
 package io.github.moyugroup.auth.demo.config;
 
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -23,11 +24,14 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
  */
 @Configuration
 @EnableWebSecurity
+@EnableConfigurationProperties(MoYuAuthClientProperties.class)
 public class SpringSecurityConfig {
 
-    public static final String LOGIN_PAGE_URL = "/login.html";
+    //    public static final String LOGIN_PAGE_URL = "/login.html";
+    public static final String LOGIN_PAGE_URL = "https://server.ffis.me:9001/ssoLogin.html";
     public static final String LOGIN_PAGE_API = "/login";
     public static final String LOGIN_OUT_API = "/logout";
+
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
@@ -44,7 +48,7 @@ public class SpringSecurityConfig {
     @Bean
     public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http,
                                                           HttpSessionRequestCache httpSessionRequestCache,
-                                                          SessionRegistry sessionRegistry
+                                                          SessionRegistry sessionRegistry, MoYuAuthClientProperties moYuAuthClientProperties
     ) throws Exception {
         http
                 .authorizeHttpRequests((authorize) ->
@@ -84,7 +88,7 @@ public class SpringSecurityConfig {
                         .expiredUrl(LOGIN_PAGE_URL)
                 )
                 // MoYu 认证配置
-                .apply(new MoYuAuthConfigurer<>())
+                .apply(new MoYuAuthConfigurer<>(moYuAuthClientProperties))
         ;
         DefaultSecurityFilterChain build = http.build();
         return build;

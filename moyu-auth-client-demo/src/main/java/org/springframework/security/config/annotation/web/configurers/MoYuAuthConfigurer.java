@@ -16,6 +16,8 @@
 
 package org.springframework.security.config.annotation.web.configurers;
 
+import io.github.moyugroup.auth.demo.config.MoYuAuthClientProperties;
+import io.github.moyugroup.auth.demo.endpoint.MoyuLoginUrlAuthenticationEntryPoint;
 import io.github.moyugroup.auth.demo.filter.MoYuClientAuthenticationFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.MediaType;
@@ -64,13 +66,14 @@ public class MoYuAuthConfigurer<H extends HttpSecurityBuilder<H>> extends Abstra
      */
     private LoginUrlAuthenticationEntryPoint authenticationEntryPoint;
     /**
-     * 是否自定义页面
+     * moyu-auth 客户端配置
      */
-    private boolean customLoginPage;
+    private MoYuAuthClientProperties moYuAuthClientProperties;
+
     /**
-     * 登录页面
+     * moyu-auth 登录地址
      */
-    private String loginPage;
+    private String loginUrl;
     /**
      * 登录成功URL
      */
@@ -79,10 +82,7 @@ public class MoYuAuthConfigurer<H extends HttpSecurityBuilder<H>> extends Abstra
      * 认证失败处理器
      */
     private AuthenticationFailureHandler failureHandler;
-    /**
-     * 认证路径是否放开
-     */
-    private boolean permitAll;
+
     /**
      * 认证失败的URL
      */
@@ -91,38 +91,32 @@ public class MoYuAuthConfigurer<H extends HttpSecurityBuilder<H>> extends Abstra
     /**
      * 无参构造，初始化过滤器
      */
-    public MoYuAuthConfigurer() {
-        setLoginPage("/authorized");
+    public MoYuAuthConfigurer(MoYuAuthClientProperties moYuAuthClientProperties) {
+        this.moYuAuthClientProperties = moYuAuthClientProperties;
+        setLoginPage();
         this.authFilter = new MoYuClientAuthenticationFilter();
     }
 
     /**
-     * Create the {@link RequestMatcher} given a loginProcessingUrl
+     * 配置初始化
      *
-     * @param loginProcessingUrl creates the {@link RequestMatcher} based upon the
-     *                           loginProcessingUrl
-     * @return the {@link RequestMatcher} to use based upon the loginProcessingUrl
+     * @param http
+     * @throws Exception
      */
-    protected RequestMatcher createLoginProcessingUrlMatcher(String loginProcessingUrl) {
-        return new AntPathRequestMatcher(loginProcessingUrl, "POST");
-    }
-
-    public MoYuAuthConfigurer<H> successHandler(String forwardUrl) {
-        this.successHandler = new ForwardAuthenticationSuccessHandler(forwardUrl);
-        return this;
-    }
-
     @Override
     public void init(H http) throws Exception {
-        this.failureHandler = new SimpleUrlAuthenticationFailureHandler(loginPage);
-        registerDefaultAuthenticationEntryPoint((HttpSecurity) http);
+        // 初始化认证失败处理器
+        this.failureHandler = new SimpleUrlAuthenticationFailureHandler(loginUrl);
+        // 注册认证人口
+        registerAuthenticationEntryPoint((HttpSecurity) http, this.authenticationEntryPoint);
     }
 
-    @SuppressWarnings("unchecked")
-    protected final void registerDefaultAuthenticationEntryPoint(HttpSecurity http) {
-        registerAuthenticationEntryPoint(http, this.authenticationEntryPoint);
-    }
-
+    /**
+     * 认证入口配置
+     *
+     * @param http
+     * @param authenticationEntryPoint
+     */
     @SuppressWarnings("unchecked")
     protected final void registerAuthenticationEntryPoint(HttpSecurity http, AuthenticationEntryPoint authenticationEntryPoint) {
         ExceptionHandlingConfigurer<H> exceptionHandling = http.getConfigurer(ExceptionHandlingConfigurer.class);
@@ -183,16 +177,12 @@ public class MoYuAuthConfigurer<H extends HttpSecurityBuilder<H>> extends Abstra
         http.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class);
     }
 
-    protected MoYuAuthConfigurer<H> loginPage(String loginPage) {
-        setLoginPage(loginPage);
-        this.customLoginPage = true;
-        return this;
-    }
-
-
-    private void setLoginPage(String loginPage) {
-        this.loginPage = loginPage;
-        this.authenticationEntryPoint = new LoginUrlAuthenticationEntryPoint(loginPage);
+    /**
+     * 设置登录跳转页
+     */
+    private void setLoginPage() {
+        this.loginUrl = moYuAuthClientProperties.getServerUrl();
+        this.authenticationEntryPoint = new MoyuLoginUrlAuthenticationEntryPoint(loginUrl, moYuAuthClientProperties);
     }
 
 }
