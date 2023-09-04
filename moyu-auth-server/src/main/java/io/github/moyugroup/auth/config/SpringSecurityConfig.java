@@ -1,11 +1,13 @@
 package io.github.moyugroup.auth.config;
 
 import io.github.moyugroup.auth.handler.MoYuAuthSuccessHandler;
+import io.github.moyugroup.auth.service.AppService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.config.annotation.web.configurers.MoYuAuthServerConfigurer;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -45,7 +47,8 @@ public class SpringSecurityConfig {
     public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http,
                                                           UserDetailsService userDetailsService,
                                                           HttpSessionRequestCache httpSessionRequestCache,
-                                                          SessionRegistry sessionRegistry) throws Exception {
+                                                          SessionRegistry sessionRegistry,
+                                                          AppService appService) throws Exception {
         http
                 .authorizeHttpRequests((authorize) ->
                         // 不需要登录的端点和资源
@@ -84,6 +87,7 @@ public class SpringSecurityConfig {
                         .sessionRegistry(sessionRegistry)
                         .expiredUrl(LOGIN_PAGE_URL)
                 )
+                .apply(new MoYuAuthServerConfigurer<>(LOGIN_PAGE_API, LOGIN_PAGE_URL, appService));
         ;
         return http.build();
     }

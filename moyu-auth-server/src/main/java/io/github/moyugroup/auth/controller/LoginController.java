@@ -9,7 +9,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.Objects;
 
@@ -29,12 +30,10 @@ public class LoginController {
      *
      * @return
      */
-    @GetMapping("/ssoLogin.html")
+    @RequestMapping(value = "/ssoLogin.html", method = {RequestMethod.GET, RequestMethod.POST})
     public String login(Model model, HttpServletRequest request) {
-        checkAppId(request);
-        // 登录异常处理
-        String loginErrorMessage = LoginUtil.getLoginErrorMessage(request);
-        model.addAttribute("errorMessage", loginErrorMessage);
+//        checkAppId(request);
+        fillPageHideParam(model, request);
         return "ssoLogin";
     }
 
@@ -53,6 +52,13 @@ public class LoginController {
         if (Objects.isNull(appById)) {
             LoginUtil.setLoginErrorMessage(request, "应用未在统一登录中心注册");
         }
+    }
+
+    private void fillPageHideParam(Model model, HttpServletRequest request) {
+        String loginErrorMessage = LoginUtil.getLoginErrorMessage(request);
+        model.addAttribute("errorMessage", loginErrorMessage);
+        model.addAttribute(MoYuAuthConstant.APP_ID, request.getParameter(MoYuAuthConstant.APP_ID));
+        model.addAttribute(MoYuAuthConstant.BACK_URL, request.getParameter(MoYuAuthConstant.BACK_URL));
     }
 
 }

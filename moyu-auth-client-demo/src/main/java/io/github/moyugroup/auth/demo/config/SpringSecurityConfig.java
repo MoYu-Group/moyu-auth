@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
-import org.springframework.security.config.annotation.web.configurers.MoYuAuthConfigurer;
+import org.springframework.security.config.annotation.web.configurers.MoYuAuthClientConfigurer;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -88,7 +88,7 @@ public class SpringSecurityConfig {
                         .expiredUrl(LOGIN_PAGE_URL)
                 )
                 // MoYu 认证配置
-                .apply(new MoYuAuthConfigurer<>(moYuAuthClientProperties))
+                .apply(new MoYuAuthClientConfigurer<>(moYuAuthClientProperties))
         ;
         DefaultSecurityFilterChain build = http.build();
         return build;

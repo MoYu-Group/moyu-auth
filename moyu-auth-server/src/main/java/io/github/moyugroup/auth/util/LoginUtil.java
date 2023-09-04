@@ -25,6 +25,13 @@ public class LoginUtil {
      * @return
      */
     public static String getLoginErrorMessage(HttpServletRequest request) {
+        Object errorAttribute = request.getAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
+        if (Objects.nonNull(errorAttribute)) {
+            if (errorAttribute instanceof AuthenticationException authenticationException) {
+                request.removeAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
+                return authenticationException.getMessage();
+            }
+        }
         HttpSession session = request.getSession(false);
         if (Objects.nonNull(session)) {
             Object exception = session.getAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);

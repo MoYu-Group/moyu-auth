@@ -39,11 +39,11 @@ import java.util.Arrays;
 import java.util.Collections;
 
 /**
- * MoYu 自定义过滤器配置
+ * MoYu-Auth 客户端自定义过滤器配置
  *
  * @param <H>
  */
-public class MoYuAuthConfigurer<H extends HttpSecurityBuilder<H>> extends AbstractHttpConfigurer<MoYuAuthConfigurer<H>, H> {
+public class MoYuAuthClientConfigurer<H extends HttpSecurityBuilder<H>> extends AbstractHttpConfigurer<MoYuAuthClientConfigurer<H>, H> {
 
     /**
      * 自定义过滤器不再泛化
@@ -91,7 +91,7 @@ public class MoYuAuthConfigurer<H extends HttpSecurityBuilder<H>> extends Abstra
     /**
      * 无参构造，初始化过滤器
      */
-    public MoYuAuthConfigurer(MoYuAuthClientProperties moYuAuthClientProperties) {
+    public MoYuAuthClientConfigurer(MoYuAuthClientProperties moYuAuthClientProperties) {
         this.moYuAuthClientProperties = moYuAuthClientProperties;
         setLoginPage();
         this.authFilter = new MoYuClientAuthenticationFilter();
