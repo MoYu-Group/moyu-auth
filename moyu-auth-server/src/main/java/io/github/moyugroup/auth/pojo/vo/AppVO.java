@@ -15,4 +15,6 @@ import lombok.experimental.Accessors;
 public class AppVO {
 
     private String appId;
+
+    private String ssoCallBackUrl;
 }

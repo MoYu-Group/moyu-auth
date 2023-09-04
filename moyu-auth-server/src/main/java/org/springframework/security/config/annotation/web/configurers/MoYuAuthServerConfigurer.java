@@ -1,6 +1,7 @@
 package org.springframework.security.config.annotation.web.configurers;
 
 import io.github.moyugroup.auth.filter.MoYuServerAuthenticationFilter;
+import io.github.moyugroup.auth.handler.MoYuAuthSuccessHandler;
 import io.github.moyugroup.auth.service.AppService;
 import io.github.moyugroup.auth.strategy.MoYuAuthRedirectStrategy;
 import jakarta.servlet.http.HttpServletRequest;
@@ -14,7 +15,6 @@ import org.springframework.security.web.PortMapper;
 import org.springframework.security.web.authentication.*;
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
 import org.springframework.security.web.context.SecurityContextRepository;
-import org.springframework.security.web.savedrequest.RequestCache;
 import org.springframework.security.web.util.matcher.*;
 import org.springframework.web.accept.ContentNegotiationStrategy;
 import org.springframework.web.accept.HeaderContentNegotiationStrategy;
@@ -34,10 +34,6 @@ public class MoYuAuthServerConfigurer<H extends HttpSecurityBuilder<H>> extends 
      */
     private final MoYuServerAuthenticationFilter authFilter;
     /**
-     * 默认使用保存请求认证成功的处理器
-     */
-    private final SavedRequestAwareAuthenticationSuccessHandler defaultSuccessHandler = new SavedRequestAwareAuthenticationSuccessHandler();
-    /**
      * 认证失败处理器
      */
     private final AuthenticationFailureHandler failureHandler;
@@ -45,10 +41,6 @@ public class MoYuAuthServerConfigurer<H extends HttpSecurityBuilder<H>> extends 
      * 保存认证请求细节
      */
     private AuthenticationDetailsSource<HttpServletRequest, ?> authenticationDetailsSource;
-    /**
-     * 认证成功处理器
-     */
-    private AuthenticationSuccessHandler successHandler = this.defaultSuccessHandler;
     /**
      * 登录认证端点
      */
@@ -118,12 +110,8 @@ public class MoYuAuthServerConfigurer<H extends HttpSecurityBuilder<H>> extends 
         if (portMapper != null) {
             this.authenticationEntryPoint.setPortMapper(portMapper);
         }
-        RequestCache requestCache = http.getSharedObject(RequestCache.class);
-        if (requestCache != null) {
-            this.defaultSuccessHandler.setRequestCache(requestCache);
-        }
         this.authFilter.setAuthenticationManager(http.getSharedObject(AuthenticationManager.class));
-        this.authFilter.setAuthenticationSuccessHandler(this.successHandler);
+        this.authFilter.setAuthenticationSuccessHandler(new MoYuAuthSuccessHandler());
         this.authFilter.setAuthenticationFailureHandler(this.failureHandler);
         if (this.authenticationDetailsSource != null) {
             this.authFilter.setAuthenticationDetailsSource(this.authenticationDetailsSource);

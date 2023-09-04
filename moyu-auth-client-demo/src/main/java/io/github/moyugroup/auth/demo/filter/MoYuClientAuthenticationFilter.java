@@ -30,7 +30,7 @@ public class MoYuClientAuthenticationFilter extends AbstractAuthenticationProces
     /**
      * 授权回调地址
      */
-    private static final AntPathRequestMatcher DEFAULT_ANT_PATH_REQUEST_MATCHER = new AntPathRequestMatcher("/authorized", "GET");
+    private static final AntPathRequestMatcher DEFAULT_ANT_PATH_REQUEST_MATCHER = new AntPathRequestMatcher("/oauth2", "GET");
 
     private String usernameParameter = SPRING_SECURITY_FORM_USERNAME_KEY;
 

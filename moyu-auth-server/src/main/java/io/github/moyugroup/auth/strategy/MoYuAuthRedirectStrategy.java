@@ -43,13 +43,13 @@ public class MoYuAuthRedirectStrategy extends DefaultRedirectStrategy {
      */
     private String checkAndAddParam(HttpServletRequest request, String url) {
         UrlQuery urlQuery = new UrlQuery();
-        String appId = request.getParameter(MoYuAuthConstant.APP_ID);
+        String appId = request.getParameter(MoYuAuthConstant.APP_ID_PARAM);
         if (StringUtils.isNotBlank(appId)) {
-            urlQuery.add(MoYuAuthConstant.APP_ID, appId);
+            urlQuery.add(MoYuAuthConstant.APP_ID_PARAM, appId);
         }
-        String backUrl = request.getParameter(MoYuAuthConstant.BACK_URL);
+        String backUrl = request.getParameter(MoYuAuthConstant.BACK_URL_PARAM);
         if (StringUtils.isNotBlank(backUrl)) {
-            urlQuery.add(MoYuAuthConstant.BACK_URL, URLEncoder.encode(backUrl, StandardCharsets.UTF_8));
+            urlQuery.add(MoYuAuthConstant.BACK_URL_PARAM, URLEncoder.encode(backUrl, StandardCharsets.UTF_8));
         }
         return url + "?" + urlQuery;
     }
