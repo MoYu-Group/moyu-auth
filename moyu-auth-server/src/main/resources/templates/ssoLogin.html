@@ -27,11 +27,11 @@
             <input class="form-control" id="password" name="password" placeholder="密码" required type="password">
         </p>
         <!--        <input th:name="${_csrf.parameterName}" th:value="${_csrf.token}" type="hidden"/>-->
-        <div th:if="${!#strings.isEmpty(APP_ID)}">
-            <input name="APP_ID" th:value="${APP_ID}" type="hidden"/>
+        <div th:if="${!#strings.isEmpty(appId)}">
+            <input name="appId" th:value="${appId}" type="hidden"/>
         </div>
-        <div th:if="${!#strings.isEmpty(BACK_URL)}">
-            <input name="BACK_URL" th:value="${BACK_URL}" type="hidden"/>
+        <div th:if="${!#strings.isEmpty(appId)}">
+            <input name="backUrl" th:value="${backUrl}" type="hidden"/>
         </div>
         <button class="btn btn-lg btn-primary btn-block" type="submit">登录</button>
     </form>

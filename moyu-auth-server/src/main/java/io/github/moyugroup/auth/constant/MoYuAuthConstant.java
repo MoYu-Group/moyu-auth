@@ -14,15 +14,19 @@ public class MoYuAuthConstant {
     /**
      * 应用 AppId 参数
      */
-    public final static String APP_ID_PARAM = "APP_ID";
+    public final static String APP_ID_PARAM = "appId";
     /**
      * 应用 AppSecret 参数
      */
-    public final static String APP_SECRET_PARAM = "APP_SECRET";
+    public final static String APP_SECRET_PARAM = "appSecret";
     /**
      * 回调地址参数
      */
-    public final static String BACK_URL_PARAM = "BACK_URL";
+    public final static String BACK_URL_PARAM = "backUrl";
+    /**
+     * SSO_TOKEN 参数名称
+     */
+    public final static String SSO_TOKEN_PARAM = "ssoToken";
     /**
      * sso 登录地址
      */
@@ -52,11 +56,7 @@ public class MoYuAuthConstant {
      */
     public final static String REQUEST_APP_INFO = "REQUEST_APP_INFO";
     /**
-     * SSO_TOKEN 参数名称
-     */
-    public final static String SSO_TOKEN_PARAM = "SSO_TOKEN";
-    /**
-     * sso 回调路径
+     * OAuth 登陆回调路径
      */
     public final static String SSO_CALLBACK_PATH = "oauth2";
 }

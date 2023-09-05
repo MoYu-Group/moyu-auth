@@ -12,11 +12,11 @@ import lombok.Setter;
 @Getter
 public class MoYuAuthConstant {
 
-    public final static String APP_ID = "APP_ID";
-    public final static String APP_SECRET = "APP_SECRET";
+    public final static String APP_ID_PARAM = "appId";
+    public final static String APP_SECRET_PARAM = "appSecret";
+    public final static String BACK_URL_PARAM = "backUrl";
+    public final static String SSO_TOKEN_PARAM = "ssoToken";
     public final static String LOGIN_IN_URL = "/ssoLogin.html";
     public final static String LOGIN_OUT_URL = "/ssoLogout.html";
     public final static String OAUTH_ENDPOINT = "/oauth2";
-    public final static String BACK_URL = "BACK_URL";
-    public final static String SSO_TOKEN_PARAM = "SSO_TOKEN";
 }

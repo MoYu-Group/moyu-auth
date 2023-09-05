@@ -1,4 +1,4 @@
-package io.github.moyugroup.auth.controller;
+package io.github.moyugroup.auth.controller.rest;
 
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.util.StrUtil;
@@ -33,7 +33,7 @@ import java.util.List;
 @Validated
 @RestController
 @RequestMapping("open")
-public class OpenController {
+public class OpenRestController {
 
     @Resource
     private SessionRegistry sessionRegistry;

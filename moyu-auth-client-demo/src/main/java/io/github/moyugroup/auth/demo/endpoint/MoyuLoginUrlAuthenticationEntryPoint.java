@@ -49,13 +49,13 @@ public class MoyuLoginUrlAuthenticationEntryPoint extends LoginUrlAuthentication
         String loginUrl = super.determineUrlToUseForThisRequest(request, response, exception);
         // 构建 URL 参数
         UrlQuery urlQuery = new UrlQuery();
-        urlQuery.add(MoYuAuthConstant.APP_ID, moYuAuthClientProperties.getAppId());
+        urlQuery.add(MoYuAuthConstant.APP_ID_PARAM, moYuAuthClientProperties.getAppId());
         Object attribute = request.getSession().getAttribute(DEFAULT_SAVED_REQUEST_ATTR);
         if (Objects.nonNull(attribute)) {
             DefaultSavedRequest savedRequest = (DefaultSavedRequest) attribute;
             String requestURL = savedRequest.getRequestURL();
             if (StringUtils.isNotBlank(requestURL)) {
-                urlQuery.add(MoYuAuthConstant.BACK_URL, URLEncoder.encode(requestURL, StandardCharsets.UTF_8));
+                urlQuery.add(MoYuAuthConstant.BACK_URL_PARAM, URLEncoder.encode(requestURL, StandardCharsets.UTF_8));
             }
         }
         return loginUrl + MoYuAuthConstant.LOGIN_IN_URL + "?" + urlQuery;

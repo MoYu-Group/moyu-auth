@@ -1,4 +1,4 @@
-package io.github.moyugroup.auth.controller;
+package io.github.moyugroup.auth.controller.page;
 
 import jakarta.servlet.http.HttpSession;
 import org.springframework.security.core.Authentication;
@@ -14,7 +14,7 @@ import java.util.Objects;
  * Created by fanfan on 2023/08/03.
  */
 @Controller
-public class IndexController {
+public class IndexPageController {
 
     /**
      * 首页页面

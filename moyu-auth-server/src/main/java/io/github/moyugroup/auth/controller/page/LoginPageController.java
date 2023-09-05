@@ -1,4 +1,4 @@
-package io.github.moyugroup.auth.controller;
+package io.github.moyugroup.auth.controller.page;
 
 import io.github.moyugroup.auth.constant.MoYuAuthConstant;
 import io.github.moyugroup.auth.handler.MoYuAuthSuccessHandler;
@@ -27,7 +27,7 @@ import java.util.Objects;
  */
 @Slf4j
 @Controller
-public class LoginController {
+public class LoginPageController {
 
     @Resource
     private AppService appService;
@@ -46,7 +46,7 @@ public class LoginController {
     public String login(Model model, HttpServletRequest request, HttpServletResponse response,
                         Authentication authentication) throws ServletException, IOException {
         checkAppId(request);
-        if (Objects.nonNull(authentication)) {
+        if (Objects.nonNull(authentication) && StringUtils.isNotBlank(LoginUtil.getLoginErrorMessage(request))) {
             log.info("用户：{} 已登录，直接走免登流程", authentication.getName());
             moYuAuthSuccessHandler.onAuthenticationSuccess(request, response, authentication);
             return null;
