@@ -5,7 +5,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.MoYuAuthClientConfigurer;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
@@ -30,12 +29,6 @@ public class SpringSecurityConfig {
     public static final String LOGIN_PAGE_API = "/login";
     public static final String LOGIN_OUT_API = "/logout";
 
-
-    @Bean
-    public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring().requestMatchers("/css/**", "/favicon.ico");
-    }
-
     /**
      * 用于身份验证的 Spring Security 过滤器链
      *
@@ -52,6 +45,8 @@ public class SpringSecurityConfig {
                 .authorizeHttpRequests((authorize) ->
                         // 不需要登录的端点
                         authorize.requestMatchers(
+                                        new AntPathRequestMatcher("/css/**"),
+                                        new AntPathRequestMatcher("/favicon.ico"),
                                         new AntPathRequestMatcher("/open/**"),
                                         new AntPathRequestMatcher("/error"),
                                         new AntPathRequestMatcher("/health"),

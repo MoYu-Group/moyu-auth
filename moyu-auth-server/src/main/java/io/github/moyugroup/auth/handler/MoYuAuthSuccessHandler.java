@@ -55,11 +55,20 @@ public class MoYuAuthSuccessHandler extends SimpleUrlAuthenticationSuccessHandle
         if (StringUtils.isNotBlank(callBackUrl)) {
             redirectStrategy.sendRedirect(request, response, callBackUrl);
         } else {
+            // 回调地址不存在时，走默认跳转逻辑
             handle(request, response, authentication);
         }
         clearSessionAttributes(request);
     }
 
+    /**
+     * 获取回调地址，并添加请求参数
+     *
+     * @param appVO
+     * @param ssoToken
+     * @param backUrl
+     * @return
+     */
     private String getSsoCallBackUrl(AppVO appVO, String ssoToken, String backUrl) {
         String ssoCallBackUrl;
         if (StringUtils.isNotBlank(appVO.getSsoCallBackUrl())) {
