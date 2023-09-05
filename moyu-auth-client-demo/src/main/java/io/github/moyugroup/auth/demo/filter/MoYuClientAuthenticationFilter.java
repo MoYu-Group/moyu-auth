@@ -1,12 +1,12 @@
 package io.github.moyugroup.auth.demo.filter;
 
-import io.github.moyugroup.enums.ErrorCodeEnum;
-import io.github.moyugroup.exception.BizException;
+import io.github.moyugroup.auth.demo.config.MoYuAuthConstant;
+import io.github.moyugroup.exception.AssertException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.AuthenticationServiceException;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.User;
@@ -20,30 +20,16 @@ import java.util.ArrayList;
  * <p>
  * Created by fanfan on 2023/08/11.
  */
+@Slf4j
 public class MoYuClientAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
-
-
-    public static final String SPRING_SECURITY_FORM_USERNAME_KEY = "username";
-
-    public static final String SPRING_SECURITY_FORM_PASSWORD_KEY = "password";
 
     /**
      * 授权回调地址
      */
-    private static final AntPathRequestMatcher DEFAULT_ANT_PATH_REQUEST_MATCHER = new AntPathRequestMatcher("/oauth2", "GET");
-
-    private String usernameParameter = SPRING_SECURITY_FORM_USERNAME_KEY;
-
-    private String passwordParameter = SPRING_SECURITY_FORM_PASSWORD_KEY;
-
-    private boolean postOnly = true;
+    private static final AntPathRequestMatcher DEFAULT_ANT_PATH_REQUEST_MATCHER = new AntPathRequestMatcher(MoYuAuthConstant.OAUTH_ENDPOINT, HttpMethod.GET.name());
 
     public MoYuClientAuthenticationFilter() {
         super(DEFAULT_ANT_PATH_REQUEST_MATCHER);
-    }
-
-    public MoYuClientAuthenticationFilter(AuthenticationManager authenticationManager) {
-        super(DEFAULT_ANT_PATH_REQUEST_MATCHER, authenticationManager);
     }
 
     /**
@@ -55,21 +41,23 @@ public class MoYuClientAuthenticationFilter extends AbstractAuthenticationProces
      */
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) {
-        if (!request.getMethod().equals("GET")) {
-            throw new AuthenticationServiceException("Authentication method not supported: " + request.getMethod());
-        }
-        String username = request.getParameter("username");
-        username = (username != null) ? username.trim() : "";
-        String password = request.getParameter("password");
-        password = (password != null) ? password : "";
-        if (StringUtils.isAnyBlank(username, password)) {
-            throw new BizException(ErrorCodeEnum.USERNAME_VERIFICATION_FAILED);
-        }
-        // 创建认证通过的对象，目前免认证登录，所有账密都可以登录，后续会调用 MoYu-Auth 认证登录
-        User user = new User(username, password, new ArrayList<>());
-        UsernamePasswordAuthenticationToken authenticated = UsernamePasswordAuthenticationToken.authenticated(user, password, new ArrayList<>());
+        String ssoToken = getSSOToken(request);
+        log.info("attemptAuthentication ssoToken:{}", ssoToken);
+        // 通过 SSO_TOKEN 向 MoYu-Auth 获取登陆用户信息
+
+        // 创建指定用户的登录态
+        User user = new User("username", "password", new ArrayList<>());
+        UsernamePasswordAuthenticationToken authenticated = UsernamePasswordAuthenticationToken.authenticated(user, "password", new ArrayList<>());
         setDetails(request, authenticated);
         return authenticated;
+    }
+
+    private String getSSOToken(HttpServletRequest request) {
+        String ssoToken = request.getParameter(MoYuAuthConstant.SSO_TOKEN_PARAM);
+        if (StringUtils.isBlank(ssoToken)) {
+            throw new AssertException("SSO_TOKEN 不能为空");
+        }
+        return ssoToken.trim();
     }
 
     /**

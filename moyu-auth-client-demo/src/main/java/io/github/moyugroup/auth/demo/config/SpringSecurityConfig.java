@@ -51,7 +51,7 @@ public class SpringSecurityConfig {
                                         new AntPathRequestMatcher("/error"),
                                         new AntPathRequestMatcher("/health"),
                                         new AntPathRequestMatcher("/logged-out"),
-                                        new AntPathRequestMatcher("/authorized"),
+                                        new AntPathRequestMatcher(MoYuAuthConstant.OAUTH_ENDPOINT),
                                         new AntPathRequestMatcher(LOGIN_PAGE_URL),
                                         new AntPathRequestMatcher(LOGIN_PAGE_API)).permitAll()
                                 // 其他资源都需要登录
