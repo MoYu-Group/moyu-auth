@@ -12,6 +12,7 @@ import java.util.Objects;
 public enum OAuth2ErrorEnum implements ExceptionEnum {
     APP_NOT_FOUND("A1100", "应用信息校验失败", ExceptionLevel.INFO),
     GRANT_TYPE_NOT_SUPPORT("A1101", "不支持的授权类型", ExceptionLevel.INFO),
+    SSO_TOKEN_INVALID("A1102", "ssoToken 无效", ExceptionLevel.INFO),
 
     ;
 

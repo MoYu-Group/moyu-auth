@@ -3,14 +3,14 @@ package io.github.moyugroup.auth.service.impl;
 import cn.hutool.cache.CacheUtil;
 import cn.hutool.cache.impl.TimedCache;
 import io.github.moyugroup.auth.constant.MoYuAuthOAuthConstant;
+import io.github.moyugroup.auth.constant.enums.OAuth2ErrorEnum;
 import io.github.moyugroup.auth.pojo.vo.OAuthUserVO;
 import io.github.moyugroup.auth.service.OAuthCacheService;
+import io.github.moyugroup.util.AssertUtil;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
-
-import java.util.Objects;
 
 /**
  * OAuth 登录缓存，本地缓存实现
@@ -60,9 +60,7 @@ public class OAuthLocalCacheServiceImpl implements OAuthCacheService {
     @Override
     public OAuthUserVO getUserByToken(String ssoToken) {
         OAuthUserVO oAuthUserVO = ssoTokenUserCache.get(ssoToken, false);
-        if (Objects.isNull(oAuthUserVO)) {
-            return null;
-        }
+        AssertUtil.notNull(oAuthUserVO, OAuth2ErrorEnum.SSO_TOKEN_INVALID);
         // 从缓存中取出有效数据后，删除缓存数据，使每条缓存只能读取一次
         ssoTokenUserCache.remove(ssoToken);
         return oAuthUserVO;
