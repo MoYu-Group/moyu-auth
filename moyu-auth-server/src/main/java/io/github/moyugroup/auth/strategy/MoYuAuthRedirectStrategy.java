@@ -1,7 +1,7 @@
 package io.github.moyugroup.auth.strategy;
 
 import cn.hutool.core.net.url.UrlQuery;
-import io.github.moyugroup.auth.constant.MoYuAuthConstant;
+import io.github.moyugroup.auth.constant.MoYuAuthLoginConstant;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -43,13 +43,13 @@ public class MoYuAuthRedirectStrategy extends DefaultRedirectStrategy {
      */
     private String checkAndAddParam(HttpServletRequest request, String url) {
         UrlQuery urlQuery = new UrlQuery();
-        String appId = request.getParameter(MoYuAuthConstant.APP_ID_PARAM);
+        String appId = request.getParameter(MoYuAuthLoginConstant.APP_ID_PARAM);
         if (StringUtils.isNotBlank(appId)) {
-            urlQuery.add(MoYuAuthConstant.APP_ID_PARAM, appId);
+            urlQuery.add(MoYuAuthLoginConstant.APP_ID_PARAM, appId);
         }
-        String backUrl = request.getParameter(MoYuAuthConstant.BACK_URL_PARAM);
+        String backUrl = request.getParameter(MoYuAuthLoginConstant.BACK_URL_PARAM);
         if (StringUtils.isNotBlank(backUrl)) {
-            urlQuery.add(MoYuAuthConstant.BACK_URL_PARAM, URLEncoder.encode(backUrl, StandardCharsets.UTF_8));
+            urlQuery.add(MoYuAuthLoginConstant.BACK_URL_PARAM, URLEncoder.encode(backUrl, StandardCharsets.UTF_8));
         }
         return url + "?" + urlQuery;
     }

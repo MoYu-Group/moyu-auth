@@ -1,5 +1,6 @@
 package io.github.moyugroup.auth.pojo.request;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 /**
@@ -10,5 +11,16 @@ import lombok.Data;
 @Data
 public class AccessTokenRequest {
 
+    @NotBlank
+    private String grantType;
+
+    @NotBlank
+    private String appId;
+
+    @NotBlank
+    private String appSecret;
+
+    @NotBlank
+    private String ssoToken;
 
 }

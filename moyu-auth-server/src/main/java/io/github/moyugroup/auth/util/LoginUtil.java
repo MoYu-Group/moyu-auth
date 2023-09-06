@@ -1,6 +1,6 @@
 package io.github.moyugroup.auth.util;
 
-import io.github.moyugroup.auth.constant.MoYuAuthConstant;
+import io.github.moyugroup.auth.constant.MoYuAuthLoginConstant;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
@@ -39,9 +39,9 @@ public class LoginUtil {
                 session.removeAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
                 return authenticationException.getMessage();
             }
-            Object loginErrorMsg = session.getAttribute(MoYuAuthConstant.LOGIN_ERROR_MESSAGE);
+            Object loginErrorMsg = session.getAttribute(MoYuAuthLoginConstant.LOGIN_ERROR_MESSAGE);
             if (Objects.nonNull(loginErrorMsg)) {
-                session.removeAttribute(MoYuAuthConstant.LOGIN_ERROR_MESSAGE);
+                session.removeAttribute(MoYuAuthLoginConstant.LOGIN_ERROR_MESSAGE);
                 return (String) loginErrorMsg;
             }
         }
@@ -60,6 +60,6 @@ public class LoginUtil {
         if (StringUtils.isBlank(errorMessage)) {
             return;
         }
-        session.setAttribute(MoYuAuthConstant.LOGIN_ERROR_MESSAGE, errorMessage);
+        session.setAttribute(MoYuAuthLoginConstant.LOGIN_ERROR_MESSAGE, errorMessage);
     }
 }

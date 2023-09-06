@@ -1,26 +1,21 @@
 package io.github.moyugroup.auth.constant;
 
-import lombok.Getter;
-import lombok.Setter;
-
 /**
  * Moyu-Auth 常量类
  * <p>
  * Created by fanfan on 2023/09/03.
  */
-@Setter
-@Getter
-public class MoYuAuthConstant {
+public class MoYuAuthLoginConstant {
     /**
-     * 应用 AppId 参数
+     * 应用 AppId 参数名称
      */
     public final static String APP_ID_PARAM = "appId";
     /**
-     * 应用 AppSecret 参数
+     * 应用 AppSecret 参数名称
      */
     public final static String APP_SECRET_PARAM = "appSecret";
     /**
-     * 回调地址参数
+     * 回调地址参数名称
      */
     public final static String BACK_URL_PARAM = "backUrl";
     /**
@@ -28,11 +23,11 @@ public class MoYuAuthConstant {
      */
     public final static String SSO_TOKEN_PARAM = "ssoToken";
     /**
-     * sso 登录地址
+     * SSO 登录地址
      */
     public final static String LOGIN_IN_URL = "/ssoLogin.html";
     /**
-     * sso 退出登录地址
+     * SSO 退出登录地址
      */
     public final static String LOGIN_OUT_URL = "/ssoLogout.html";
     /**
@@ -56,7 +51,8 @@ public class MoYuAuthConstant {
      */
     public final static String REQUEST_APP_INFO = "REQUEST_APP_INFO";
     /**
-     * OAuth 登陆回调路径
+     * OAuth2 登陆回调路径
      */
     public final static String SSO_CALLBACK_PATH = "oauth2";
+
 }

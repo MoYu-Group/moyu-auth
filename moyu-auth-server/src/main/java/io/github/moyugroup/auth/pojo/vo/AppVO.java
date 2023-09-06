@@ -16,5 +16,7 @@ public class AppVO {
 
     private String appId;
 
+    private String appSecret;
+
     private String ssoCallBackUrl;
 }

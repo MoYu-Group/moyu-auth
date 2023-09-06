@@ -2,6 +2,7 @@ package io.github.moyugroup.auth.config;
 
 import io.github.moyugroup.auth.handler.MoYuAuthSuccessHandler;
 import io.github.moyugroup.auth.service.AppService;
+import io.github.moyugroup.auth.service.OAuthCacheService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -42,7 +43,8 @@ public class SpringSecurityConfig {
                                                           UserDetailsService userDetailsService,
                                                           HttpSessionRequestCache httpSessionRequestCache,
                                                           SessionRegistry sessionRegistry,
-                                                          AppService appService) throws Exception {
+                                                          AppService appService,
+                                                          MoYuAuthSuccessHandler moYuAuthSuccessHandler) throws Exception {
         http
                 .authorizeHttpRequests((authorize) ->
                         // 不需要登录的端点和资源
@@ -50,6 +52,7 @@ public class SpringSecurityConfig {
                                         new AntPathRequestMatcher("/css/**"),
                                         new AntPathRequestMatcher("/favicon.ico"),
                                         new AntPathRequestMatcher("/open/**"),
+                                        new AntPathRequestMatcher("/oauth2/**"),
                                         new AntPathRequestMatcher("/error"),
                                         new AntPathRequestMatcher("/health"),
                                         new AntPathRequestMatcher("/logged-out"),
@@ -59,12 +62,12 @@ public class SpringSecurityConfig {
                                 .anyRequest().authenticated())
                 .csrf(csrf -> csrf.disable())
                 // 自定义登录页
-                .formLogin(form -> form
-                        .loginPage(LOGIN_PAGE_URL)
-                        .failureUrl(LOGIN_PAGE_URL)
-                        .loginProcessingUrl(LOGIN_PAGE_API)
-                        .successHandler(new MoYuAuthSuccessHandler())
-                )
+//                .formLogin(form -> form
+//                        .loginPage(LOGIN_PAGE_URL)
+//                        .failureUrl(LOGIN_PAGE_URL)
+//                        .loginProcessingUrl(LOGIN_PAGE_API)
+//                        .successHandler(new MoYuAuthSuccessHandler())
+//                )
                 // 自定义注销登录页
                 .logout(logout -> logout
                         .logoutUrl(LOGIN_OUT_API)
@@ -83,9 +86,24 @@ public class SpringSecurityConfig {
                         .sessionRegistry(sessionRegistry)
                         .expiredUrl(LOGIN_PAGE_URL)
                 )
-                .apply(new MoYuAuthServerConfigurer<>(LOGIN_PAGE_API, LOGIN_PAGE_URL, appService));
+                .apply(new MoYuAuthServerConfigurer<>(
+                        LOGIN_PAGE_API,
+                        LOGIN_PAGE_URL,
+                        appService,
+                        moYuAuthSuccessHandler));
         ;
         return http.build();
+    }
+
+    /**
+     * 初始化 MoYuAuthSuccessHandler
+     *
+     * @param oAuthCacheService
+     * @return
+     */
+    @Bean
+    public MoYuAuthSuccessHandler moYuAuthSuccessHandlerInit(OAuthCacheService oAuthCacheService) {
+        return new MoYuAuthSuccessHandler(oAuthCacheService);
     }
 
     /**

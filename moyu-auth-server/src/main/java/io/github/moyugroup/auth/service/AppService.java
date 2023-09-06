@@ -1,11 +1,13 @@
 package io.github.moyugroup.auth.service;
 
-import cn.hutool.core.map.MapUtil;
 import io.github.moyugroup.auth.pojo.vo.AppVO;
+import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * APP 服务
@@ -19,7 +21,12 @@ public class AppService {
     /**
      * 先在内存模拟数据
      */
-    private Map<String, AppVO> map = MapUtil.of("demo-client", new AppVO().setAppId("demo-client"));
+    private final Map<String, AppVO> map = new HashMap<>();
+
+    @PostConstruct
+    private void initMap() {
+        map.put("demo-client", new AppVO().setAppId("demo-client").setAppSecret("123123"));
+    }
 
     /**
      * 根据 appId 查询
@@ -29,5 +36,23 @@ public class AppService {
      */
     public AppVO getAppById(String appId) {
         return map.get(appId);
+    }
+
+    /**
+     * 根据 AppId 和 AppSecret 查询
+     *
+     * @param appId
+     * @param appSecret
+     * @return
+     */
+    public AppVO getByAppIdAndAppSecret(String appId, String appSecret) {
+        AppVO appById = getAppById(appId);
+        if (Objects.isNull(appById)) {
+            return null;
+        }
+        if (appById.getAppSecret().equals(appSecret)) {
+            return appById;
+        }
+        return null;
     }
 }

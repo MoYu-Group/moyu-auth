@@ -1,4 +1,4 @@
-package io.github.moyugroup.auth.controller.rest;
+package io.github.moyugroup.auth.web.rest;
 
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.util.StrUtil;

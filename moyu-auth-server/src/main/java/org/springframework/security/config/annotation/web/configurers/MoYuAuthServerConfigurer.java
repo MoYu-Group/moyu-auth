@@ -34,6 +34,10 @@ public class MoYuAuthServerConfigurer<H extends HttpSecurityBuilder<H>> extends 
      */
     private final MoYuServerAuthenticationFilter authFilter;
     /**
+     * 登录成功处理器
+     */
+    private MoYuAuthSuccessHandler moYuAuthSuccessHandler;
+    /**
      * 认证失败处理器
      */
     private final AuthenticationFailureHandler failureHandler;
@@ -49,10 +53,11 @@ public class MoYuAuthServerConfigurer<H extends HttpSecurityBuilder<H>> extends 
     /**
      * 无参构造，初始化过滤器
      */
-    public MoYuAuthServerConfigurer(String loginEndPoint, String loginUrl, AppService appService) {
+    public MoYuAuthServerConfigurer(String loginEndPoint, String loginUrl, AppService appService, MoYuAuthSuccessHandler moYuAuthSuccessHandler) {
         this.failureHandler = getFailureHandler(loginUrl);
         this.authenticationEntryPoint = new LoginUrlAuthenticationEntryPoint(loginEndPoint);
         this.authFilter = new MoYuServerAuthenticationFilter(loginEndPoint, appService);
+        this.moYuAuthSuccessHandler = moYuAuthSuccessHandler;
     }
 
     private AuthenticationFailureHandler getFailureHandler(String loginUrl) {
@@ -111,7 +116,7 @@ public class MoYuAuthServerConfigurer<H extends HttpSecurityBuilder<H>> extends 
             this.authenticationEntryPoint.setPortMapper(portMapper);
         }
         this.authFilter.setAuthenticationManager(http.getSharedObject(AuthenticationManager.class));
-        this.authFilter.setAuthenticationSuccessHandler(new MoYuAuthSuccessHandler());
+        this.authFilter.setAuthenticationSuccessHandler(moYuAuthSuccessHandler);
         this.authFilter.setAuthenticationFailureHandler(this.failureHandler);
         if (this.authenticationDetailsSource != null) {
             this.authFilter.setAuthenticationDetailsSource(this.authenticationDetailsSource);

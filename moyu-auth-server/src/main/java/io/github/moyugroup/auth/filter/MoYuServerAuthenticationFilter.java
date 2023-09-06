@@ -1,6 +1,6 @@
 package io.github.moyugroup.auth.filter;
 
-import io.github.moyugroup.auth.constant.MoYuAuthConstant;
+import io.github.moyugroup.auth.constant.MoYuAuthLoginConstant;
 import io.github.moyugroup.auth.pojo.vo.AppVO;
 import io.github.moyugroup.auth.service.AppService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -52,24 +52,24 @@ public class MoYuServerAuthenticationFilter extends AbstractAuthenticationProces
         if (StringUtils.isBlank(password)) {
             throw new BadCredentialsException("密码不能为空");
         }
-        String appId = request.getParameter(MoYuAuthConstant.APP_ID_PARAM);
+        String appId = request.getParameter(MoYuAuthLoginConstant.APP_ID_PARAM);
         if (StringUtils.isNotBlank(appId)) {
             AppVO appById = appService.getAppById(appId);
             if (Objects.isNull(appById)) {
                 throw new BadCredentialsException("应用未在统一登录中心注册");
             }
-            request.setAttribute(MoYuAuthConstant.REQUEST_APP_INFO, appById);
+            request.setAttribute(MoYuAuthLoginConstant.REQUEST_APP_INFO, appById);
         }
     }
 
     private String getUsername(HttpServletRequest request) {
-        String username = request.getParameter(MoYuAuthConstant.LOGIN_USERNAME_PARAM);
+        String username = request.getParameter(MoYuAuthLoginConstant.LOGIN_USERNAME_PARAM);
         username = (username != null) ? username.trim() : "";
         return username;
     }
 
     private String getPassword(HttpServletRequest request) {
-        String password = request.getParameter(MoYuAuthConstant.LOGIN_PASSWORD_PARAM);
+        String password = request.getParameter(MoYuAuthLoginConstant.LOGIN_PASSWORD_PARAM);
         password = (password != null) ? password : "";
         return password;
     }

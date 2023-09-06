@@ -1,6 +1,6 @@
-package io.github.moyugroup.auth.controller.page;
+package io.github.moyugroup.auth.web.page;
 
-import io.github.moyugroup.auth.constant.MoYuAuthConstant;
+import io.github.moyugroup.auth.constant.MoYuAuthLoginConstant;
 import io.github.moyugroup.auth.handler.MoYuAuthSuccessHandler;
 import io.github.moyugroup.auth.pojo.vo.AppVO;
 import io.github.moyugroup.auth.service.AppService;
@@ -32,10 +32,8 @@ public class LoginPageController {
     @Resource
     private AppService appService;
 
-    /**
-     * 登录成功处理器
-     */
-    private final MoYuAuthSuccessHandler moYuAuthSuccessHandler = new MoYuAuthSuccessHandler();
+    @Resource
+    private MoYuAuthSuccessHandler moYuAuthSuccessHandler;
 
     /**
      * 登录页渲染
@@ -61,7 +59,7 @@ public class LoginPageController {
      * @param request
      */
     private void checkAppId(HttpServletRequest request) {
-        String appId = request.getParameter(MoYuAuthConstant.APP_ID_PARAM);
+        String appId = request.getParameter(MoYuAuthLoginConstant.APP_ID_PARAM);
         if (StringUtils.isBlank(appId)) {
             LoginUtil.setLoginErrorMessage(request, "appId不能为空");
             return;
@@ -70,14 +68,14 @@ public class LoginPageController {
         if (Objects.isNull(appById)) {
             LoginUtil.setLoginErrorMessage(request, "应用未在统一登录中心注册");
         }
-        request.setAttribute(MoYuAuthConstant.REQUEST_APP_INFO, appById);
+        request.setAttribute(MoYuAuthLoginConstant.REQUEST_APP_INFO, appById);
     }
 
     private void fillPageHideParam(Model model, HttpServletRequest request) {
         String loginErrorMessage = LoginUtil.getLoginErrorMessage(request);
         model.addAttribute("errorMessage", loginErrorMessage);
-        model.addAttribute(MoYuAuthConstant.APP_ID_PARAM, request.getParameter(MoYuAuthConstant.APP_ID_PARAM));
-        model.addAttribute(MoYuAuthConstant.BACK_URL_PARAM, request.getParameter(MoYuAuthConstant.BACK_URL_PARAM));
+        model.addAttribute(MoYuAuthLoginConstant.APP_ID_PARAM, request.getParameter(MoYuAuthLoginConstant.APP_ID_PARAM));
+        model.addAttribute(MoYuAuthLoginConstant.BACK_URL_PARAM, request.getParameter(MoYuAuthLoginConstant.BACK_URL_PARAM));
     }
 
 }

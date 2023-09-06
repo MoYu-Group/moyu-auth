@@ -1,4 +1,4 @@
-package io.github.moyugroup.auth.controller.page;
+package io.github.moyugroup.auth.web.page;
 
 import jakarta.servlet.http.HttpSession;
 import org.springframework.security.core.Authentication;
