@@ -4,7 +4,7 @@ import cn.hutool.cache.CacheUtil;
 import cn.hutool.cache.impl.TimedCache;
 import io.github.moyugroup.auth.constant.MoYuAuthOAuthConstant;
 import io.github.moyugroup.auth.constant.enums.OAuth2ErrorEnum;
-import io.github.moyugroup.auth.pojo.vo.OAuthUserVO;
+import io.github.moyugroup.auth.pojo.vo.OAuth2UserVO;
 import io.github.moyugroup.auth.service.OAuthCacheService;
 import io.github.moyugroup.util.AssertUtil;
 import jakarta.annotation.PostConstruct;
@@ -30,7 +30,7 @@ public class OAuthLocalCacheServiceImpl implements OAuthCacheService {
     /**
      * 储存 ssoToken 与登录用户缓存
      */
-    private static final TimedCache<String, OAuthUserVO> ssoTokenUserCache = CacheUtil.newTimedCache(expireTime);
+    private static final TimedCache<String, OAuth2UserVO> ssoTokenUserCache = CacheUtil.newTimedCache(expireTime);
 
     @PostConstruct
     private void init() {
@@ -42,12 +42,12 @@ public class OAuthLocalCacheServiceImpl implements OAuthCacheService {
      * 有效期为5分钟
      *
      * @param ssoToken
-     * @param oAuthUserVO
+     * @param oAuth2UserVO
      * @return
      */
     @Override
-    public boolean setTokenWithUser(String ssoToken, OAuthUserVO oAuthUserVO) {
-        ssoTokenUserCache.put(ssoToken, oAuthUserVO);
+    public boolean setTokenWithUser(String ssoToken, OAuth2UserVO oAuth2UserVO) {
+        ssoTokenUserCache.put(ssoToken, oAuth2UserVO);
         return Boolean.TRUE;
     }
 
@@ -58,12 +58,12 @@ public class OAuthLocalCacheServiceImpl implements OAuthCacheService {
      * @return
      */
     @Override
-    public OAuthUserVO getUserByToken(String ssoToken) {
-        OAuthUserVO oAuthUserVO = ssoTokenUserCache.get(ssoToken, false);
-        AssertUtil.notNull(oAuthUserVO, OAuth2ErrorEnum.SSO_TOKEN_INVALID);
+    public OAuth2UserVO getUserByToken(String ssoToken) {
+        OAuth2UserVO oAuth2UserVO = ssoTokenUserCache.get(ssoToken, false);
+        AssertUtil.notNull(oAuth2UserVO, OAuth2ErrorEnum.SSO_TOKEN_INVALID);
         // 从缓存中取出有效数据后，删除缓存数据，使每条缓存只能读取一次
         ssoTokenUserCache.remove(ssoToken);
-        return oAuthUserVO;
+        return oAuth2UserVO;
     }
 
 }

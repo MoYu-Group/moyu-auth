@@ -3,6 +3,7 @@ package io.github.moyugroup.auth.demo.controller;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
+import io.github.moyugroup.auth.demo.pojo.vo.OAuth2UserVO;
 import io.github.moyugroup.base.model.pojo.Result;
 import io.github.moyugroup.util.AssertUtil;
 import jakarta.annotation.Resource;
@@ -11,7 +12,6 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.session.SessionInformation;
 import org.springframework.security.core.session.SessionRegistry;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -54,7 +54,7 @@ public class OpenController {
         for (Object allPrincipal : allPrincipals) {
             List<SessionInformation> allSessions = sessionRegistry.getAllSessions(allPrincipal, true);
             for (SessionInformation allSession : allSessions) {
-                User principal = (User) allSession.getPrincipal();
+                OAuth2UserVO principal = (OAuth2UserVO) allSession.getPrincipal();
                 JSONObject json = new JSONObject();
                 json.set("sessionId", allSession.getSessionId());
                 json.set("userName", principal.getUsername());

@@ -1,6 +1,6 @@
 package io.github.moyugroup.auth.service;
 
-import io.github.moyugroup.auth.pojo.vo.OAuthUserVO;
+import io.github.moyugroup.auth.pojo.vo.OAuth2UserVO;
 
 /**
  * OAuth 缓存服务
@@ -14,10 +14,10 @@ public interface OAuthCacheService {
      * 有效期为5分钟
      *
      * @param ssoToken
-     * @param oAuthUserVO
+     * @param oAuth2UserVO
      * @return
      */
-    boolean setTokenWithUser(String ssoToken, OAuthUserVO oAuthUserVO);
+    boolean setTokenWithUser(String ssoToken, OAuth2UserVO oAuth2UserVO);
 
     /**
      * 根据 ssoToken 获取登录用户信息
@@ -25,6 +25,6 @@ public interface OAuthCacheService {
      * @param ssoToken
      * @return
      */
-    OAuthUserVO getUserByToken(String ssoToken);
+    OAuth2UserVO getUserByToken(String ssoToken);
 
 }

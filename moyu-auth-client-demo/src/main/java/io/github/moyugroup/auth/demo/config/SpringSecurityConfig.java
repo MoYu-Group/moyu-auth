@@ -8,7 +8,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.MoYuAuthClientConfigurer;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
-import org.springframework.security.web.DefaultSecurityFilterChain;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
@@ -39,7 +38,8 @@ public class SpringSecurityConfig {
     @Bean
     public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http,
                                                           HttpSessionRequestCache httpSessionRequestCache,
-                                                          SessionRegistry sessionRegistry, MoYuAuthClientProperties moYuAuthClientProperties
+                                                          SessionRegistry sessionRegistry,
+                                                          MoYuAuthClientProperties moYuAuthClientProperties
     ) throws Exception {
         http
                 .authorizeHttpRequests((authorize) ->
@@ -51,8 +51,7 @@ public class SpringSecurityConfig {
                                         new AntPathRequestMatcher("/error"),
                                         new AntPathRequestMatcher("/health"),
                                         new AntPathRequestMatcher("/logged-out"),
-                                        new AntPathRequestMatcher(MoYuAuthConstant.OAUTH_ENDPOINT),
-                                        new AntPathRequestMatcher(LOGIN_PAGE_URL),
+                                        new AntPathRequestMatcher(MoYuAuthConstant.OAUTH2_ENDPOINT),
                                         new AntPathRequestMatcher(LOGIN_PAGE_API)).permitAll()
                                 // 其他资源都需要登录
                                 .anyRequest().authenticated())
@@ -60,7 +59,7 @@ public class SpringSecurityConfig {
                 // 自定义注销登录页
                 .logout(logout -> logout
                         .logoutUrl(LOGIN_OUT_API)
-                        .logoutSuccessUrl(LOGIN_PAGE_URL)
+//                        .logoutSuccessUrl(LOGIN_PAGE_URL)
                 )
                 // rememberMe token 24h 失效
                 .rememberMe(config -> config
@@ -77,8 +76,7 @@ public class SpringSecurityConfig {
                 // MoYu 认证配置
                 .apply(new MoYuAuthClientConfigurer<>(moYuAuthClientProperties))
         ;
-        DefaultSecurityFilterChain build = http.build();
-        return build;
+        return http.build();
     }
 
     @Bean

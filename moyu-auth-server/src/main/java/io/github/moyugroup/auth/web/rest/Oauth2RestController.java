@@ -2,7 +2,7 @@ package io.github.moyugroup.auth.web.rest;
 
 import io.github.moyugroup.auth.facade.OAuthFacade;
 import io.github.moyugroup.auth.pojo.request.AccessTokenRequest;
-import io.github.moyugroup.auth.pojo.vo.OAuthUserVO;
+import io.github.moyugroup.auth.pojo.vo.OAuth2UserVO;
 import io.github.moyugroup.base.model.pojo.Result;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
@@ -32,7 +32,7 @@ public class Oauth2RestController {
      * @return
      */
     @PostMapping("accessToken")
-    public Result<OAuthUserVO> accessToken(@RequestBody @Validated AccessTokenRequest accessTokenRequest) {
+    public Result<OAuth2UserVO> accessToken(@RequestBody @Validated AccessTokenRequest accessTokenRequest) {
         return Result.success(oAuthFacade.accessToken(accessTokenRequest));
     }
 

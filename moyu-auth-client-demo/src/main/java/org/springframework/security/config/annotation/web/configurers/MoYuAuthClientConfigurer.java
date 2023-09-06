@@ -75,18 +75,9 @@ public class MoYuAuthClientConfigurer<H extends HttpSecurityBuilder<H>> extends 
      */
     private String loginUrl;
     /**
-     * 登录成功URL
-     */
-    private String loginProcessingUrl;
-    /**
      * 认证失败处理器
      */
     private AuthenticationFailureHandler failureHandler;
-
-    /**
-     * 认证失败的URL
-     */
-    private String failureUrl;
 
     /**
      * 无参构造，初始化过滤器
@@ -94,7 +85,7 @@ public class MoYuAuthClientConfigurer<H extends HttpSecurityBuilder<H>> extends 
     public MoYuAuthClientConfigurer(MoYuAuthClientProperties moYuAuthClientProperties) {
         this.moYuAuthClientProperties = moYuAuthClientProperties;
         setLoginPage();
-        this.authFilter = new MoYuClientAuthenticationFilter();
+        this.authFilter = new MoYuClientAuthenticationFilter(moYuAuthClientProperties);
     }
 
     /**

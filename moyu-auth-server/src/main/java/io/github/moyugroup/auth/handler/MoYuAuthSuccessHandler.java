@@ -7,7 +7,7 @@ import cn.hutool.core.util.IdUtil;
 import cn.hutool.json.JSONUtil;
 import io.github.moyugroup.auth.constant.MoYuAuthLoginConstant;
 import io.github.moyugroup.auth.pojo.vo.AppVO;
-import io.github.moyugroup.auth.pojo.vo.OAuthUserVO;
+import io.github.moyugroup.auth.pojo.vo.OAuth2UserVO;
 import io.github.moyugroup.auth.pojo.vo.UserVO;
 import io.github.moyugroup.auth.service.OAuthCacheService;
 import io.github.moyugroup.enums.ErrorCodeEnum;
@@ -79,11 +79,11 @@ public class MoYuAuthSuccessHandler extends SimpleUrlAuthenticationSuccessHandle
         clearSessionAttributes(request);
     }
 
-    private OAuthUserVO getOAuthUserVO(Authentication authentication) {
+    private OAuth2UserVO getOAuthUserVO(Authentication authentication) {
         UserVO userVO = (UserVO) authentication.getPrincipal();
-        OAuthUserVO oAuthUserVO = new OAuthUserVO();
-        BeanUtils.copyProperties(userVO, oAuthUserVO);
-        return oAuthUserVO;
+        OAuth2UserVO oAuth2UserVO = new OAuth2UserVO();
+        BeanUtils.copyProperties(userVO, oAuth2UserVO);
+        return oAuth2UserVO;
     }
 
     /**

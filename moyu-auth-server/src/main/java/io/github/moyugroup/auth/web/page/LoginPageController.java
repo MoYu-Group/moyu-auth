@@ -44,7 +44,7 @@ public class LoginPageController {
     public String login(Model model, HttpServletRequest request, HttpServletResponse response,
                         Authentication authentication) throws ServletException, IOException {
         checkAppId(request);
-        if (Objects.nonNull(authentication) && StringUtils.isNotBlank(LoginUtil.getLoginErrorMessage(request))) {
+        if (Objects.nonNull(authentication) && StringUtils.isBlank(LoginUtil.getLoginErrorMessage(request))) {
             log.info("用户：{} 已登录，直接走免登流程", authentication.getName());
             moYuAuthSuccessHandler.onAuthenticationSuccess(request, response, authentication);
             return null;

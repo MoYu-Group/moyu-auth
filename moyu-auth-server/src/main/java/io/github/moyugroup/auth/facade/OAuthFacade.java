@@ -4,7 +4,7 @@ import io.github.moyugroup.auth.constant.enums.GrantTypeEnum;
 import io.github.moyugroup.auth.constant.enums.OAuth2ErrorEnum;
 import io.github.moyugroup.auth.pojo.request.AccessTokenRequest;
 import io.github.moyugroup.auth.pojo.vo.AppVO;
-import io.github.moyugroup.auth.pojo.vo.OAuthUserVO;
+import io.github.moyugroup.auth.pojo.vo.OAuth2UserVO;
 import io.github.moyugroup.auth.service.AppService;
 import io.github.moyugroup.auth.service.OAuthCacheService;
 import io.github.moyugroup.util.AssertUtil;
@@ -34,7 +34,7 @@ public class OAuthFacade {
      * @param accessTokenRequest
      * @return
      */
-    public OAuthUserVO accessToken(AccessTokenRequest accessTokenRequest) {
+    public OAuth2UserVO accessToken(AccessTokenRequest accessTokenRequest) {
         // 应用有效性判断
         AppVO appVO = appService.getByAppIdAndAppSecret(accessTokenRequest.getAppId(), accessTokenRequest.getAppSecret());
         AssertUtil.notNull(appVO, OAuth2ErrorEnum.APP_NOT_FOUND);
