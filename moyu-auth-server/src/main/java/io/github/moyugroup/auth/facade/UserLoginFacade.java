@@ -41,6 +41,6 @@ public class UserLoginFacade implements UserDetailsService {
         if (Objects.isNull(userVO)) {
             throw new UsernameNotFoundException(ErrorCodeEnum.USER_ACCOUNT_DOES_NOT_EXIST.getMessage());
         }
-        return userVO;
+        return new UserVO(userVO.getUsername(), userVO.getPassword()).setTenantId(userVO.getTenantId()).setUserId(userVO.getUserId());
     }
 }

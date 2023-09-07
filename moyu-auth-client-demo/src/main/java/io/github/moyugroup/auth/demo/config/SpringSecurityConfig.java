@@ -61,11 +61,6 @@ public class SpringSecurityConfig {
                         .logoutUrl(LOGIN_OUT_API)
 //                        .logoutSuccessUrl(LOGIN_PAGE_URL)
                 )
-                // rememberMe token 24h 失效
-                .rememberMe(config -> config
-                        .alwaysRemember(true)
-                        .tokenValiditySeconds(60 * 60 * 24)
-                )
                 .requestCache(cache -> cache.requestCache(httpSessionRequestCache))
                 // session 并发控制和管理
                 .sessionManagement(session -> session
