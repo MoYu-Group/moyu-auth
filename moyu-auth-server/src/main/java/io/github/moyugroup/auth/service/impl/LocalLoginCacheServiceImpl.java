@@ -106,7 +106,7 @@ public class LocalLoginCacheServiceImpl implements LoginCacheService {
         loginAppBOMap.put(userLoginAppBO.getAppId(), userLoginAppBO);
         // 更新用户登录应用缓存
         userLoginApp.put(userId, loginAppBOMap);
-        log.info("saveUserLoginApp userId:{} loginApp:{} ssoToken:{}", userId, userLoginAppBO.getAppId(), userLoginAppBO.getSsoToken());
+        log.info("saveUserLoginAppCache userId:{} loginApp:{} ssoToken:{}", userId, userLoginAppBO.getAppId(), userLoginAppBO.getSsoToken());
         return Boolean.TRUE;
     }
 
@@ -124,5 +124,18 @@ public class LocalLoginCacheServiceImpl implements LoginCacheService {
         }
         Collection<UserLoginAppBO> values = loginAppBOMap.values();
         return values.stream().toList();
+    }
+
+    /**
+     * 删除用户登录过的 APP 列表
+     *
+     * @param userId
+     * @return
+     */
+    @Override
+    public boolean removeUserLoginApp(Long userId) {
+        userLoginApp.remove(userId);
+        log.info("removeUserLoginAppCache userId:{}", userId);
+        return Boolean.TRUE;
     }
 }

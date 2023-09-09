@@ -54,12 +54,15 @@ public class MoYuServerLogoutSuccessHandler extends SimpleUrlLogoutSuccessHandle
         if (Objects.nonNull(authentication) && Objects.nonNull(authentication.getPrincipal())) {
             Object principal = authentication.getPrincipal();
             LoginUserVO userVO = (LoginUserVO) principal;
-            List<UserLoginAppBO> userLoginAppList = loginCacheService.getUserLoginAppList(userVO.getUserId());
+            Long userId = userVO.getUserId();
+            List<UserLoginAppBO> userLoginAppList = loginCacheService.getUserLoginAppList(userId);
             if (!CollectionUtils.isEmpty(userLoginAppList)) {
                 // 遍历用户登录的应用列表，通知应用用户已注销
                 for (UserLoginAppBO userLoginAppBO : userLoginAppList) {
                     sendNotifyAppUserLogoutByToken(getAppLogoutUrl(userLoginAppBO), userLoginAppBO.getSsoToken());
                 }
+                // 遍历完成后删除用户登录的应用列表
+                loginCacheService.removeUserLoginApp(userId);
             }
         }
         super.onLogoutSuccess(request, response, authentication);

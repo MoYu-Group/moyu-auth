@@ -31,8 +31,8 @@ public interface LoginCacheService {
     OAuth2UserVO getLoginUserByToken(String ssoToken);
 
     /**
-     * 保存用户登录过的App和发放的ssoToken信息
-     * 用于退出登录时通知App用户退出登录
+     * 保存用户登录过的 App 和发放的 ssoToken 信息
+     * 用于退出登录时通知 App 用户退出登录
      *
      * @param userId
      * @param userLoginAppBO
@@ -41,11 +41,19 @@ public interface LoginCacheService {
     boolean saveUserLoginApp(Long userId, UserLoginAppBO userLoginAppBO);
 
     /**
-     * 获取用户登录过的App列表
+     * 获取用户登录过的 App 列表
      *
      * @param userId
      * @return
      */
     List<UserLoginAppBO> getUserLoginAppList(Long userId);
+
+    /**
+     * 删除用户登录过的 APP 列表
+     *
+     * @param userId
+     * @return
+     */
+    boolean removeUserLoginApp(Long userId);
 
 }

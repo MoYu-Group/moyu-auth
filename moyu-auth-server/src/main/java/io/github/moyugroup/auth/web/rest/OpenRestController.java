@@ -5,6 +5,7 @@ import cn.hutool.core.date.DateTime;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
 import io.github.moyugroup.auth.pojo.bo.UserLoginAppBO;
+import io.github.moyugroup.auth.service.LoginCacheService;
 import io.github.moyugroup.auth.service.impl.LocalLoginCacheServiceImpl;
 import io.github.moyugroup.base.model.pojo.Result;
 import io.github.moyugroup.util.AssertUtil;
@@ -42,8 +43,12 @@ public class OpenRestController {
     @Resource
     private SecurityFilterChain securityFilterChain;
 
+    @Resource
+    private LoginCacheService loginCacheService;
+
     @GetMapping("test")
     public Result<?> helleWorld() {
+        loginCacheService.removeUserLoginApp(123L);
         return Result.success("get open test");
     }
 
