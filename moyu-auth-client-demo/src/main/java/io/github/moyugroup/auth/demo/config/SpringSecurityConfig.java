@@ -23,10 +23,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @EnableConfigurationProperties(MoYuAuthClientProperties.class)
 public class SpringSecurityConfig {
 
-    //    public static final String LOGIN_PAGE_URL = "/login.html";
     public static final String LOGIN_PAGE_URL = "https://server.ffis.me:9001/ssoLogin.html";
-    public static final String LOGIN_PAGE_API = "/login";
-    public static final String LOGIN_OUT_API = "/logout";
 
     /**
      * 用于身份验证的 Spring Security 过滤器链
@@ -51,15 +48,14 @@ public class SpringSecurityConfig {
                                         new AntPathRequestMatcher("/error"),
                                         new AntPathRequestMatcher("/health"),
                                         new AntPathRequestMatcher("/logged-out"),
-                                        new AntPathRequestMatcher(MoYuAuthConstant.OAUTH2_ENDPOINT),
-                                        new AntPathRequestMatcher(LOGIN_PAGE_API)).permitAll()
+                                        new AntPathRequestMatcher(MoYuAuthConstant.OAUTH2_ENDPOINT)
+                                ).permitAll()
                                 // 其他资源都需要登录
                                 .anyRequest().authenticated())
                 .csrf(x -> x.disable())
                 // 自定义注销登录页
                 .logout(logout -> logout
-                        .logoutUrl(LOGIN_OUT_API)
-//                        .logoutSuccessUrl(LOGIN_PAGE_URL)
+                        .logoutSuccessUrl("/")
                 )
                 .requestCache(cache -> cache.requestCache(httpSessionRequestCache))
                 // session 并发控制和管理

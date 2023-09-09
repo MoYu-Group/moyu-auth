@@ -6,10 +6,12 @@ import cn.hutool.core.net.url.UrlQuery;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.json.JSONUtil;
 import io.github.moyugroup.auth.constant.MoYuAuthLoginConstant;
+import io.github.moyugroup.auth.pojo.bo.UserLoginAppBO;
 import io.github.moyugroup.auth.pojo.vo.AppVO;
 import io.github.moyugroup.auth.pojo.vo.OAuth2UserVO;
 import io.github.moyugroup.auth.pojo.vo.UserVO;
-import io.github.moyugroup.auth.service.OAuthCacheService;
+import io.github.moyugroup.auth.service.LoginCacheService;
+import io.github.moyugroup.auth.util.LoginUtil;
 import io.github.moyugroup.enums.ErrorCodeEnum;
 import io.github.moyugroup.exception.BizException;
 import jakarta.servlet.ServletException;
@@ -42,10 +44,10 @@ public class MoYuAuthSuccessHandler extends SimpleUrlAuthenticationSuccessHandle
 
     private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 
-    private OAuthCacheService oAuthCacheService;
+    private LoginCacheService loginCacheService;
 
-    public MoYuAuthSuccessHandler(OAuthCacheService oAuthCacheService) {
-        this.oAuthCacheService = oAuthCacheService;
+    public MoYuAuthSuccessHandler(LoginCacheService loginCacheService) {
+        this.loginCacheService = loginCacheService;
     }
 
     /**
@@ -62,21 +64,46 @@ public class MoYuAuthSuccessHandler extends SimpleUrlAuthenticationSuccessHandle
             log.error("用户登录信息 Authentication 不存在");
             throw new BizException(ErrorCodeEnum.USER_LOGIN_EXCEPTION);
         }
+        // 获取登录应用信息
         AppVO appVO = getAppVO(request);
-        String backUrl = request.getParameter(MoYuAuthLoginConstant.BACK_URL_PARAM);
-        // 发放 SSO_TOKEN
-        String ssoToken = IdUtil.fastSimpleUUID();
-        // 储存 ssoToken 的登录信息
-        oAuthCacheService.setTokenWithUser(ssoToken, getOAuthUserVO(authentication));
-        // 获取回调地址
-        String callBackUrl = getSsoCallBackUrl(appVO, ssoToken, backUrl);
-        if (StringUtils.isNotBlank(callBackUrl)) {
-            redirectStrategy.sendRedirect(request, response, callBackUrl);
-        } else {
-            // 回调地址不存在时，走默认跳转逻辑
+        // 一方应用，不进行 OAuth 登录
+        if (LoginUtil.checkIsMoYuAuthApp(appVO.getAppId())) {
             handle(request, response, authentication);
         }
+        // 二方应用，进行 OAuth 登录流程
+        // 获取用户信息
+        OAuth2UserVO oAuthUserVO = getOAuthUserVO(authentication);
+        // 生成 ssoToken
+        String ssoToken = IdUtil.fastSimpleUUID();
+        // 储存 ssoToken 的登录信息
+        loginCacheService.saveUserLoginToken(ssoToken, oAuthUserVO);
+        // 保存用户登录应用信息
+        loginCacheService.saveUserLoginApp(oAuthUserVO.getUserId(), buildUserLoginAppBO(appVO, ssoToken));
+        // 获取登录成功后回调地址
+        String callBackUrl = getSsoCallBackUrl(appVO, ssoToken, getBackUrl(request));
+        log.info("OAuth2 SSO sendRedirect:{}", callBackUrl);
+        redirectStrategy.sendRedirect(request, response, callBackUrl);
         clearSessionAttributes(request);
+    }
+
+    private String getBackUrl(HttpServletRequest request) {
+        return request.getParameter(MoYuAuthLoginConstant.BACK_URL_PARAM);
+    }
+
+    /**
+     * 构建用户登录的应用对象
+     *
+     * @param appVO
+     * @param ssoToken
+     * @return
+     */
+    private UserLoginAppBO buildUserLoginAppBO(AppVO appVO, String ssoToken) {
+        UserLoginAppBO userLoginAppBO = new UserLoginAppBO();
+        userLoginAppBO.setAppId(appVO.getAppId());
+        userLoginAppBO.setAppUrl(appVO.getAppUrl());
+        userLoginAppBO.setLogoutCallbackUrl(appVO.getSsoCallbackPath());
+        userLoginAppBO.setSsoToken(ssoToken);
+        return userLoginAppBO;
     }
 
     private OAuth2UserVO getOAuthUserVO(Authentication authentication) {
@@ -87,7 +114,7 @@ public class MoYuAuthSuccessHandler extends SimpleUrlAuthenticationSuccessHandle
     }
 
     /**
-     * 获取回调地址，并添加请求参数
+     * 获取登录成功后回调地址，并添加回调
      *
      * @param appVO
      * @param ssoToken
@@ -95,23 +122,28 @@ public class MoYuAuthSuccessHandler extends SimpleUrlAuthenticationSuccessHandle
      * @return
      */
     private String getSsoCallBackUrl(AppVO appVO, String ssoToken, String backUrl) {
-        String ssoCallBackUrl;
-        if (StringUtils.isNotBlank(appVO.getSsoCallBackUrl())) {
-            // 应用设置了回调地址以应用为准
-            ssoCallBackUrl = appVO.getSsoCallBackUrl();
+        UrlBuilder callBackUrlBuilder = UrlBuilder.of(appVO.getAppUrl());
+        String ssoCallBackUrl = appVO.getSsoCallbackPath();
+        if (StringUtils.isBlank(ssoCallBackUrl)) {
+            // 未指定回调路径，使用默认回调地址
+            callBackUrlBuilder.setPath(UrlPath.of(MoYuAuthLoginConstant.SSO_CALLBACK_PATH, Charset.defaultCharset()));
         } else {
-            // 应用未设置回调地址以 backUrl 为准
-            UrlBuilder of = UrlBuilder.of(backUrl);
-            of.setPath(UrlPath.of(MoYuAuthLoginConstant.SSO_CALLBACK_PATH, Charset.defaultCharset()));
-            ssoCallBackUrl = of.toString();
+            // 指定路径回调
+            callBackUrlBuilder.setPath(UrlPath.of(ssoCallBackUrl, Charset.defaultCharset()));
         }
+
         UrlQuery urlQuery = new UrlQuery();
+        // 添加 ssoToken 参数
         urlQuery.add(MoYuAuthLoginConstant.SSO_TOKEN_PARAM, ssoToken);
         if (StringUtils.isNotBlank(backUrl)) {
+            // 添加 backUrl 参数
             urlQuery.add(MoYuAuthLoginConstant.BACK_URL_PARAM, URLEncoder.encode(backUrl, StandardCharsets.UTF_8));
         }
-        return ssoCallBackUrl + "?" + urlQuery;
+
+        // 构建sso回调地址并返回
+        return callBackUrlBuilder + "?" + urlQuery;
     }
+
 
     private AppVO getAppVO(HttpServletRequest request) {
         Object appInfoObj = request.getAttribute(MoYuAuthLoginConstant.REQUEST_APP_INFO);

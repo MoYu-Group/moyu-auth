@@ -1,8 +1,9 @@
 package io.github.moyugroup.auth.config;
 
 import io.github.moyugroup.auth.handler.MoYuAuthSuccessHandler;
+import io.github.moyugroup.auth.handler.MoYuLogoutSuccessHandler;
 import io.github.moyugroup.auth.service.AppService;
-import io.github.moyugroup.auth.service.OAuthCacheService;
+import io.github.moyugroup.auth.service.LoginCacheService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -62,16 +63,14 @@ public class SpringSecurityConfig {
                                 .anyRequest().authenticated())
                 .csrf(csrf -> csrf.disable())
                 // 自定义登录页
-//                .formLogin(form -> form
-//                        .loginPage(LOGIN_PAGE_URL)
-//                        .failureUrl(LOGIN_PAGE_URL)
-//                        .loginProcessingUrl(LOGIN_PAGE_API)
-//                        .successHandler(new MoYuAuthSuccessHandler())
-//                )
+                .formLogin(form -> form
+                        .loginPage(LOGIN_PAGE_URL)
+                        .failureUrl(LOGIN_PAGE_URL)
+                )
                 // 自定义注销登录页
                 .logout(logout -> logout
                         .logoutUrl(LOGIN_OUT_API)
-                        .logoutSuccessUrl(LOGIN_PAGE_URL)
+                        .logoutSuccessHandler(new MoYuLogoutSuccessHandler(LOGIN_PAGE_URL))
                 )
                 // rememberMe token 24h 失效
                 .rememberMe(config -> config
@@ -98,12 +97,12 @@ public class SpringSecurityConfig {
     /**
      * 初始化 MoYuAuthSuccessHandler
      *
-     * @param oAuthCacheService
+     * @param loginCacheService
      * @return
      */
     @Bean
-    public MoYuAuthSuccessHandler moYuAuthSuccessHandlerInit(OAuthCacheService oAuthCacheService) {
-        return new MoYuAuthSuccessHandler(oAuthCacheService);
+    public MoYuAuthSuccessHandler moYuAuthSuccessHandlerInit(LoginCacheService loginCacheService) {
+        return new MoYuAuthSuccessHandler(loginCacheService);
     }
 
     /**

@@ -1,10 +1,12 @@
 package io.github.moyugroup.auth.util;
 
 import io.github.moyugroup.auth.constant.MoYuAuthLoginConstant;
+import io.github.moyugroup.auth.pojo.vo.AppVO;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.WebAttributes;
 
@@ -17,6 +19,47 @@ import java.util.Objects;
  */
 @Slf4j
 public class LoginUtil {
+
+    /**
+     * 获取请求的 AppId
+     * 如未传 AppId，则视为一方应用登录，设置为系统默认的 AppId
+     *
+     * @param request
+     * @return
+     */
+    public static String getRequestAppId(HttpServletRequest request) {
+        String appId = request.getParameter(MoYuAuthLoginConstant.APP_ID_PARAM);
+        if (StringUtils.isBlank(appId)) {
+            appId = MoYuAuthLoginConstant.DEFAULT_APP_ID;
+        }
+        return appId;
+    }
+
+    /**
+     * 检查登录 APP 信息，如果不符合登录要求则报错
+     *
+     * @param appVO
+     */
+    public static void checkAppIsOk(AppVO appVO) {
+        // 应用存在判断
+        if (Objects.isNull(appVO)) {
+            throw new BadCredentialsException("应用未在统一登录中心注册");
+        }
+        // 二方应用的应用地址必须配置
+        if (!LoginUtil.checkIsMoYuAuthApp(appVO.getAppId()) && StringUtils.isBlank(appVO.getAppUrl())) {
+            throw new BadCredentialsException("应用配置错误，AppUrl 不能为空");
+        }
+    }
+
+    /**
+     * 检查应用是否是 MoYu-Auth 一方应用
+     *
+     * @param appId
+     * @return
+     */
+    public static boolean checkIsMoYuAuthApp(String appId) {
+        return MoYuAuthLoginConstant.DEFAULT_APP_ID.equals(appId);
+    }
 
     /**
      * 获取登录错误信息

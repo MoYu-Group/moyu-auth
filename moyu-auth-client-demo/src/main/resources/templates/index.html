@@ -12,7 +12,7 @@
 <div>sessionId:<span th:text="${sessionId}"></span></div>
 <div>welcome moyu-auth-demo</div>
 
-<form method="post" th:action="@{/logout}">
+<form action="http://server.ffis.me:9001/ssoLogout?backUrl=http%3A%2F%2Fdemo.ffis.me%3A8001%2F" method="post">
     <input type="submit" value="注销"/>
 </form>
 </body>

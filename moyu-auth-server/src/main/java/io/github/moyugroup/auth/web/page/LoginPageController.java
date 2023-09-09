@@ -43,7 +43,7 @@ public class LoginPageController {
     @RequestMapping(value = "/ssoLogin.html", method = {RequestMethod.GET, RequestMethod.POST})
     public String login(Model model, HttpServletRequest request, HttpServletResponse response,
                         Authentication authentication) throws ServletException, IOException {
-        checkAppId(request);
+        checkAppInfo(request);
         if (Objects.nonNull(authentication) && StringUtils.isBlank(LoginUtil.getLoginErrorMessage(request))) {
             log.info("用户：{} 已登录，直接走免登流程", authentication.getName());
             moYuAuthSuccessHandler.onAuthenticationSuccess(request, response, authentication);
@@ -54,21 +54,20 @@ public class LoginPageController {
     }
 
     /**
-     * 检查 AppId
+     * 登录应用前置检查，登录时会再次检查
      *
      * @param request
      */
-    private void checkAppId(HttpServletRequest request) {
-        String appId = request.getParameter(MoYuAuthLoginConstant.APP_ID_PARAM);
-        if (StringUtils.isBlank(appId)) {
-            LoginUtil.setLoginErrorMessage(request, "appId不能为空");
-            return;
-        }
+    private void checkAppInfo(HttpServletRequest request) {
+        // 应用未传应用ID，则认为是在登录一方应用，设置为系统默认的 appId
+        String appId = LoginUtil.getRequestAppId(request);
+        // 检查登录 APP 是否存在
         AppVO appById = appService.getAppById(appId);
-        if (Objects.isNull(appById)) {
-            LoginUtil.setLoginErrorMessage(request, "应用未在统一登录中心注册");
+        try {
+            LoginUtil.checkAppIsOk(appById);
+        } catch (Exception ex) {
+            LoginUtil.setLoginErrorMessage(request, ex.getMessage());
         }
-        request.setAttribute(MoYuAuthLoginConstant.REQUEST_APP_INFO, appById);
     }
 
     private void fillPageHideParam(Model model, HttpServletRequest request) {

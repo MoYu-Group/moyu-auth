@@ -3,6 +3,7 @@ package io.github.moyugroup.auth.filter;
 import io.github.moyugroup.auth.constant.MoYuAuthLoginConstant;
 import io.github.moyugroup.auth.pojo.vo.AppVO;
 import io.github.moyugroup.auth.service.AppService;
+import io.github.moyugroup.auth.util.LoginUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
@@ -14,8 +15,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-
-import java.util.Objects;
 
 /**
  * 自定义登录过程过滤器
@@ -45,6 +44,13 @@ public class MoYuServerAuthenticationFilter extends AbstractAuthenticationProces
         return this.getAuthenticationManager().authenticate(authRequest);
     }
 
+    /**
+     * 检查登录参数和应用信息，登录时检查
+     *
+     * @param request
+     * @param username
+     * @param password
+     */
     private void checkParams(HttpServletRequest request, String username, String password) {
         if (StringUtils.isBlank(username)) {
             throw new BadCredentialsException("用户名不能为空");
@@ -52,14 +58,10 @@ public class MoYuServerAuthenticationFilter extends AbstractAuthenticationProces
         if (StringUtils.isBlank(password)) {
             throw new BadCredentialsException("密码不能为空");
         }
-        String appId = request.getParameter(MoYuAuthLoginConstant.APP_ID_PARAM);
-        if (StringUtils.isNotBlank(appId)) {
-            AppVO appById = appService.getAppById(appId);
-            if (Objects.isNull(appById)) {
-                throw new BadCredentialsException("应用未在统一登录中心注册");
-            }
-            request.setAttribute(MoYuAuthLoginConstant.REQUEST_APP_INFO, appById);
-        }
+        String appId = LoginUtil.getRequestAppId(request);
+        AppVO appById = appService.getAppById(appId);
+        LoginUtil.checkAppIsOk(appById);
+        request.setAttribute(MoYuAuthLoginConstant.REQUEST_APP_INFO, appById);
     }
 
     private String getUsername(HttpServletRequest request) {

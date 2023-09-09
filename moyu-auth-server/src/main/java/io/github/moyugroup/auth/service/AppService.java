@@ -25,7 +25,8 @@ public class AppService {
 
     @PostConstruct
     private void initMap() {
-        map.put("demo-client", new AppVO().setAppId("demo-client").setAppSecret("123123"));
+        map.put("demo-client", new AppVO().setAppId("demo-client").setAppSecret("123123").setAppUrl("http://demo.ffis.me:8001"));
+        map.put("moyu-auth", new AppVO().setAppId("moyu-auth").setAppSecret("123123"));
     }
 
     /**

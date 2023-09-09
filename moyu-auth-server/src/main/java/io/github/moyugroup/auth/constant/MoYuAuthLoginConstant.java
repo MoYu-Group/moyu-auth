@@ -45,7 +45,7 @@ public class MoYuAuthLoginConstant {
     /**
      * 默认的 AppId
      */
-    public final static String DEFAULT_APP_ID = "moyu-server";
+    public final static String DEFAULT_APP_ID = "moyu-auth";
     /**
      * App 信息在 Request 中的属性名称
      */
