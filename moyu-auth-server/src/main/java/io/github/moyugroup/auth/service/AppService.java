@@ -19,7 +19,7 @@ import java.util.Objects;
 public class AppService {
 
     /**
-     * 先在内存模拟数据
+     * 先在内存模拟 APP 数据
      */
     private final Map<String, AppVO> map = new HashMap<>();
 

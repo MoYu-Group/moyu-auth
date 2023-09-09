@@ -15,14 +15,14 @@ import java.util.ArrayList;
 @Setter
 @Getter
 @Accessors(chain = true)
-public class UserVO extends User {
+public class LoginUserVO extends User {
 
     private Long userId;
 
     private String tenantId;
 
 
-    public UserVO(String username, String password) {
+    public LoginUserVO(String username, String password) {
         super(username, password, new ArrayList<>());
     }
 

@@ -2,7 +2,7 @@ package io.github.moyugroup.auth.service.impl;
 
 import cn.hutool.cache.CacheUtil;
 import cn.hutool.cache.impl.TimedCache;
-import io.github.moyugroup.auth.constant.MoYuAuthOAuthConstant;
+import io.github.moyugroup.auth.constant.MoYuOAuthConstant;
 import io.github.moyugroup.auth.pojo.bo.UserLoginAppBO;
 import io.github.moyugroup.auth.pojo.vo.OAuth2UserVO;
 import io.github.moyugroup.auth.service.LoginCacheService;
@@ -21,11 +21,11 @@ import java.util.*;
  */
 @Slf4j
 @Service
-@ConditionalOnProperty(name = MoYuAuthOAuthConstant.MOYU_AUTH_CACHE, havingValue = MoYuAuthOAuthConstant.MOYU_AUTH_CACHE_LOCAL, matchIfMissing = true)
+@ConditionalOnProperty(name = MoYuOAuthConstant.MOYU_AUTH_CACHE_FIELD_NAME, havingValue = MoYuOAuthConstant.MOYU_AUTH_CACHE_LOCAL, matchIfMissing = true)
 public class LocalLoginCacheServiceImpl implements LoginCacheService {
 
     /**
-     * 多久清理一次过期缓存
+     * 设置多久清理一次过期缓存
      */
     private static final long clearTime = 1000;
 
@@ -49,7 +49,7 @@ public class LocalLoginCacheServiceImpl implements LoginCacheService {
 
     @PostConstruct
     private void init() {
-        log.info("OAuth2 登录缓存，使用本地缓存实现 --> OAuthLocalCacheServiceImpl");
+        log.info("MoYu-Auth OAuth2 服务端登录缓存，使用本地缓存实现 --> LocalLoginCacheServiceImpl");
         // 每秒清理一次过期缓存
         ssoTokenUserCache.schedulePrune(clearTime);
         userLoginApp.schedulePrune(clearTime);

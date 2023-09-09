@@ -70,7 +70,7 @@ public class OpenRestController {
                 JSONObject json = new JSONObject();
                 json.set("sessionId", allSession.getSessionId());
                 json.set("userName", principal.getUsername());
-                json.set("lastLogin", DateTime.of(allSession.getLastRequest()).toString());
+                json.set("lastRequest", DateTime.of(allSession.getLastRequest()).toString());
                 json.set("expired", allSession.isExpired());
                 result.add(json);
             }

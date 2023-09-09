@@ -1,6 +1,6 @@
 package io.github.moyugroup.auth.filter;
 
-import io.github.moyugroup.auth.constant.MoYuAuthLoginConstant;
+import io.github.moyugroup.auth.constant.MoYuOAuthConstant;
 import io.github.moyugroup.auth.pojo.vo.AppVO;
 import io.github.moyugroup.auth.service.AppService;
 import io.github.moyugroup.auth.util.LoginUtil;
@@ -61,17 +61,18 @@ public class MoYuServerAuthenticationFilter extends AbstractAuthenticationProces
         String appId = LoginUtil.getRequestAppId(request);
         AppVO appById = appService.getAppById(appId);
         LoginUtil.checkAppIsOk(appById);
-        request.setAttribute(MoYuAuthLoginConstant.REQUEST_APP_INFO, appById);
+        // 保存登录的应用信息，用于登录成功后获取用户登录的应用使用
+        request.setAttribute(MoYuOAuthConstant.REQUEST_APP_INFO, appById);
     }
 
     private String getUsername(HttpServletRequest request) {
-        String username = request.getParameter(MoYuAuthLoginConstant.LOGIN_USERNAME_PARAM);
+        String username = request.getParameter(MoYuOAuthConstant.LOGIN_USERNAME_PARAM);
         username = (username != null) ? username.trim() : "";
         return username;
     }
 
     private String getPassword(HttpServletRequest request) {
-        String password = request.getParameter(MoYuAuthLoginConstant.LOGIN_PASSWORD_PARAM);
+        String password = request.getParameter(MoYuOAuthConstant.LOGIN_PASSWORD_PARAM);
         password = (password != null) ? password : "";
         return password;
     }

@@ -5,7 +5,7 @@ package io.github.moyugroup.auth.constant;
  * <p>
  * Created by fanfan on 2023/09/03.
  */
-public class MoYuAuthLoginConstant {
+public class MoYuOAuthConstant {
     /**
      * 应用 AppId 参数名称
      */
@@ -23,13 +23,21 @@ public class MoYuAuthLoginConstant {
      */
     public final static String SSO_TOKEN_PARAM = "ssoToken";
     /**
-     * SSO 登录地址
+     * MoYu-Auth 默认登录页面路径
      */
-    public final static String LOGIN_IN_URL = "/ssoLogin.html";
+    public final static String LOGIN_PAGE_PATH = "/ssoLogin.html";
     /**
-     * SSO 退出登录地址
+     * MoYu-Auth 默认注销页面路径
      */
     public final static String LOGIN_OUT_URL = "/ssoLogout.html";
+    /**
+     * MoYu-Auth 系统默认登录端点
+     */
+    public final static String LOGIN_ENDPOINT = "/ssoLogin";
+    /**
+     * MoYu-Auth 系统默认注销端点
+     */
+    public final static String LOGIN_OUT_ENDPOINT = "/ssoLogout";
     /**
      * 登录错误信息 属性名称
      */
@@ -54,5 +62,13 @@ public class MoYuAuthLoginConstant {
      * OAuth2 登陆回调路径
      */
     public final static String SSO_CALLBACK_PATH = "oauth2";
+    /**
+     * OAuth2 登录缓存类型配置名称
+     */
+    public final static String MOYU_AUTH_CACHE_FIELD_NAME = "moyu.auth.server.cache";
 
+    /**
+     * 启用本地缓存配置值
+     */
+    public final static String MOYU_AUTH_CACHE_LOCAL = "local";
 }

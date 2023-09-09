@@ -1,7 +1,7 @@
 package io.github.moyugroup.auth.web.page;
 
-import io.github.moyugroup.auth.constant.MoYuAuthLoginConstant;
-import io.github.moyugroup.auth.handler.MoYuAuthSuccessHandler;
+import io.github.moyugroup.auth.constant.MoYuOAuthConstant;
+import io.github.moyugroup.auth.handler.MoYuServerAuthSuccessHandler;
 import io.github.moyugroup.auth.pojo.vo.AppVO;
 import io.github.moyugroup.auth.service.AppService;
 import io.github.moyugroup.auth.util.LoginUtil;
@@ -33,7 +33,7 @@ public class LoginPageController {
     private AppService appService;
 
     @Resource
-    private MoYuAuthSuccessHandler moYuAuthSuccessHandler;
+    private MoYuServerAuthSuccessHandler moYuServerAuthSuccessHandler;
 
     /**
      * 登录页渲染
@@ -46,7 +46,7 @@ public class LoginPageController {
         checkAppInfo(request);
         if (Objects.nonNull(authentication) && StringUtils.isBlank(LoginUtil.getLoginErrorMessage(request))) {
             log.info("用户：{} 已登录，直接走免登流程", authentication.getName());
-            moYuAuthSuccessHandler.onAuthenticationSuccess(request, response, authentication);
+            moYuServerAuthSuccessHandler.onAuthenticationSuccess(request, response, authentication);
             return null;
         }
         fillPageHideParam(model, request);
@@ -68,13 +68,15 @@ public class LoginPageController {
         } catch (Exception ex) {
             LoginUtil.setLoginErrorMessage(request, ex.getMessage());
         }
+        // 保存登录的应用信息，用于SSO免登成功后获取用户登录的应用使用
+        request.setAttribute(MoYuOAuthConstant.REQUEST_APP_INFO, appById);
     }
 
     private void fillPageHideParam(Model model, HttpServletRequest request) {
         String loginErrorMessage = LoginUtil.getLoginErrorMessage(request);
         model.addAttribute("errorMessage", loginErrorMessage);
-        model.addAttribute(MoYuAuthLoginConstant.APP_ID_PARAM, request.getParameter(MoYuAuthLoginConstant.APP_ID_PARAM));
-        model.addAttribute(MoYuAuthLoginConstant.BACK_URL_PARAM, request.getParameter(MoYuAuthLoginConstant.BACK_URL_PARAM));
+        model.addAttribute(MoYuOAuthConstant.APP_ID_PARAM, request.getParameter(MoYuOAuthConstant.APP_ID_PARAM));
+        model.addAttribute(MoYuOAuthConstant.BACK_URL_PARAM, request.getParameter(MoYuOAuthConstant.BACK_URL_PARAM));
     }
 
 }

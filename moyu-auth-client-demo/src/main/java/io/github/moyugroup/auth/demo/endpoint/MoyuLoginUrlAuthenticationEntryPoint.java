@@ -2,7 +2,7 @@ package io.github.moyugroup.auth.demo.endpoint;
 
 import cn.hutool.core.net.url.UrlQuery;
 import io.github.moyugroup.auth.demo.config.MoYuAuthClientProperties;
-import io.github.moyugroup.auth.demo.config.MoYuAuthConstant;
+import io.github.moyugroup.auth.demo.config.MoYuOAuthConstant;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
@@ -49,16 +49,16 @@ public class MoyuLoginUrlAuthenticationEntryPoint extends LoginUrlAuthentication
         String loginUrl = super.determineUrlToUseForThisRequest(request, response, exception);
         // 构建 URL 参数
         UrlQuery urlQuery = new UrlQuery();
-        urlQuery.add(MoYuAuthConstant.APP_ID_PARAM, moYuAuthClientProperties.getAppId());
+        urlQuery.add(MoYuOAuthConstant.APP_ID_PARAM, moYuAuthClientProperties.getAppId());
         Object attribute = request.getSession().getAttribute(DEFAULT_SAVED_REQUEST_ATTR);
         if (Objects.nonNull(attribute)) {
             DefaultSavedRequest savedRequest = (DefaultSavedRequest) attribute;
             String requestURL = savedRequest.getRequestURL();
             if (StringUtils.isNotBlank(requestURL)) {
-                urlQuery.add(MoYuAuthConstant.BACK_URL_PARAM, URLEncoder.encode(requestURL, StandardCharsets.UTF_8));
+                urlQuery.add(MoYuOAuthConstant.BACK_URL_PARAM, URLEncoder.encode(requestURL, StandardCharsets.UTF_8));
             }
         }
-        return loginUrl + MoYuAuthConstant.LOGIN_IN_URL + "?" + urlQuery;
+        return loginUrl + MoYuOAuthConstant.LOGIN_IN_URL + "?" + urlQuery;
     }
 
 }

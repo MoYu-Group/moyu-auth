@@ -19,6 +19,7 @@ package org.springframework.security.config.annotation.web.configurers;
 import io.github.moyugroup.auth.demo.config.MoYuAuthClientProperties;
 import io.github.moyugroup.auth.demo.endpoint.MoyuLoginUrlAuthenticationEntryPoint;
 import io.github.moyugroup.auth.demo.filter.MoYuClientAuthenticationFilter;
+import io.github.moyugroup.auth.demo.handler.MoYuClientAuthSuccessHandler;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationDetailsSource;
@@ -50,17 +51,14 @@ public class MoYuAuthClientConfigurer<H extends HttpSecurityBuilder<H>> extends 
      */
     private final MoYuClientAuthenticationFilter authFilter;
     /**
-     * 默认使用保存请求认证成功的处理器
+     * 登录成功处理器
      */
-    private final SavedRequestAwareAuthenticationSuccessHandler defaultSuccessHandler = new SavedRequestAwareAuthenticationSuccessHandler();
+    private MoYuClientAuthSuccessHandler moYuClientAuthSuccessHandler;
     /**
      * 保存认证请求细节
      */
     private AuthenticationDetailsSource<HttpServletRequest, ?> authenticationDetailsSource;
-    /**
-     * 认证成功处理器
-     */
-    private AuthenticationSuccessHandler successHandler = this.defaultSuccessHandler;
+
     /**
      * 登录认证端点
      */
@@ -82,8 +80,9 @@ public class MoYuAuthClientConfigurer<H extends HttpSecurityBuilder<H>> extends 
     /**
      * 无参构造，初始化过滤器
      */
-    public MoYuAuthClientConfigurer(MoYuAuthClientProperties moYuAuthClientProperties) {
+    public MoYuAuthClientConfigurer(MoYuAuthClientProperties moYuAuthClientProperties, MoYuClientAuthSuccessHandler moYuClientAuthSuccessHandler) {
         this.moYuAuthClientProperties = moYuAuthClientProperties;
+        this.moYuClientAuthSuccessHandler = moYuClientAuthSuccessHandler;
         setLoginPage();
         this.authFilter = new MoYuClientAuthenticationFilter(moYuAuthClientProperties);
     }
@@ -139,11 +138,11 @@ public class MoYuAuthClientConfigurer<H extends HttpSecurityBuilder<H>> extends 
             this.authenticationEntryPoint.setPortMapper(portMapper);
         }
         RequestCache requestCache = http.getSharedObject(RequestCache.class);
-        if (requestCache != null) {
-            this.defaultSuccessHandler.setRequestCache(requestCache);
-        }
+//        if (requestCache != null) {
+//            this.moYuClientAuthSuccessHandler.setRequestCache(requestCache);
+//        }
         this.authFilter.setAuthenticationManager(http.getSharedObject(AuthenticationManager.class));
-        this.authFilter.setAuthenticationSuccessHandler(this.successHandler);
+        this.authFilter.setAuthenticationSuccessHandler(moYuClientAuthSuccessHandler);
         this.authFilter.setAuthenticationFailureHandler(this.failureHandler);
         if (this.authenticationDetailsSource != null) {
             this.authFilter.setAuthenticationDetailsSource(this.authenticationDetailsSource);

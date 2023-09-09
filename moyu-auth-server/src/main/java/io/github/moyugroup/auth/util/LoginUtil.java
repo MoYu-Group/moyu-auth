@@ -1,6 +1,6 @@
 package io.github.moyugroup.auth.util;
 
-import io.github.moyugroup.auth.constant.MoYuAuthLoginConstant;
+import io.github.moyugroup.auth.constant.MoYuOAuthConstant;
 import io.github.moyugroup.auth.pojo.vo.AppVO;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -28,9 +28,9 @@ public class LoginUtil {
      * @return
      */
     public static String getRequestAppId(HttpServletRequest request) {
-        String appId = request.getParameter(MoYuAuthLoginConstant.APP_ID_PARAM);
+        String appId = request.getParameter(MoYuOAuthConstant.APP_ID_PARAM);
         if (StringUtils.isBlank(appId)) {
-            appId = MoYuAuthLoginConstant.DEFAULT_APP_ID;
+            appId = MoYuOAuthConstant.DEFAULT_APP_ID;
         }
         return appId;
     }
@@ -58,7 +58,7 @@ public class LoginUtil {
      * @return
      */
     public static boolean checkIsMoYuAuthApp(String appId) {
-        return MoYuAuthLoginConstant.DEFAULT_APP_ID.equals(appId);
+        return MoYuOAuthConstant.DEFAULT_APP_ID.equals(appId);
     }
 
     /**
@@ -82,9 +82,9 @@ public class LoginUtil {
                 session.removeAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
                 return authenticationException.getMessage();
             }
-            Object loginErrorMsg = session.getAttribute(MoYuAuthLoginConstant.LOGIN_ERROR_MESSAGE);
+            Object loginErrorMsg = session.getAttribute(MoYuOAuthConstant.LOGIN_ERROR_MESSAGE);
             if (Objects.nonNull(loginErrorMsg)) {
-                session.removeAttribute(MoYuAuthLoginConstant.LOGIN_ERROR_MESSAGE);
+                session.removeAttribute(MoYuOAuthConstant.LOGIN_ERROR_MESSAGE);
                 return (String) loginErrorMsg;
             }
         }
@@ -103,6 +103,6 @@ public class LoginUtil {
         if (StringUtils.isBlank(errorMessage)) {
             return;
         }
-        session.setAttribute(MoYuAuthLoginConstant.LOGIN_ERROR_MESSAGE, errorMessage);
+        session.setAttribute(MoYuOAuthConstant.LOGIN_ERROR_MESSAGE, errorMessage);
     }
 }

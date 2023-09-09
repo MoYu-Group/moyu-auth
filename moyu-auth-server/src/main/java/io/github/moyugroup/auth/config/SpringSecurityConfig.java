@@ -1,7 +1,8 @@
 package io.github.moyugroup.auth.config;
 
-import io.github.moyugroup.auth.handler.MoYuAuthSuccessHandler;
-import io.github.moyugroup.auth.handler.MoYuLogoutSuccessHandler;
+import io.github.moyugroup.auth.constant.MoYuOAuthConstant;
+import io.github.moyugroup.auth.handler.MoYuServerAuthSuccessHandler;
+import io.github.moyugroup.auth.handler.MoYuServerLogoutSuccessHandler;
 import io.github.moyugroup.auth.service.AppService;
 import io.github.moyugroup.auth.service.LoginCacheService;
 import org.springframework.context.annotation.Bean;
@@ -28,10 +29,6 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @EnableWebSecurity
 public class SpringSecurityConfig {
 
-    private static final String LOGIN_PAGE_URL = "/ssoLogin.html";
-    private static final String LOGIN_PAGE_API = "/ssoLogin";
-    private static final String LOGIN_OUT_API = "/ssoLogout";
-
     /**
      * 用于身份验证的 Spring Security 过滤器链
      *
@@ -45,7 +42,9 @@ public class SpringSecurityConfig {
                                                           HttpSessionRequestCache httpSessionRequestCache,
                                                           SessionRegistry sessionRegistry,
                                                           AppService appService,
-                                                          MoYuAuthSuccessHandler moYuAuthSuccessHandler) throws Exception {
+                                                          MoYuServerAuthSuccessHandler moYuServerAuthSuccessHandler,
+                                                          MoYuServerLogoutSuccessHandler moYuServerLogoutSuccessHandler
+    ) throws Exception {
         http
                 .authorizeHttpRequests((authorize) ->
                         // 不需要登录的端点和资源
@@ -57,22 +56,24 @@ public class SpringSecurityConfig {
                                         new AntPathRequestMatcher("/error"),
                                         new AntPathRequestMatcher("/health"),
                                         new AntPathRequestMatcher("/logged-out"),
-                                        new AntPathRequestMatcher(LOGIN_PAGE_URL),
-                                        new AntPathRequestMatcher(LOGIN_PAGE_API)).permitAll()
+                                        new AntPathRequestMatcher(MoYuOAuthConstant.LOGIN_PAGE_PATH),
+                                        new AntPathRequestMatcher(MoYuOAuthConstant.LOGIN_ENDPOINT)
+                                ).permitAll()
                                 // 其他资源都需要登录
                                 .anyRequest().authenticated())
                 .csrf(csrf -> csrf.disable())
                 // 自定义登录页
                 .formLogin(form -> form
-                        .loginPage(LOGIN_PAGE_URL)
-                        .failureUrl(LOGIN_PAGE_URL)
+                        .loginPage(MoYuOAuthConstant.LOGIN_PAGE_PATH)
+                        .failureUrl(MoYuOAuthConstant.LOGIN_PAGE_PATH)
                 )
                 // 自定义注销登录页
                 .logout(logout -> logout
-                        .logoutUrl(LOGIN_OUT_API)
-                        .logoutSuccessHandler(new MoYuLogoutSuccessHandler(LOGIN_PAGE_URL))
+                        .logoutUrl(MoYuOAuthConstant.LOGIN_OUT_ENDPOINT)
+                        .logoutSuccessHandler(moYuServerLogoutSuccessHandler)
                 )
                 // rememberMe token 24h 失效
+                // TODO 服务端通过 token 刷新 session 后未更新 SessionRegistry 信息
                 .rememberMe(config -> config
                         .alwaysRemember(true)
                         .tokenValiditySeconds(60 * 60 * 24)
@@ -83,15 +84,20 @@ public class SpringSecurityConfig {
                 .sessionManagement(session -> session
                         .maximumSessions(1)
                         .sessionRegistry(sessionRegistry)
-                        .expiredUrl(LOGIN_PAGE_URL)
+                        .expiredUrl(MoYuOAuthConstant.LOGIN_PAGE_PATH)
                 )
                 .apply(new MoYuAuthServerConfigurer<>(
-                        LOGIN_PAGE_API,
-                        LOGIN_PAGE_URL,
+                        MoYuOAuthConstant.LOGIN_ENDPOINT,
+                        MoYuOAuthConstant.LOGIN_PAGE_PATH,
                         appService,
-                        moYuAuthSuccessHandler));
+                        moYuServerAuthSuccessHandler));
         ;
         return http.build();
+    }
+
+    @Bean
+    public MoYuServerLogoutSuccessHandler moYuServerLogoutSuccessHandler(LoginCacheService loginCacheService) {
+        return new MoYuServerLogoutSuccessHandler(loginCacheService);
     }
 
     /**
@@ -101,8 +107,8 @@ public class SpringSecurityConfig {
      * @return
      */
     @Bean
-    public MoYuAuthSuccessHandler moYuAuthSuccessHandlerInit(LoginCacheService loginCacheService) {
-        return new MoYuAuthSuccessHandler(loginCacheService);
+    public MoYuServerAuthSuccessHandler moYuAuthSuccessHandlerInit(LoginCacheService loginCacheService) {
+        return new MoYuServerAuthSuccessHandler(loginCacheService);
     }
 
     /**
@@ -115,6 +121,7 @@ public class SpringSecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+    // TODO 登录过滤器暂时没用到这个
     @Bean
     public HttpSessionRequestCache httpSessionRequestCache() {
         HttpSessionRequestCache requestCache = new HttpSessionRequestCache();

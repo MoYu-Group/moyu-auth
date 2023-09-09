@@ -1,7 +1,7 @@
 package io.github.moyugroup.auth.demo.filter;
 
 import io.github.moyugroup.auth.demo.config.MoYuAuthClientProperties;
-import io.github.moyugroup.auth.demo.config.MoYuAuthConstant;
+import io.github.moyugroup.auth.demo.config.MoYuOAuthConstant;
 import io.github.moyugroup.auth.demo.constant.enums.GrantTypeEnum;
 import io.github.moyugroup.auth.demo.pojo.vo.OAuth2UserVO;
 import io.github.moyugroup.auth.demo.util.OAuth2HttpUtil;
@@ -29,7 +29,7 @@ public class MoYuClientAuthenticationFilter extends AbstractAuthenticationProces
     /**
      * 授权回调地址
      */
-    private static final AntPathRequestMatcher DEFAULT_ANT_PATH_REQUEST_MATCHER = new AntPathRequestMatcher(MoYuAuthConstant.OAUTH2_ENDPOINT, HttpMethod.GET.name());
+    private static final AntPathRequestMatcher DEFAULT_ANT_PATH_REQUEST_MATCHER = new AntPathRequestMatcher(MoYuOAuthConstant.OAUTH2_ENDPOINT, HttpMethod.GET.name());
     private final MoYuAuthClientProperties moYuAuthClientProperties;
 
     public MoYuClientAuthenticationFilter(MoYuAuthClientProperties moYuAuthClientProperties) {
@@ -48,6 +48,7 @@ public class MoYuClientAuthenticationFilter extends AbstractAuthenticationProces
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) {
         String ssoToken = getSSOToken(request);
         log.info("attemptAuthentication ssoToken:{}", ssoToken);
+        saveSsoToken(request, ssoToken);
         // 通过 SSO_TOKEN 向 MoYu-Auth 获取登陆用户信息
         OAuth2UserVO loginUserByAccessToken = OAuth2HttpUtil.getLoginUserByAccessToken(getAccessTokenUrl(), moYuAuthClientProperties.getAppId(),
                 moYuAuthClientProperties.getAppSecret(), GrantTypeEnum.AUTHORIZATION_CODE.getCode(), ssoToken);
@@ -57,14 +58,29 @@ public class MoYuClientAuthenticationFilter extends AbstractAuthenticationProces
         return authenticated;
     }
 
+    /**
+     * 保存通过 SSO 登录获取的 ssoToken
+     *
+     * @param request
+     */
+    private void saveSsoToken(HttpServletRequest request, String ssoToken) {
+        request.setAttribute(MoYuOAuthConstant.REQUEST_SSO_TOKEN_FIELD_NAME, ssoToken);
+    }
+
+    /**
+     * 获取 MoYu-OAuth 服务器 AccessToken 校验地址
+     * TODO 应用初始化时从服务器拉取对应信息
+     *
+     * @return
+     */
     private String getAccessTokenUrl() {
-        return moYuAuthClientProperties.getServerUrl() + MoYuAuthConstant.OAUTH2_ACCESS_TOKEN_ENDPOINT;
+        return moYuAuthClientProperties.getServerUrl() + MoYuOAuthConstant.OAUTH2_ACCESS_TOKEN_ENDPOINT;
     }
 
     private String getSSOToken(HttpServletRequest request) {
-        String ssoToken = request.getParameter(MoYuAuthConstant.SSO_TOKEN_PARAM);
+        String ssoToken = request.getParameter(MoYuOAuthConstant.SSO_TOKEN_PARAM);
         if (StringUtils.isBlank(ssoToken)) {
-            throw new AssertException("SSO_TOKEN 不能为空");
+            throw new AssertException("ssoToken 不能为空");
         }
         return ssoToken.trim();
     }
@@ -80,6 +96,5 @@ public class MoYuClientAuthenticationFilter extends AbstractAuthenticationProces
     protected void setDetails(HttpServletRequest request, UsernamePasswordAuthenticationToken authRequest) {
         authRequest.setDetails(this.authenticationDetailsSource.buildDetails(request));
     }
-
 
 }

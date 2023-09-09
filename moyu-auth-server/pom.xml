@@ -18,10 +18,15 @@
             <groupId>io.github.moyu-group.moyu-framework</groupId>
             <artifactId>moyu-web-autoconfiguers</artifactId>
         </dependency>
-        <!-- spring authorization server -->
+        <!-- spring security -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-oauth2-authorization-server</artifactId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>okhttp</artifactId>
+            <version>4.11.0</version>
         </dependency>
     </dependencies>
 

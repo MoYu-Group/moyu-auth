@@ -5,11 +5,11 @@ import cn.hutool.core.net.url.UrlPath;
 import cn.hutool.core.net.url.UrlQuery;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.json.JSONUtil;
-import io.github.moyugroup.auth.constant.MoYuAuthLoginConstant;
+import io.github.moyugroup.auth.constant.MoYuOAuthConstant;
 import io.github.moyugroup.auth.pojo.bo.UserLoginAppBO;
 import io.github.moyugroup.auth.pojo.vo.AppVO;
+import io.github.moyugroup.auth.pojo.vo.LoginUserVO;
 import io.github.moyugroup.auth.pojo.vo.OAuth2UserVO;
-import io.github.moyugroup.auth.pojo.vo.UserVO;
 import io.github.moyugroup.auth.service.LoginCacheService;
 import io.github.moyugroup.auth.util.LoginUtil;
 import io.github.moyugroup.enums.ErrorCodeEnum;
@@ -21,8 +21,8 @@ import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.WebAttributes;
@@ -35,18 +35,23 @@ import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
 /**
- * MoYu-Auth 登录中心，登录成功后的统一处理
+ * MoYu-Auth 登录中心服务端，登录成功后统一处理器
  * <p>
  * Created by fanfan on 2023/09/03.
  */
 @Slf4j
-public class MoYuAuthSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
+public class MoYuServerAuthSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
     private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 
     private LoginCacheService loginCacheService;
 
-    public MoYuAuthSuccessHandler(LoginCacheService loginCacheService) {
+    /**
+     * 构造，用于注入 LoginCacheService
+     *
+     * @param loginCacheService
+     */
+    public MoYuServerAuthSuccessHandler(LoginCacheService loginCacheService) {
         this.loginCacheService = loginCacheService;
     }
 
@@ -69,6 +74,7 @@ public class MoYuAuthSuccessHandler extends SimpleUrlAuthenticationSuccessHandle
         // 一方应用，不进行 OAuth 登录
         if (LoginUtil.checkIsMoYuAuthApp(appVO.getAppId())) {
             handle(request, response, authentication);
+            return;
         }
         // 二方应用，进行 OAuth 登录流程
         // 获取用户信息
@@ -87,7 +93,7 @@ public class MoYuAuthSuccessHandler extends SimpleUrlAuthenticationSuccessHandle
     }
 
     private String getBackUrl(HttpServletRequest request) {
-        return request.getParameter(MoYuAuthLoginConstant.BACK_URL_PARAM);
+        return request.getParameter(MoYuOAuthConstant.BACK_URL_PARAM);
     }
 
     /**
@@ -101,15 +107,15 @@ public class MoYuAuthSuccessHandler extends SimpleUrlAuthenticationSuccessHandle
         UserLoginAppBO userLoginAppBO = new UserLoginAppBO();
         userLoginAppBO.setAppId(appVO.getAppId());
         userLoginAppBO.setAppUrl(appVO.getAppUrl());
-        userLoginAppBO.setLogoutCallbackUrl(appVO.getSsoCallbackPath());
+        userLoginAppBO.setLogoutCallbackPath(appVO.getSsoCallbackPath());
         userLoginAppBO.setSsoToken(ssoToken);
         return userLoginAppBO;
     }
 
     private OAuth2UserVO getOAuthUserVO(Authentication authentication) {
-        UserVO userVO = (UserVO) authentication.getPrincipal();
+        LoginUserVO loginUserVO = (LoginUserVO) authentication.getPrincipal();
         OAuth2UserVO oAuth2UserVO = new OAuth2UserVO();
-        BeanUtils.copyProperties(userVO, oAuth2UserVO);
+        BeanUtils.copyProperties(loginUserVO, oAuth2UserVO);
         return oAuth2UserVO;
     }
 
@@ -126,7 +132,7 @@ public class MoYuAuthSuccessHandler extends SimpleUrlAuthenticationSuccessHandle
         String ssoCallBackUrl = appVO.getSsoCallbackPath();
         if (StringUtils.isBlank(ssoCallBackUrl)) {
             // 未指定回调路径，使用默认回调地址
-            callBackUrlBuilder.setPath(UrlPath.of(MoYuAuthLoginConstant.SSO_CALLBACK_PATH, Charset.defaultCharset()));
+            callBackUrlBuilder.setPath(UrlPath.of(MoYuOAuthConstant.SSO_CALLBACK_PATH, Charset.defaultCharset()));
         } else {
             // 指定路径回调
             callBackUrlBuilder.setPath(UrlPath.of(ssoCallBackUrl, Charset.defaultCharset()));
@@ -134,10 +140,10 @@ public class MoYuAuthSuccessHandler extends SimpleUrlAuthenticationSuccessHandle
 
         UrlQuery urlQuery = new UrlQuery();
         // 添加 ssoToken 参数
-        urlQuery.add(MoYuAuthLoginConstant.SSO_TOKEN_PARAM, ssoToken);
+        urlQuery.add(MoYuOAuthConstant.SSO_TOKEN_PARAM, ssoToken);
         if (StringUtils.isNotBlank(backUrl)) {
             // 添加 backUrl 参数
-            urlQuery.add(MoYuAuthLoginConstant.BACK_URL_PARAM, URLEncoder.encode(backUrl, StandardCharsets.UTF_8));
+            urlQuery.add(MoYuOAuthConstant.BACK_URL_PARAM, URLEncoder.encode(backUrl, StandardCharsets.UTF_8));
         }
 
         // 构建sso回调地址并返回
@@ -146,9 +152,9 @@ public class MoYuAuthSuccessHandler extends SimpleUrlAuthenticationSuccessHandle
 
 
     private AppVO getAppVO(HttpServletRequest request) {
-        Object appInfoObj = request.getAttribute(MoYuAuthLoginConstant.REQUEST_APP_INFO);
+        Object appInfoObj = request.getAttribute(MoYuOAuthConstant.REQUEST_APP_INFO);
         if (Objects.isNull(appInfoObj)) {
-            throw new OAuth2AuthenticationException("App Request Cache do not exists");
+            throw new BadCredentialsException("App Request Cache do not exists");
         }
         return (AppVO) appInfoObj;
     }

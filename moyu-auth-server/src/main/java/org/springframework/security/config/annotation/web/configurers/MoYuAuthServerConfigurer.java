@@ -1,7 +1,7 @@
 package org.springframework.security.config.annotation.web.configurers;
 
 import io.github.moyugroup.auth.filter.MoYuServerAuthenticationFilter;
-import io.github.moyugroup.auth.handler.MoYuAuthSuccessHandler;
+import io.github.moyugroup.auth.handler.MoYuServerAuthSuccessHandler;
 import io.github.moyugroup.auth.service.AppService;
 import io.github.moyugroup.auth.strategy.MoYuAuthRedirectStrategy;
 import jakarta.servlet.http.HttpServletRequest;
@@ -36,7 +36,7 @@ public class MoYuAuthServerConfigurer<H extends HttpSecurityBuilder<H>> extends 
     /**
      * 登录成功处理器
      */
-    private MoYuAuthSuccessHandler moYuAuthSuccessHandler;
+    private MoYuServerAuthSuccessHandler moYuServerAuthSuccessHandler;
     /**
      * 认证失败处理器
      */
@@ -53,11 +53,11 @@ public class MoYuAuthServerConfigurer<H extends HttpSecurityBuilder<H>> extends 
     /**
      * 无参构造，初始化过滤器
      */
-    public MoYuAuthServerConfigurer(String loginEndPoint, String loginUrl, AppService appService, MoYuAuthSuccessHandler moYuAuthSuccessHandler) {
+    public MoYuAuthServerConfigurer(String loginEndPoint, String loginUrl, AppService appService, MoYuServerAuthSuccessHandler moYuServerAuthSuccessHandler) {
         this.failureHandler = getFailureHandler(loginUrl);
         this.authenticationEntryPoint = new LoginUrlAuthenticationEntryPoint(loginEndPoint);
         this.authFilter = new MoYuServerAuthenticationFilter(loginEndPoint, appService);
-        this.moYuAuthSuccessHandler = moYuAuthSuccessHandler;
+        this.moYuServerAuthSuccessHandler = moYuServerAuthSuccessHandler;
     }
 
     private AuthenticationFailureHandler getFailureHandler(String loginUrl) {
@@ -116,7 +116,7 @@ public class MoYuAuthServerConfigurer<H extends HttpSecurityBuilder<H>> extends 
             this.authenticationEntryPoint.setPortMapper(portMapper);
         }
         this.authFilter.setAuthenticationManager(http.getSharedObject(AuthenticationManager.class));
-        this.authFilter.setAuthenticationSuccessHandler(moYuAuthSuccessHandler);
+        this.authFilter.setAuthenticationSuccessHandler(moYuServerAuthSuccessHandler);
         this.authFilter.setAuthenticationFailureHandler(this.failureHandler);
         if (this.authenticationDetailsSource != null) {
             this.authFilter.setAuthenticationDetailsSource(this.authenticationDetailsSource);

@@ -1,16 +1,16 @@
-package io.github.moyugroup.auth.demo.util;
+package io.github.moyugroup.auth.util;
 
 import cn.hutool.json.JSONObject;
-import cn.hutool.json.JSONUtil;
-import io.github.moyugroup.auth.demo.config.MoYuOAuthConstant;
-import io.github.moyugroup.auth.demo.pojo.vo.OAuth2UserVO;
+import io.github.moyugroup.auth.constant.MoYuOAuthConstant;
 import io.github.moyugroup.enums.ErrorCodeEnum;
 import io.github.moyugroup.exception.BizException;
-import io.github.moyugroup.util.AssertUtil;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.OkHttpClient;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.http.client.OkHttp3ClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
@@ -45,39 +45,23 @@ public class OAuth2HttpUtil {
     }
 
     /**
-     * 通过 ssoToken 请求 MoYu-Auth 获取登录用户信息
+     * 通知应用用户注销
      *
-     * @param appId
-     * @param appSecret
-     * @param grantType
+     * @param url
      * @param ssoToken
-     * @return
      */
-    public static OAuth2UserVO getLoginUserByAccessToken(String url, String appId, String appSecret, String grantType, String ssoToken) {
-        if (StringUtils.isAnyBlank(url, appId, appSecret, grantType, ssoToken)) {
+    public static void notifyAppUserLogoutByToken(String url, String ssoToken) {
+        if (StringUtils.isAnyBlank(url, ssoToken)) {
             throw new BizException(ErrorCodeEnum.REQUEST_REQUIRED_PARAMETER_IS_EMPTY);
         }
         JSONObject param = new JSONObject();
-        param.set(MoYuOAuthConstant.APP_ID_PARAM, appId);
-        param.set(MoYuOAuthConstant.APP_SECRET_PARAM, appSecret);
-        param.set(MoYuOAuthConstant.GRANT_TYPE_PARAM, grantType);
         param.set(MoYuOAuthConstant.SSO_TOKEN_PARAM, ssoToken);
-        ResponseEntity<JSONObject> response = sendPostHttpRequest(url, param);
-        if (HttpStatus.OK == response.getStatusCode()) {
-            JSONObject body = response.getBody();
-            AssertUtil.notNull(body, "OAuth2 Server Request Error");
-            Boolean success = body.getBool("success");
-            if (!success) {
-                throw new BizException(ErrorCodeEnum.OAUTH_SERVICE_ERROR.getCode(), body.getStr("message"));
-            }
-            JSONObject content = body.getJSONObject("content");
-            return JSONUtil.toBean(content, OAuth2UserVO.class);
-        }
-        throw new BizException(ErrorCodeEnum.OAUTH_SERVICE_ERROR);
+        sendPostHttpRequest(url, param);
     }
 
     /**
      * 发送 Http Post 请求
+     * TODO 发送异步请求
      *
      * @param url
      * @param param
@@ -88,8 +72,9 @@ public class OAuth2HttpUtil {
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<?> requestEntity = new HttpEntity<>(param.toString(), headers);
         log.info("OAuth2 Server Request Url:{} Param:{}", url, param);
-        ResponseEntity<JSONObject> response = restTemplate.postForEntity(url, requestEntity, JSONObject.class);
-        log.info("OAuth2 Server Response code:{} body:{}", response.getStatusCode(), response.getBody());
-        return response;
+        ResponseEntity<Object> response = restTemplate.postForEntity(url, requestEntity, Object.class);
+//        log.info("OAuth2 Server Response code:{} body:{}", response.getStatusCode(), response.getBody());
+//        return response;
+        return null;
     }
 }
