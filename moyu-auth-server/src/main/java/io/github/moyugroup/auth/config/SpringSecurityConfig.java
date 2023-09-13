@@ -1,12 +1,14 @@
 package io.github.moyugroup.auth.config;
 
 import io.github.moyugroup.auth.constant.MoYuOAuthConstant;
+import io.github.moyugroup.auth.handler.MoYuAuthenticationEntryPoint;
 import io.github.moyugroup.auth.handler.MoYuServerAuthSuccessHandler;
 import io.github.moyugroup.auth.handler.MoYuServerLogoutSuccessHandler;
 import io.github.moyugroup.auth.service.AppService;
 import io.github.moyugroup.auth.service.LoginCacheService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.MoYuAuthServerConfigurer;
@@ -27,6 +29,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
  */
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 public class SpringSecurityConfig {
 
     /**
@@ -86,12 +89,15 @@ public class SpringSecurityConfig {
                         .sessionRegistry(sessionRegistry)
                         .expiredUrl(MoYuOAuthConstant.LOGIN_PAGE_PATH)
                 )
+                // 异常处理
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint(new MoYuAuthenticationEntryPoint(MoYuOAuthConstant.LOGIN_PAGE_PATH))
+                )
                 .apply(new MoYuAuthServerConfigurer<>(
                         MoYuOAuthConstant.LOGIN_ENDPOINT,
                         MoYuOAuthConstant.LOGIN_PAGE_PATH,
                         appService,
                         moYuServerAuthSuccessHandler));
-        ;
         return http.build();
     }
 

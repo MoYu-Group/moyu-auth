@@ -2,13 +2,12 @@ package io.github.moyugroup.auth.demo.handler;
 
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.moyugroup.auth.demo.config.MoYuOAuthConstant;
 import io.github.moyugroup.auth.demo.service.LoginCacheService;
 import io.github.moyugroup.base.model.pojo.Result;
 import io.github.moyugroup.enums.ErrorCodeEnum;
 import io.github.moyugroup.util.AssertUtil;
-import io.github.moyugroup.web.util.TraceIdMdcUtil;
+import io.github.moyugroup.web.util.WebUtil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -36,8 +35,6 @@ public class MoYuClientLogoutSuccessHandler extends SimpleUrlLogoutSuccessHandle
     private final LoginCacheService loginCacheService;
 
     private final SessionRegistry sessionRegistry;
-
-    private final ObjectMapper objectMapper = new ObjectMapper();
 
     /**
      * 构造，用于注入 LoginCacheService
@@ -69,38 +66,10 @@ public class MoYuClientLogoutSuccessHandler extends SimpleUrlLogoutSuccessHandle
                 sessionInformation.expireNow();
                 log.info("onLogoutSuccess ssoToken:{} sessionId:{} 已经退出登录", ssoToken, sessionIdBySsoToken);
             }
-            buildJsonResponse(request, response, Result.success());
+            WebUtil.writeJsonResponse(Result.success());
         } catch (Exception ex) {
             Result<String> fail = Result.fail(ErrorCodeEnum.USER_REQUEST_PARAMETER_ERROR.getCode(), ex.getMessage(), null);
-            buildJsonResponse(request, response, fail);
-        }
-    }
-
-    /**
-     * 生成 json 返回值
-     */
-    private void buildJsonResponse(HttpServletRequest request, HttpServletResponse response, Result<?> result) {
-        fillTraceId(result, request);
-        response.setCharacterEncoding("UTF-8");
-        response.setContentType("application/json;charset=UTF-8");
-        response.setStatus(HttpServletResponse.SC_OK);
-        try {
-            response.getWriter().println(objectMapper.writeValueAsString(result));
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    /**
-     * 填充返回值中的 TraceId
-     *
-     * @param result
-     * @param request
-     */
-    private void fillTraceId(Result<?> result, HttpServletRequest request) {
-        Object traceId = request.getAttribute(TraceIdMdcUtil.TRACE_ID);
-        if (Objects.nonNull(traceId)) {
-            result.setTraceId((String) traceId);
+            WebUtil.writeJsonResponse(fail);
         }
     }
 

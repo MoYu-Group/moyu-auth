@@ -28,11 +28,10 @@ public class MoyuLoginUrlAuthenticationEntryPoint extends LoginUrlAuthentication
     /**
      * 构造方法
      *
-     * @param loginFormUrl
      * @param moYuAuthClientProperties
      */
-    public MoyuLoginUrlAuthenticationEntryPoint(String loginFormUrl, MoYuAuthClientProperties moYuAuthClientProperties) {
-        super(loginFormUrl);
+    public MoyuLoginUrlAuthenticationEntryPoint(MoYuAuthClientProperties moYuAuthClientProperties) {
+        super(moYuAuthClientProperties.getServerUrl());
         this.moYuAuthClientProperties = moYuAuthClientProperties;
     }
 

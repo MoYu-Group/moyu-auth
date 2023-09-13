@@ -172,7 +172,7 @@ public class MoYuAuthClientConfigurer<H extends HttpSecurityBuilder<H>> extends 
      */
     private void setLoginPage() {
         this.loginUrl = moYuAuthClientProperties.getServerUrl();
-        this.authenticationEntryPoint = new MoyuLoginUrlAuthenticationEntryPoint(loginUrl, moYuAuthClientProperties);
+        this.authenticationEntryPoint = new MoyuLoginUrlAuthenticationEntryPoint(moYuAuthClientProperties);
     }
 
 }

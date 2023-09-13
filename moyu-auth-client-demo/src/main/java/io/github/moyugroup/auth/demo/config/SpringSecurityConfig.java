@@ -1,5 +1,6 @@
 package io.github.moyugroup.auth.demo.config;
 
+import io.github.moyugroup.auth.demo.handler.MoYuAuthenticationEntryPoint;
 import io.github.moyugroup.auth.demo.handler.MoYuClientAuthSuccessHandler;
 import io.github.moyugroup.auth.demo.handler.MoYuClientLogoutSuccessHandler;
 import io.github.moyugroup.auth.demo.service.LoginCacheService;
@@ -70,6 +71,10 @@ public class SpringSecurityConfig {
                         // session 失效后跳转的页面，待优化，TODO 应该跳转到登录页，附带 backUrl
                         .expiredUrl("/")
                 )
+                // 异常处理
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint(new MoYuAuthenticationEntryPoint(moYuAuthClientProperties))
+                )
                 // MoYu 认证配置
                 .apply(new MoYuAuthClientConfigurer<>(moYuAuthClientProperties, moYuClientAuthSuccessHandler))
         ;
@@ -82,7 +87,7 @@ public class SpringSecurityConfig {
     }
 
     @Bean
-    public MoYuClientLogoutSuccessHandler moYuClientLogoutSuccessHandler(LoginCacheService loginCacheService, SessionRegistry sessionRegistry) {
+    public MoYuClientLogoutSuccessHandler moYuClientLogoutSuccessHandlerInit(LoginCacheService loginCacheService, SessionRegistry sessionRegistry) {
         return new MoYuClientLogoutSuccessHandler(loginCacheService, sessionRegistry);
     }
 

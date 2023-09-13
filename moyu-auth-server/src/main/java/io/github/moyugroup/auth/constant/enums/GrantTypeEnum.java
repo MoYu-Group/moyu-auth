@@ -14,7 +14,7 @@ public enum GrantTypeEnum {
 
     AUTHORIZATION_CODE("authorization_code");
 
-    private String code;
+    private final String code;
 
     GrantTypeEnum(String code) {
         this.code = code;
