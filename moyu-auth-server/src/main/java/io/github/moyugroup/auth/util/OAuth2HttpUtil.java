@@ -72,9 +72,8 @@ public class OAuth2HttpUtil {
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<?> requestEntity = new HttpEntity<>(param.toString(), headers);
         log.info("OAuth2 Server Request Url:{} Param:{}", url, param);
-        ResponseEntity<Object> response = restTemplate.postForEntity(url, requestEntity, Object.class);
-//        log.info("OAuth2 Server Response code:{} body:{}", response.getStatusCode(), response.getBody());
-//        return response;
-        return null;
+        ResponseEntity<JSONObject> response = restTemplate.postForEntity(url, requestEntity, JSONObject.class);
+        log.info("OAuth2 Server Response code:{} body:{}", response.getStatusCode(), response.getBody());
+        return response;
     }
 }

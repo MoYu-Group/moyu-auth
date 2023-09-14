@@ -13,6 +13,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.web.DefaultRedirectStrategy;
+import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.authentication.logout.SimpleUrlLogoutSuccessHandler;
 import org.springframework.util.CollectionUtils;
 
@@ -30,6 +32,8 @@ import java.util.Objects;
 public class MoYuServerLogoutSuccessHandler extends SimpleUrlLogoutSuccessHandler {
 
     private LoginCacheService loginCacheService;
+
+    private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 
     /**
      * 构造，用于注入 LoginCacheService
@@ -65,9 +69,31 @@ public class MoYuServerLogoutSuccessHandler extends SimpleUrlLogoutSuccessHandle
                 loginCacheService.removeUserLoginApp(userId);
             }
         }
-        super.onLogoutSuccess(request, response, authentication);
+        String backUrl = getBackUrl(request);
+        if (StringUtils.isBlank(backUrl)) {
+            // 注销回调地址不存在，跳转到默认跳转地址
+            super.onLogoutSuccess(request, response, authentication);
+        }
+        // 注销回调地址存在，跳转到回调地址
+        this.redirectStrategy.sendRedirect(request, response, backUrl);
     }
 
+    /**
+     * 获取注销回调地址
+     *
+     * @param request
+     * @return
+     */
+    private String getBackUrl(HttpServletRequest request) {
+        return request.getParameter(MoYuOAuthConstant.BACK_URL_PARAM);
+    }
+
+    /**
+     * 向应用发送用户注销通知
+     *
+     * @param url      应用注销通知地址
+     * @param ssoToken
+     */
     private void sendNotifyAppUserLogoutByToken(String url, String ssoToken) {
         try {
             OAuth2HttpUtil.notifyAppUserLogoutByToken(url, ssoToken);
