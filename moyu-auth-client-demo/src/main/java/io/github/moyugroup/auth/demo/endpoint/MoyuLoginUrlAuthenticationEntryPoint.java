@@ -37,6 +37,7 @@ public class MoyuLoginUrlAuthenticationEntryPoint extends LoginUrlAuthentication
 
     /**
      * 登录重定向地址重写
+     * 这里重写登录地址到 SSO 登录页面，并附带上应用ID和回调地址参数
      *
      * @param request   the request
      * @param response  the response
@@ -57,7 +58,7 @@ public class MoyuLoginUrlAuthenticationEntryPoint extends LoginUrlAuthentication
                 urlQuery.add(MoYuOAuthConstant.BACK_URL_PARAM, URLEncoder.encode(requestURL, StandardCharsets.UTF_8));
             }
         }
-        return loginUrl + MoYuOAuthConstant.LOGIN_IN_URL + "?" + urlQuery;
+        return loginUrl + MoYuOAuthConstant.LOGIN_URL + "?" + urlQuery;
     }
 
 }

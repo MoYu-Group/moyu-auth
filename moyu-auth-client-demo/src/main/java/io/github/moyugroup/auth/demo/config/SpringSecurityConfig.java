@@ -59,7 +59,7 @@ public class SpringSecurityConfig {
                 .csrf(x -> x.disable())
                 // 自定义应用注销配置
                 .logout(logout -> logout
-                        .logoutUrl(MoYuOAuthConstant.LOGIN_OUT_ENDPOINT)
+                        .logoutUrl(MoYuOAuthConstant.LOGOUT_ENDPOINT)
                         .logoutSuccessUrl("/")
                         .logoutSuccessHandler(moYuClientLogoutSuccessHandler)
                 )

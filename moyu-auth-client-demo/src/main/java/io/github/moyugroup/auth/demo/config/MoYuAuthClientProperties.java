@@ -22,7 +22,7 @@ public class MoYuAuthClientProperties {
      */
     private String appSecret;
     /**
-     * 授权服务器地址
+     * 登录授权服务器地址
      */
     private String serverUrl;
 }
