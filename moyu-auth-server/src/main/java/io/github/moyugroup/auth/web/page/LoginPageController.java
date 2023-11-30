@@ -1,24 +1,17 @@
 package io.github.moyugroup.auth.web.page;
 
 import io.github.moyugroup.auth.constant.MoYuOAuthConstant;
-import io.github.moyugroup.auth.handler.MoYuServerAuthSuccessHandler;
 import io.github.moyugroup.auth.pojo.vo.AppVO;
 import io.github.moyugroup.auth.service.AppService;
 import io.github.moyugroup.auth.util.LoginUtil;
 import jakarta.annotation.Resource;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-
-import java.io.IOException;
-import java.util.Objects;
 
 /**
  * 登录相关端点
@@ -32,8 +25,6 @@ public class LoginPageController {
     @Resource
     private AppService appService;
 
-    @Resource
-    private MoYuServerAuthSuccessHandler moYuServerAuthSuccessHandler;
 
     /**
      * 登录页渲染
@@ -41,14 +32,8 @@ public class LoginPageController {
      * @return
      */
     @RequestMapping(value = "/ssoLogin.html", method = {RequestMethod.GET, RequestMethod.POST})
-    public String login(Model model, HttpServletRequest request, HttpServletResponse response,
-                        Authentication authentication) throws ServletException, IOException {
+    public String login(Model model, HttpServletRequest request, HttpServletResponse response) {
         checkAppInfo(request);
-        if (Objects.nonNull(authentication) && StringUtils.isBlank(LoginUtil.getLoginErrorMessage(request))) {
-            log.info("用户：{} 已登录，直接走免登流程", authentication.getName());
-            moYuServerAuthSuccessHandler.onAuthenticationSuccess(request, response, authentication);
-            return null;
-        }
         fillPageHideParam(model, request);
         return "ssoLogin";
     }
