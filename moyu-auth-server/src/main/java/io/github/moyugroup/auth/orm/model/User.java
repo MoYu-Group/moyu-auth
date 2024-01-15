@@ -8,6 +8,8 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.time.LocalDateTime;
 
@@ -20,6 +22,8 @@ import java.time.LocalDateTime;
 @Getter
 @Entity
 @Table(name = "`user`")
+@SQLRestriction(value = "is_deleted = false")
+@SQLDelete(sql = "UPDATE \"user\" SET is_deleted = true WHERE id = ?")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class User extends DeletableEntity {
 
