@@ -1,5 +1,6 @@
 package io.github.moyugroup.auth.constant.enums;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.github.moyugroup.base.model.enums.BaseEnum;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -11,6 +12,7 @@ import lombok.experimental.FieldDefaults;
  * Created by fanfan on 2024/01/16.
  */
 @AllArgsConstructor
+@JsonFormat(shape = JsonFormat.Shape.OBJECT)
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public enum UserStatusEnum implements BaseEnum {
 
