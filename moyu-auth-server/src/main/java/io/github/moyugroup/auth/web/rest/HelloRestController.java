@@ -1,6 +1,7 @@
 package io.github.moyugroup.auth.web.rest;
 
 import cn.hutool.json.JSONUtil;
+import io.github.moyugroup.auth.constant.enums.UserStatusEnum;
 import io.github.moyugroup.auth.orm.model.User;
 import io.github.moyugroup.auth.orm.repository.UserRepository;
 import jakarta.annotation.Resource;
@@ -31,14 +32,10 @@ public class HelloRestController {
         user.setUserId("user001");
         user.setUsername("noisky1");
         user.setPassword("passss");
+        user.setUserStatus(UserStatusEnum.ACTIVE);
         User save = userRepository.saveAndFlush(user);
         log.info("save user:{}", JSONUtil.toJsonStr(save));
-        User referenceById = userRepository.getReferenceById(save.getId());
-        log.info("referenceById user:{}", JSONUtil.toJsonStr(referenceById));
-        referenceById.setEmail("1231");
-        userRepository.delete(referenceById);
-        User referenceById1 = userRepository.getReferenceById(save.getId());
-        return referenceById1;
+        return save;
     }
 
     @GetMapping("hello")

@@ -1,9 +1,8 @@
 package io.github.moyugroup.auth.orm.model;
 
+import io.github.moyugroup.auth.constant.enums.UserStatusEnum;
 import io.github.moyugroup.spring.data.jpa.model.DeletableEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -60,7 +59,9 @@ public class User extends DeletableEntity {
     /**
      * 用户状态
      */
-    String userStatus;
+    @Enumerated(EnumType.STRING)
+    @Column(length = 64)
+    UserStatusEnum userStatus;
     /**
      * 最后登录时间
      */

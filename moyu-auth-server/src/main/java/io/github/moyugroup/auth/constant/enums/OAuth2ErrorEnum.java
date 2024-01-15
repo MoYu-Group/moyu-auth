@@ -3,12 +3,17 @@ package io.github.moyugroup.auth.constant.enums;
 import io.github.moyugroup.base.model.enums.ExceptionEnum;
 import io.github.moyugroup.base.model.enums.ExceptionLevel;
 import io.github.moyugroup.enums.ErrorCodeEnum;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
 
 import java.util.Objects;
 
 /**
+ * OAuth 异常枚举
+ * <p>
  * Created by fanfan on 2023/09/06.
  */
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public enum OAuth2ErrorEnum implements ExceptionEnum {
     APP_NOT_FOUND("A1100", "应用信息校验失败", ExceptionLevel.INFO),
     GRANT_TYPE_NOT_SUPPORT("A1101", "不支持的授权类型", ExceptionLevel.INFO),
@@ -19,11 +24,11 @@ public enum OAuth2ErrorEnum implements ExceptionEnum {
     /**
      * 异常编码
      */
-    private final String code;
+    final String code;
     /**
      * 异常消息
      */
-    private final String message;
+    final String message;
 
     /**
      * 异常消息
