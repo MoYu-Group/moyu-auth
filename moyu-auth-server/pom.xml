@@ -16,7 +16,7 @@
         <!-- MoYu Web开发能力快速集成 -->
         <dependency>
             <groupId>io.github.moyu-group.moyu-framework</groupId>
-            <artifactId>moyu-web-autoconfiguers</artifactId>
+            <artifactId>moyu-web-autoconfigure</artifactId>
         </dependency>
         <!-- spring security -->
         <dependency>
@@ -32,7 +32,7 @@
         <!-- moyu spring data-jpa -->
         <dependency>
             <groupId>io.github.moyu-group.moyu-framework</groupId>
-            <artifactId>moyu-spring-data-jpa-autoconfigures</artifactId>
+            <artifactId>moyu-spring-data-jpa-autoconfigure</artifactId>
         </dependency>
         <!-- postgresql -->
         <dependency>
@@ -40,6 +40,7 @@
             <artifactId>postgresql</artifactId>
             <scope>runtime</scope>
         </dependency>
+
     </dependencies>
 
     <!-- 打包为可执行jar包 -->

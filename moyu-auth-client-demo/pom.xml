@@ -22,7 +22,7 @@
     <dependencies>
         <dependency>
             <groupId>io.github.moyu-group.moyu-framework</groupId>
-            <artifactId>moyu-web-autoconfiguers</artifactId>
+            <artifactId>moyu-web-autoconfigure</artifactId>
         </dependency>
         <!-- spring security -->
         <dependency>

@@ -31,7 +31,8 @@ public class SpringSecurityConfig {
         // 不使用 Spring Security 的登录认证能力，只使用安全防护能力
         http.authorizeHttpRequests(authorize -> authorize.anyRequest().permitAll())
                 // csrf 白名单配置
-                .csrf(csrf -> csrf.ignoringRequestMatchers("/open/**"));
+//                .csrf(csrf -> csrf.ignoringRequestMatchers("/open/**"))
+                .csrf(csrf -> csrf.disable());
         return http.build();
     }
 
