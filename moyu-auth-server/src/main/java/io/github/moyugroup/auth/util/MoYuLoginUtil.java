@@ -18,7 +18,7 @@ import java.util.Objects;
  * Created by fanfan on 2023/09/03.
  */
 @Slf4j
-public class LoginUtil {
+public class MoYuLoginUtil {
 
     /**
      * 获取请求的 AppId
@@ -46,7 +46,7 @@ public class LoginUtil {
             throw new BadCredentialsException("应用未在统一登录中心注册");
         }
         // 二方应用的应用地址必须配置
-        if (!LoginUtil.checkIsMoYuAuthApp(appVO.getAppId()) && StringUtils.isBlank(appVO.getAppUrl())) {
+        if (!MoYuLoginUtil.checkIsMoYuAuthApp(appVO.getAppId()) && StringUtils.isBlank(appVO.getAppUrl())) {
             throw new BadCredentialsException("应用配置错误，AppUrl 不能为空");
         }
     }

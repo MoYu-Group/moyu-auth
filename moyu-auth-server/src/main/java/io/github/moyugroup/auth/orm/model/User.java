@@ -20,12 +20,15 @@ import java.time.LocalDateTime;
 @Setter
 @Getter
 @Entity
-@Table(name = "`user`")
+@Table(name = "`user`", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"username", "isDeleted"}),
+        @UniqueConstraint(columnNames = {"mobile", "isDeleted"}),
+        @UniqueConstraint(columnNames = {"email", "isDeleted"}),
+})
 @SQLRestriction(value = "is_deleted = false")
 @SQLDelete(sql = "UPDATE \"user\" SET is_deleted = true WHERE id = ?")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class User extends DeletableEntity {
-
     /**
      * 用户ID，唯一
      */
@@ -34,7 +37,7 @@ public class User extends DeletableEntity {
     /**
      * 用户名，唯一
      */
-    @Column(unique = true, length = 32, nullable = false)
+    @Column(length = 32, nullable = false)
     String username;
     /**
      * 密码
@@ -44,12 +47,12 @@ public class User extends DeletableEntity {
     /**
      * 手机号，唯一
      */
-    @Column(unique = true, length = 32)
+    @Column(length = 32)
     String mobile;
     /**
      * 邮箱，唯一
      */
-    @Column(unique = true, length = 48)
+    @Column(length = 48)
     String email;
     /**
      * 用户全名

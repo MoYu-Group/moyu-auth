@@ -3,7 +3,7 @@ package io.github.moyugroup.auth.web.page;
 import io.github.moyugroup.auth.constant.MoYuOAuthConstant;
 import io.github.moyugroup.auth.pojo.vo.AppVO;
 import io.github.moyugroup.auth.service.AppService;
-import io.github.moyugroup.auth.util.LoginUtil;
+import io.github.moyugroup.auth.util.MoYuLoginUtil;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -44,20 +44,20 @@ public class LoginPageController {
      */
     private void checkAppInfo(HttpServletRequest request) {
         // 应用未传应用ID，则认为是在登录一方应用，设置为系统默认的 appId
-        String appId = LoginUtil.getRequestAppId(request);
+        String appId = MoYuLoginUtil.getRequestAppId(request);
         // 检查登录 APP 是否存在
         AppVO appById = appService.getAppById(appId);
         try {
-            LoginUtil.checkAppIsOk(appById);
+            MoYuLoginUtil.checkAppIsOk(appById);
         } catch (Exception ex) {
-            LoginUtil.setLoginErrorMessage(request, ex.getMessage());
+            MoYuLoginUtil.setLoginErrorMessage(request, ex.getMessage());
         }
         // 保存登录的应用信息，用于SSO免登成功后获取用户登录的应用使用
         request.setAttribute(MoYuOAuthConstant.REQUEST_APP_INFO, appById);
     }
 
     private void fillPageHideParam(Model model, HttpServletRequest request) {
-        String loginErrorMessage = LoginUtil.getLoginErrorMessage(request);
+        String loginErrorMessage = MoYuLoginUtil.getLoginErrorMessage(request);
         model.addAttribute("errorMessage", loginErrorMessage);
         model.addAttribute(MoYuOAuthConstant.APP_ID_PARAM, request.getParameter(MoYuOAuthConstant.APP_ID_PARAM));
         model.addAttribute(MoYuOAuthConstant.BACK_URL_PARAM, request.getParameter(MoYuOAuthConstant.BACK_URL_PARAM));

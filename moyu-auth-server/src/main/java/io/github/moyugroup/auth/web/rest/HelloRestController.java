@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Optional;
+
 /**
  * Created by fanfan on 2022/05/12.
  */
@@ -24,18 +26,31 @@ public class HelloRestController {
     @PersistenceContext
     private EntityManager entityManager;
 
-    @GetMapping("user")
-    public Object user() {
+    @GetMapping("addUser")
+    public Object user(String userId) {
         User user = new User();
         user.setCreator("sys");
         user.setModifier("sys");
-        user.setUserId("user001");
+        user.setUserId(userId);
         user.setUsername("noisky1");
         user.setPassword("passss");
+        user.setMobile("13577778888");
+        user.setEmail("abc@abc.com");
         user.setUserStatus(UserStatusEnum.ACTIVE);
         User save = userRepository.saveAndFlush(user);
         log.info("save user:{}", JSONUtil.toJsonStr(save));
         return save;
+    }
+
+    @GetMapping("deleteUser")
+    public Object addUser(Long id) {
+        Optional<User> byId = userRepository.findById(id);
+        if (byId.isPresent()) {
+            User user = byId.get();
+            user.setIsDeleted(true);
+            userRepository.save(user);
+        }
+        return null;
     }
 
     @GetMapping("hello")
