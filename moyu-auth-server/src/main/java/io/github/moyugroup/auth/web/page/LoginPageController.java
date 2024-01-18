@@ -25,7 +25,6 @@ public class LoginPageController {
     @Resource
     private AppService appService;
 
-
     /**
      * 登录页渲染
      *
