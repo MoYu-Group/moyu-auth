@@ -13,7 +13,7 @@ import org.hibernate.annotations.SQLRestriction;
 import java.time.LocalDateTime;
 
 /**
- * 用户表
+ * 用户表实体
  * <p>
  * Created by fanfan on 2024/01/13.
  */

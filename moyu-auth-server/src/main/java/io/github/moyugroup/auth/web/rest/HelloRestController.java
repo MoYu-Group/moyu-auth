@@ -2,11 +2,11 @@ package io.github.moyugroup.auth.web.rest;
 
 import cn.hutool.json.JSONUtil;
 import io.github.moyugroup.auth.constant.enums.UserStatusEnum;
+import io.github.moyugroup.auth.orm.model.App;
 import io.github.moyugroup.auth.orm.model.User;
+import io.github.moyugroup.auth.orm.repository.AppRepository;
 import io.github.moyugroup.auth.orm.repository.UserRepository;
 import jakarta.annotation.Resource;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,8 +23,8 @@ public class HelloRestController {
     @Resource
     private UserRepository userRepository;
 
-    @PersistenceContext
-    private EntityManager entityManager;
+    @Resource
+    private AppRepository appRepository;
 
     @GetMapping("addUser")
     public Object user(String userId) {
@@ -40,6 +40,23 @@ public class HelloRestController {
         User save = userRepository.saveAndFlush(user);
         log.info("save user:{}", JSONUtil.toJsonStr(save));
         return save;
+    }
+
+    @GetMapping("addApp")
+    public Object app(String appId) {
+        App app = new App();
+        app.setAppName("test");
+        app.setAppSecret("1234");
+        app.setAppAesKey("1234");
+        app.setAppId(appId);
+        App save = appRepository.save(app);
+        log.info("save save:{}", JSONUtil.toJsonStr(save));
+        return save;
+    }
+
+    @GetMapping("appList")
+    public Object appList() {
+        return appRepository.findAll();
     }
 
     @GetMapping("deleteUser")
