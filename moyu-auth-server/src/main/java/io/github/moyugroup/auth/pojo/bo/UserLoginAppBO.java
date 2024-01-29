@@ -15,14 +15,6 @@ public class UserLoginAppBO {
      */
     private String appId;
     /**
-     * 应用访问地址
-     */
-    private String appUrl;
-    /**
-     * 应用退出登录回调路径
-     */
-    private String logoutCallbackPath;
-    /**
      * 应用登录token
      */
     private String ssoToken;

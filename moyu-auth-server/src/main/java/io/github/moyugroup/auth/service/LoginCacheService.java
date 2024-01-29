@@ -1,6 +1,5 @@
 package io.github.moyugroup.auth.service;
 
-import io.github.moyugroup.auth.pojo.bo.UserLoginAppBO;
 import io.github.moyugroup.auth.pojo.vo.OAuth2UserVO;
 
 import java.util.List;
@@ -35,10 +34,11 @@ public interface LoginCacheService {
      * 用于退出登录时通知 App 用户退出登录
      *
      * @param userId
-     * @param userLoginAppBO
+     * @param appId
+     * @param ssoToken
      * @return
      */
-    boolean saveUserLoginApp(Long userId, UserLoginAppBO userLoginAppBO);
+    boolean saveUserLoginApp(String userId, String appId, String ssoToken);
 
     /**
      * 获取用户登录过的 App 列表
@@ -46,7 +46,7 @@ public interface LoginCacheService {
      * @param userId
      * @return
      */
-    List<UserLoginAppBO> getUserLoginAppList(Long userId);
+    List<String> getUserLoginAppList(String userId);
 
     /**
      * 删除用户登录过的 APP 列表
@@ -54,6 +54,6 @@ public interface LoginCacheService {
      * @param userId
      * @return
      */
-    boolean removeUserLoginApp(Long userId);
+    boolean removeUserLoginApps(String userId);
 
 }

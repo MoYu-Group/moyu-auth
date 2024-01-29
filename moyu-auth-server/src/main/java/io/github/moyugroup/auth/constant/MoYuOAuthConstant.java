@@ -68,7 +68,7 @@ public class MoYuOAuthConstant {
     public final static String MOYU_AUTH_CACHE_FIELD_NAME = "moyu.auth.server.cache";
 
     /**
-     * 启用本地缓存配置值
+     * 启用内存缓存
      */
-    public final static String MOYU_AUTH_CACHE_LOCAL = "local";
+    public final static String MOYU_AUTH_CACHE_MEM = "memory";
 }
