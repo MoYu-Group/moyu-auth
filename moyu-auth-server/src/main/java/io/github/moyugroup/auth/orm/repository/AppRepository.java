@@ -20,7 +20,6 @@ public interface AppRepository extends JpaRepository<App, Long> {
      * @return
      */
     default App getByApp(App queryApp) {
-        queryApp.setIsDeleted(null);
         Example<App> example = Example.of(queryApp);
         Optional<App> app = this.findOne(example);
         return app.orElse(null);

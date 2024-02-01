@@ -24,7 +24,7 @@ import org.springframework.util.Assert;
 @ActiveProfiles("test")
 @Import(AppManage.class)
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class AppManageTest {
+class AppManageTest {
 
     private final String testAppId = "app-test";
 
