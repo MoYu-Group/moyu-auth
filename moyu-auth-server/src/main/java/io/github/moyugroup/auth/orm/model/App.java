@@ -58,6 +58,7 @@ public class App extends DeletableEntity {
     /**
      * 应用是否激活，默认激活
      */
-    Boolean isActive = true;
+    @Column(nullable = false)
+    Boolean isActive;
 
 }

@@ -15,24 +15,31 @@ import lombok.experimental.Accessors;
 public class AppVO {
 
     /**
-     * APP标识
+     * 应用ID
      */
-    private String appId;
+    String appId;
     /**
-     * APP密钥
+     * 应用名称
      */
-    private String appSecret;
+    String appName;
     /**
-     * APP访问地址
+     * 应用描述
      */
-    private String appUrl;
+    String appDescription;
     /**
-     * APP登陆成功SSO回调路径
+     * 应用密钥
      */
-    private String ssoCallbackPath;
+    String appSecret;
     /**
-     * APP退出登录回调路径
+     * 应用 AES 加密 KEY
      */
-    private String logoutCallbackPath;
-
+    String appAesKey;
+    /**
+     * 重定向地址
+     */
+    String redirectUri;
+    /**
+     * 应用是否激活，默认激活
+     */
+    Boolean isActive = true;
 }

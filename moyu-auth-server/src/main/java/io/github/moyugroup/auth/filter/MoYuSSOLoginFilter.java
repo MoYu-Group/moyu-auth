@@ -46,7 +46,6 @@ public class MoYuSSOLoginFilter implements Filter {
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         log.debug("MoYuSSOLoginFilter init...");
-        Filter.super.init(filterConfig);
     }
 
     /**
@@ -90,7 +89,7 @@ public class MoYuSSOLoginFilter implements Filter {
      */
     @Override
     public void destroy() {
-        Filter.super.destroy();
+
     }
 
     /**

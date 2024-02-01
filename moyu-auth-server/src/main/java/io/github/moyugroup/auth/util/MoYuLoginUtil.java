@@ -46,7 +46,7 @@ public class MoYuLoginUtil {
             throw new BadCredentialsException("应用未在统一登录中心注册");
         }
         // 二方应用的应用地址必须配置
-        if (!MoYuLoginUtil.checkIsMoYuAuthApp(appVO.getAppId()) && StringUtils.isBlank(appVO.getAppUrl())) {
+        if (!MoYuLoginUtil.checkIsMoYuAuthApp(appVO.getAppId()) && StringUtils.isBlank(appVO.getRedirectUri())) {
             throw new BadCredentialsException("应用配置错误，AppUrl 不能为空");
         }
     }

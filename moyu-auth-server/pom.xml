@@ -34,6 +34,12 @@
             <groupId>io.github.moyu-group.moyu-framework</groupId>
             <artifactId>moyu-spring-data-jpa-autoconfigure</artifactId>
         </dependency>
+        <!-- spring data jpa test -->
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>test</scope>
+        </dependency>
         <!-- postgresql -->
         <dependency>
             <groupId>org.postgresql</groupId>
