@@ -11,7 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 /**
- * App 操作封装
+ * App 表数据操作封装
  * Created by fanfan on 2024/02/01.
  */
 @Slf4j

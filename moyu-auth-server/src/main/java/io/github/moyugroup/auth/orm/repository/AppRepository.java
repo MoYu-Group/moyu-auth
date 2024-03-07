@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 
 /**
- * 应用储存库接口
+ * 应用 储存库接口
  * <p>
  * Created by fanfan on 2024/01/19.
  */

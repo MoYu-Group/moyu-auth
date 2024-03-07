@@ -6,7 +6,7 @@ package io.github.moyugroup.auth.constant.enums;
  * Created by fanfan on 2023/09/06.
  */
 public enum MoYuAuthCacheEnum {
-    LOCAL_CACHE,
+    MEMBER_CACHE,
     REDIS_CACHE,
     ;
 

@@ -2,6 +2,7 @@ package io.github.moyugroup.auth.filter;
 
 import io.github.moyugroup.auth.util.PathUtil;
 import jakarta.servlet.*;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -74,7 +75,7 @@ public class MoYuSSOLoginFilter implements Filter {
                 filterChain.doFilter(httpRequest, httpResponse);
             } else {
                 log.debug("user is not logged in, redirect to /ssoLogin.html");
-                // 用户未登录，跳转到登录页
+                // 用户未登录，跳转到登录页 todo 携带 backUrl
                 httpResponse.sendRedirect("/ssoLogin.html");
             }
         } else {
@@ -99,6 +100,7 @@ public class MoYuSSOLoginFilter implements Filter {
      * @return
      */
     private boolean checkIsLogin(HttpServletRequest httpRequest) {
+        Cookie[] cookies = httpRequest.getCookies();
         return false;
     }
 
