@@ -1,6 +1,8 @@
 package io.github.moyugroup.auth.pojo.request;
 
+import io.github.moyugroup.auth.constant.enums.SSOLoginTypeEnum;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 /**
@@ -17,7 +19,7 @@ public class SSOLoginRequest {
     @NotBlank
     private String password;
 
-    @NotBlank
-    private String loginType;
+    @NotNull
+    private SSOLoginTypeEnum loginType;
 
 }

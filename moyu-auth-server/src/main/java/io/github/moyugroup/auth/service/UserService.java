@@ -35,6 +35,7 @@ public class UserService {
      */
     public boolean userSave(UserSaveRequest userSaveRequest) {
         User user = UserConvert.INSTANCE.userSaveRequestToUser(userSaveRequest);
+        // todo 密码使用 Bcrypt 加密
         user.setUserId(UserIdGeneratorUtil.getNextUserId());
         user.setUserStatus(UserStatusEnum.INACTIVE);
         User saveUser = userManage.userSave(user);

@@ -30,7 +30,7 @@ public class MoYuLoginUtil {
     public static String getRequestAppId(HttpServletRequest request) {
         String appId = request.getParameter(MoYuOAuthConstant.APP_ID_PARAM);
         if (StringUtils.isBlank(appId)) {
-            appId = MoYuOAuthConstant.DEFAULT_APP_ID;
+            appId = MoYuOAuthConstant.MOYU_AUTH;
         }
         return appId;
     }
@@ -58,7 +58,7 @@ public class MoYuLoginUtil {
      * @return
      */
     public static boolean checkIsMoYuAuthApp(String appId) {
-        return MoYuOAuthConstant.DEFAULT_APP_ID.equals(appId);
+        return MoYuOAuthConstant.MOYU_AUTH.equals(appId);
     }
 
     /**

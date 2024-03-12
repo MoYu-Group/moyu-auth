@@ -22,8 +22,7 @@ public class UserManage {
     UserRepository userRepository;
 
     /**
-     * 根据用户名查询，返回的时用户数据库映射对象
-     * 仅用于用户登录使用，其他服务禁用该方法
+     * 根据用户名查询
      *
      * @param userName
      * @return
@@ -35,7 +34,19 @@ public class UserManage {
     }
 
     /**
-     * 用户新增
+     * 根据用户ID查询
+     *
+     * @param userId
+     * @return
+     */
+    public User getUserByUserId(String userId) {
+        User user = new User();
+        user.setUserId(userId);
+        return userRepository.getByUser(user);
+    }
+
+    /**
+     * 用户新增/编辑
      *
      * @param user
      * @return
