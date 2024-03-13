@@ -33,6 +33,7 @@
         <div th:if="${!#strings.isEmpty(appId)}">
             <input name="backUrl" th:value="${backUrl}" type="hidden"/>
         </div>
+        <input name="loginType" type="hidden" value="ACCOUNT"/>
         <button class="btn btn-lg btn-primary btn-block" type="submit">登录</button>
     </form>
 </div>

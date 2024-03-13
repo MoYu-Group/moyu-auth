@@ -24,4 +24,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
         Optional<User> user = this.findOne(example);
         return user.orElse(null);
     }
+
+
 }

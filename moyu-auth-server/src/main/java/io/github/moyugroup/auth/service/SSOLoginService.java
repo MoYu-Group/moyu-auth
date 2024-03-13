@@ -3,22 +3,27 @@ package io.github.moyugroup.auth.service;
 import cn.hutool.core.util.IdUtil;
 import io.github.moyugroup.auth.constant.MoYuLoginConstant;
 import io.github.moyugroup.auth.constant.enums.UserStatusEnum;
+import io.github.moyugroup.auth.convert.UserConvert;
 import io.github.moyugroup.auth.manage.UserManage;
 import io.github.moyugroup.auth.manage.UserSessionManage;
 import io.github.moyugroup.auth.orm.model.User;
 import io.github.moyugroup.auth.orm.model.UserSession;
+import io.github.moyugroup.auth.pojo.dto.UserInfo;
 import io.github.moyugroup.auth.util.CookieUtil;
 import io.github.moyugroup.enums.ErrorCodeEnum;
 import io.github.moyugroup.util.AssertUtil;
 import io.github.moyugroup.web.util.WebUtil;
 import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 /**
  * SSO 登录服务
@@ -71,7 +76,7 @@ public class SSOLoginService {
         userSessionManage.userSessionSave(userSession);
 
         // 写入 Cookie
-        CookieUtil.writeLoginCookie(userSession.getSessionId(), response);
+        CookieUtil.writeSSOLoginCookie(userSession.getSessionId(), response);
 
         // 异步更新用户最后登录时间
         userAsyncService.afterUserLogin(user.getUserId(), loginTime);
@@ -79,4 +84,45 @@ public class SSOLoginService {
         log.debug("userLoginByAccount userSession:{}", userSession);
     }
 
+    /**
+     * 获取用户登录 Session
+     *
+     * @param request
+     * @return
+     */
+    public UserSession getUserLoginSession(HttpServletRequest request) {
+        String sessionId = CookieUtil.getSSOLoginSessionId(request);
+        if (StringUtils.isBlank(sessionId)) {
+            return null;
+        }
+        return userSessionManage.getValidSessionBySessionId(sessionId);
+    }
+
+    /**
+     * 根据用户ID获取登录用户信息
+     *
+     * @param userId
+     * @return
+     */
+    public UserInfo getUserByUserId(String userId) {
+        User user = userManage.getUserByUserId(userId);
+        return UserConvert.INSTANCE.userToUserInfo(user);
+    }
+
+    /**
+     * 用户注销登录
+     *
+     * @param request
+     * @param response
+     */
+    public void userLogout(HttpServletRequest request, HttpServletResponse response) {
+        UserSession userLoginSession = getUserLoginSession(request);
+        if (Objects.nonNull(userLoginSession)) {
+            // 删除用户登录 session
+            log.debug("removeSessionById:{}", userLoginSession.getId());
+            userSessionManage.removeSessionById(userLoginSession.getId());
+            // 删除用户登录 cookie
+            CookieUtil.removeSSOLoginCookie(response);
+        }
+    }
 }

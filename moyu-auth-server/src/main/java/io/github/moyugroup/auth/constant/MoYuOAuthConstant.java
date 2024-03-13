@@ -23,6 +23,10 @@ public class MoYuOAuthConstant {
      */
     public final static String SSO_TOKEN_PARAM = "ssoToken";
     /**
+     * MoYu-Auth 主页路径
+     */
+    public final static String INDEX_PAGE_PATH = "/";
+    /**
      * MoYu-Auth 默认登录页面路径
      */
     public final static String LOGIN_PAGE_PATH = "/ssoLogin.html";

@@ -8,6 +8,8 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 /**
  * UserSession 表数据操作封装
  * <p>
@@ -31,4 +33,22 @@ public class UserSessionManage {
         return userSessionRepository.save(userSession);
     }
 
+    /**
+     * 根据 SessionId 获取有效 Session
+     *
+     * @param sessionId
+     * @return
+     */
+    public UserSession getValidSessionBySessionId(String sessionId) {
+        return userSessionRepository.findValidSessionBySessionId(sessionId, LocalDateTime.now());
+    }
+
+    /**
+     * 删除 Session
+     *
+     * @param id
+     */
+    public void removeSessionById(Long id) {
+        userSessionRepository.deleteById(id);
+    }
 }

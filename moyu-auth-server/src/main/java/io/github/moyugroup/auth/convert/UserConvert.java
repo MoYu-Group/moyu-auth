@@ -1,8 +1,8 @@
 package io.github.moyugroup.auth.convert;
 
 import io.github.moyugroup.auth.orm.model.User;
+import io.github.moyugroup.auth.pojo.dto.UserInfo;
 import io.github.moyugroup.auth.pojo.request.UserSaveRequest;
-import io.github.moyugroup.auth.pojo.vo.UserVO;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
@@ -25,10 +25,10 @@ public interface UserConvert {
     User userSaveRequestToUser(UserSaveRequest source);
 
     /**
-     * User 转为 UserVO
+     * User 转为 UserInfo
      *
      * @param source
      * @return
      */
-    UserVO userToUserVO(User source);
+    UserInfo userToUserInfo(User source);
 }

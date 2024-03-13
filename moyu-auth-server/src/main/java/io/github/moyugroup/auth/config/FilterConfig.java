@@ -1,6 +1,10 @@
 package io.github.moyugroup.auth.config;
 
 import io.github.moyugroup.auth.filter.MoYuSSOLoginFilter;
+import io.github.moyugroup.auth.service.SSOLoginService;
+import jakarta.annotation.Resource;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -13,7 +17,11 @@ import org.springframework.context.annotation.Configuration;
  */
 @Slf4j
 @Configuration
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class FilterConfig {
+
+    @Resource
+    SSOLoginService ssoLoginService;
 
     /**
      * 过滤器注册
@@ -23,7 +31,7 @@ public class FilterConfig {
     @Bean
     public FilterRegistrationBean<MoYuSSOLoginFilter> ssoFilterRegistration() {
         FilterRegistrationBean<MoYuSSOLoginFilter> registration = new FilterRegistrationBean<>();
-        registration.setFilter(new MoYuSSOLoginFilter());
+        registration.setFilter(new MoYuSSOLoginFilter(ssoLoginService));
         // 配置过滤器的路径
         registration.addUrlPatterns("/*");
         // 设置过滤器的顺序
