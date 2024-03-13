@@ -3,6 +3,7 @@ package io.github.moyugroup.auth.web.rest;
 import io.github.moyugroup.auth.constant.MoYuOAuthConstant;
 import io.github.moyugroup.auth.pojo.request.SSOLoginRequest;
 import io.github.moyugroup.auth.service.SSOLoginService;
+import io.github.moyugroup.auth.util.MoYuLoginUtil;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -28,9 +29,16 @@ public class SSOLoginController {
     private SSOLoginService ssoLoginService;
 
     @PostMapping(MoYuOAuthConstant.LOGIN_ENDPOINT)
-    public void ssoLogin(@Valid SSOLoginRequest ssoLoginRequest, HttpServletResponse response) throws IOException {
-        ssoLoginService.userLoginByAccount(ssoLoginRequest.getUsername(), ssoLoginRequest.getPassword(), response);
-        // 重定向到首页
+    public void ssoLogin(@Valid SSOLoginRequest ssoLoginRequest, HttpServletRequest request, HttpServletResponse response) throws IOException {
+        try {
+            ssoLoginService.userLoginByAccount(ssoLoginRequest.getUsername(), ssoLoginRequest.getPassword(), response);
+        } catch (Exception ex) {
+            // 重定向到登录页面并携带错误信息
+            MoYuLoginUtil.setLoginErrorMessage(request, ex.getMessage());
+            response.sendRedirect(MoYuOAuthConstant.LOGIN_PAGE_PATH);
+            return;
+        }
+        // 登录成功后重定向到首页
         response.sendRedirect(MoYuOAuthConstant.INDEX_PAGE_PATH);
     }
 

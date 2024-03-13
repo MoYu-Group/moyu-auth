@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
  * 登录相关端点
@@ -31,7 +32,7 @@ public class LoginPageController {
      * @return
      */
     @RequestMapping(value = "/ssoLogin.html", method = {RequestMethod.GET, RequestMethod.POST})
-    public String login(Model model, HttpServletRequest request, HttpServletResponse response) {
+    public String login(Model model, HttpServletRequest request, HttpServletResponse response, RedirectAttributes redirectAttributes) {
         checkAppInfo(request);
         fillPageHideParam(model, request);
         return "ssoLogin";

@@ -7,8 +7,6 @@ import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.web.WebAttributes;
 
 import java.util.Objects;
 
@@ -68,25 +66,11 @@ public class MoYuLoginUtil {
      * @return
      */
     public static String getLoginErrorMessage(HttpServletRequest request) {
-        Object errorAttribute = request.getAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
-        if (Objects.nonNull(errorAttribute)) {
-            if (errorAttribute instanceof AuthenticationException authenticationException) {
-                request.removeAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
-                return authenticationException.getMessage();
-            }
-        }
         HttpSession session = request.getSession(false);
-        if (Objects.nonNull(session)) {
-            Object exception = session.getAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
-            if (exception instanceof AuthenticationException authenticationException) {
-                session.removeAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
-                return authenticationException.getMessage();
-            }
-            Object loginErrorMsg = session.getAttribute(MoYuOAuthConstant.LOGIN_ERROR_MESSAGE);
-            if (Objects.nonNull(loginErrorMsg)) {
-                session.removeAttribute(MoYuOAuthConstant.LOGIN_ERROR_MESSAGE);
-                return (String) loginErrorMsg;
-            }
+        Object loginErrorMsg = session.getAttribute(MoYuOAuthConstant.LOGIN_ERROR_MESSAGE);
+        if (Objects.nonNull(loginErrorMsg)) {
+            session.removeAttribute(MoYuOAuthConstant.LOGIN_ERROR_MESSAGE);
+            return (String) loginErrorMsg;
         }
         return null;
     }
