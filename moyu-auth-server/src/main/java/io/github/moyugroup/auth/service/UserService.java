@@ -10,6 +10,7 @@ import jakarta.annotation.Resource;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
@@ -27,6 +28,9 @@ public class UserService {
     @Resource
     UserManage userManage;
 
+    @Resource
+    PasswordEncoder passwordEncoder;
+
     /**
      * 用户新增
      *
@@ -35,9 +39,9 @@ public class UserService {
      */
     public boolean userSave(UserSaveRequest userSaveRequest) {
         User user = UserConvert.INSTANCE.userSaveRequestToUser(userSaveRequest);
-        // todo 密码使用 Bcrypt 加密
         user.setUserId(UserIdGeneratorUtil.getNextUserId());
         user.setUserStatus(UserStatusEnum.INACTIVE);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         User saveUser = userManage.userSave(user);
         return Objects.nonNull(saveUser);
     }

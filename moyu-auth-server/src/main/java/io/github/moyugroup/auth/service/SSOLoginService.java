@@ -20,6 +20,7 @@ import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -39,6 +40,9 @@ public class SSOLoginService {
     UserManage userManage;
 
     @Resource
+    PasswordEncoder passwordEncoder;
+
+    @Resource
     UserSessionManage userSessionManage;
 
     @Resource
@@ -56,8 +60,8 @@ public class SSOLoginService {
         User user = userManage.getUserByUsername(username);
         AssertUtil.notNull(user, ErrorCodeEnum.WRONG_USER_ACCOUNT_OR_PASSWORD);
 
-        // 用户密码校验 todo 使用 Bcrypt 加密
-        AssertUtil.isTrue(password.equals(user.getPassword()), ErrorCodeEnum.WRONG_USER_ACCOUNT_OR_PASSWORD);
+        // 用户密码校验
+        AssertUtil.isTrue(passwordEncoder.matches(password, user.getPassword()), ErrorCodeEnum.WRONG_USER_ACCOUNT_OR_PASSWORD);
 
         // 用户状态校验
         AssertUtil.isFalse(UserStatusEnum.LOCKED.equals(user.getUserStatus()), ErrorCodeEnum.USER_ACCOUNT_IS_LOCKED);

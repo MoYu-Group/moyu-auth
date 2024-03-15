@@ -66,7 +66,7 @@ public class MoYuLoginUtil {
      * @return
      */
     public static String getLoginErrorMessage(HttpServletRequest request) {
-        HttpSession session = request.getSession(false);
+        HttpSession session = request.getSession();
         Object loginErrorMsg = session.getAttribute(MoYuOAuthConstant.LOGIN_ERROR_MESSAGE);
         if (Objects.nonNull(loginErrorMsg)) {
             session.removeAttribute(MoYuOAuthConstant.LOGIN_ERROR_MESSAGE);
