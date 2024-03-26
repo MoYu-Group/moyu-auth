@@ -28,12 +28,20 @@ public class SSOLoginController {
     @Resource
     private SSOLoginService ssoLoginService;
 
+    /**
+     * SSO 登录接口
+     *
+     * @param ssoLoginRequest
+     * @param request
+     * @param response
+     * @throws IOException
+     */
     @PostMapping(MoYuOAuthConstant.LOGIN_ENDPOINT)
     public void ssoLogin(@Valid SSOLoginRequest ssoLoginRequest, HttpServletRequest request, HttpServletResponse response) throws IOException {
         try {
             ssoLoginService.userLoginByAccount(ssoLoginRequest.getUsername(), ssoLoginRequest.getPassword(), response);
         } catch (Exception ex) {
-            // 重定向到登录页面并携带错误信息
+            // 重定向到登录页面并携带错误信息 todo 处理接口请求返回json
             MoYuLoginUtil.setLoginErrorMessage(request, ex.getMessage());
             response.sendRedirect(MoYuOAuthConstant.LOGIN_PAGE_PATH);
             return;
