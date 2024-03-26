@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
+    <meta content="" name="description">
+    <meta content="" name="author">
+    <title>统一登录中心</title>
+    <link href="/favicon.ico" rel="shortcut icon"/>
+    <style>
+        body {
+            font: 14px / 1.5 Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, Arial, sans-serif;
+            background-color: #eee;
+        }
+
+        .tenant-switcher {
+            max-width: 360px;
+            margin: 100px auto;
+            padding: 20px;
+            border-radius: 8px;
+            background: #fff;
+            -webkit-box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header h1 {
+            font-size: 18px;
+            text-align: center;
+            margin: 0;
+            padding-bottom: 20px;
+        }
+
+        .tenant-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .tenant {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .tenant:hover {
+            background-color: #f5f5f5;
+        }
+
+    </style>
+</head>
+<body>
+<div class="tenant-switcher">
+    <div class="header">
+        <h1>请选择租户</h1>
+    </div>
+    <div class="tenant-list" id="tenantList">
+        <div class="tenant" th:data-id="${tenant.tenantId}" th:each="tenant : ${tenantList}">
+            <span th:text="${tenant.tenantName}"></span>
+        </div>
+    </div>
+</div>
+
+<script th:inline="javascript">
+    // 添加事件监听
+    document.addEventListener('DOMContentLoaded', (event) => {
+        document.querySelectorAll('.tenant').forEach(tenant => {
+            tenant.addEventListener('click', function () {
+                switchTenant(this.dataset.id);
+            });
+        });
+    });
+
+    // 切换租户函数
+    function switchTenant(tenantId) {
+        console.log('切换至租户ID:', tenantId);
+        const postData = {
+            tenantId: tenantId
+        }
+        fetch(`/api/switch/tenant/doSwitch`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(postData)
+        })
+            .then(response => {
+                // 检查响应结果是否成功
+                if (!response.ok) {
+                    throw new Error('Network response was not ok ' + response.statusText)
+                }
+                return response.json()
+            })
+            .then(data => {
+                // 处理解析后的数据
+                console.log('切换租户结果:', data);
+            })
+            .catch(error => {
+                // 处理请求过程中发生的错误
+                console.error('请求错误:', error);
+            });
+    }
+</script>
+</body>
+</html>

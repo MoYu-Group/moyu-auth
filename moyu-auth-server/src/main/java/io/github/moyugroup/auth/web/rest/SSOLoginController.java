@@ -50,11 +50,30 @@ public class SSOLoginController {
         response.sendRedirect(MoYuOAuthConstant.INDEX_PAGE_PATH);
     }
 
+    /**
+     * 退出登录
+     *
+     * @param request
+     * @param response
+     * @throws IOException
+     */
     @PostMapping(MoYuOAuthConstant.LOGIN_OUT_ENDPOINT)
     public void ssoLogout(HttpServletRequest request, HttpServletResponse response) throws IOException {
         ssoLoginService.userLogout(request, response);
         // 重定向到登录页面
         response.sendRedirect(MoYuOAuthConstant.LOGIN_PAGE_PATH);
+    }
+
+    /**
+     * 切换租户接口
+     * todo 逻辑待实现
+     *
+     * @param request
+     * @param response
+     */
+    @PostMapping("/api/switch/tenant/doSwitch")
+    public void switchTenant(HttpServletRequest request, HttpServletResponse response) {
+
     }
 
 }

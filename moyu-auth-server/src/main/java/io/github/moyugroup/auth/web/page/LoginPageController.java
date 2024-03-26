@@ -2,6 +2,7 @@ package io.github.moyugroup.auth.web.page;
 
 import io.github.moyugroup.auth.constant.MoYuOAuthConstant;
 import io.github.moyugroup.auth.pojo.vo.AppVO;
+import io.github.moyugroup.auth.pojo.vo.SwitchTenantVO;
 import io.github.moyugroup.auth.service.AppService;
 import io.github.moyugroup.auth.util.MoYuLoginUtil;
 import jakarta.annotation.Resource;
@@ -13,6 +14,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * 登录相关端点
@@ -28,6 +32,7 @@ public class LoginPageController {
 
     /**
      * 登录页渲染
+     * todo sso登录过程参数的处理
      *
      * @return
      */
@@ -36,6 +41,29 @@ public class LoginPageController {
         checkAppInfo(request);
         fillPageHideParam(model, request);
         return "ssoLogin";
+    }
+
+    /**
+     * 切换登录页面渲染
+     *
+     * @param model
+     * @param request
+     * @param response
+     * @param redirectAttributes
+     * @return
+     */
+    @RequestMapping(value = "/switchTenant.html", method = {RequestMethod.GET, RequestMethod.POST})
+    public String switchTenant(Model model, HttpServletRequest request, HttpServletResponse response, RedirectAttributes redirectAttributes) {
+        List<SwitchTenantVO> switchTenantVOS = Arrays.asList(
+                new SwitchTenantVO("1", "摸鱼开发组"),
+                new SwitchTenantVO("2", "机械工程组织交互"),
+                new SwitchTenantVO("3", "农夫圈区"),
+                new SwitchTenantVO("4", "觅品科技"),
+                new SwitchTenantVO("5", "蜂巢数据中心")
+                // 可以根据需要添加更多租户
+        );
+        model.addAttribute("tenantList", switchTenantVOS);
+        return "switchTenant";
     }
 
     /**
