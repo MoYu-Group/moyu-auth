@@ -30,7 +30,7 @@ public class UserManage {
     public User getUserByUsername(String userName) {
         User user = new User();
         user.setUsername(userName);
-        return userRepository.getByUser(user);
+        return userRepository.findByUser(user);
     }
 
     /**
@@ -42,7 +42,7 @@ public class UserManage {
     public User getUserByUserId(String userId) {
         User user = new User();
         user.setUserId(userId);
-        return userRepository.getByUser(user);
+        return userRepository.findByUser(user);
     }
 
     /**

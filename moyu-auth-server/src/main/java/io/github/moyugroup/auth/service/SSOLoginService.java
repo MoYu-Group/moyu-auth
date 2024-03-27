@@ -2,13 +2,17 @@ package io.github.moyugroup.auth.service;
 
 import cn.hutool.core.util.IdUtil;
 import io.github.moyugroup.auth.constant.MoYuLoginConstant;
+import io.github.moyugroup.auth.constant.enums.SSOLoginErrorEnum;
 import io.github.moyugroup.auth.constant.enums.UserStatusEnum;
 import io.github.moyugroup.auth.convert.UserConvert;
+import io.github.moyugroup.auth.manage.TenantUserManage;
 import io.github.moyugroup.auth.manage.UserManage;
 import io.github.moyugroup.auth.manage.UserSessionManage;
+import io.github.moyugroup.auth.orm.model.TenantUser;
 import io.github.moyugroup.auth.orm.model.User;
 import io.github.moyugroup.auth.orm.model.UserSession;
 import io.github.moyugroup.auth.pojo.dto.UserInfo;
+import io.github.moyugroup.auth.pojo.request.SwitchTenantRequest;
 import io.github.moyugroup.auth.util.CookieUtil;
 import io.github.moyugroup.enums.ErrorCodeEnum;
 import io.github.moyugroup.util.AssertUtil;
@@ -48,6 +52,9 @@ public class SSOLoginService {
     @Resource
     UserAsyncService userAsyncService;
 
+    @Resource
+    TenantUserManage tenantUserManage;
+
     /**
      * 用户账户登录
      *
@@ -73,6 +80,7 @@ public class SSOLoginService {
         UserSession userSession = new UserSession()
                 .setSessionId(IdUtil.fastSimpleUUID().toUpperCase())
                 .setUserId(user.getUserId())
+                .setTenantId(null)
                 .setCreatedTime(loginTime)
                 .setExpiresTime(loginTime.plusSeconds(MoYuLoginConstant.LOGIN_EXPIRE_SECONDS))
                 .setUserIp(WebUtil.getIpAddress())
@@ -128,5 +136,22 @@ public class SSOLoginService {
             // 删除用户登录 cookie
             CookieUtil.removeSSOLoginCookie(response);
         }
+    }
+
+    /**
+     * 用户切换租户
+     *
+     * @param switchTenant 请求参数
+     * @param request
+     */
+    public void userSwitchTenant(SwitchTenantRequest switchTenant, HttpServletRequest request) {
+        UserSession userLoginSession = getUserLoginSession(request);
+        // 查询是否存在用户和租户关系
+        TenantUser tenantUser = tenantUserManage.findTenantUserByUserIdAndTenantId(userLoginSession.getUserId(), switchTenant.getTenantId());
+        AssertUtil.notNull(tenantUser, SSOLoginErrorEnum.SWITCH_TENANT_INVALID);
+        // todo 是否需要租户状态检查
+        // 切换租户
+        userLoginSession.setTenantId(tenantUser.getTenantId());
+        userSessionManage.userSessionSave(userLoginSession);
     }
 }

@@ -31,7 +31,7 @@ public class AppManage {
     public AppVO getAppById(String appId) {
         App query = new App();
         query.setAppId(appId);
-        App app = appRepository.getByApp(query);
+        App app = appRepository.findByApp(query);
         return AppConvert.INSTANCE.appToAppVO(app);
     }
 
@@ -46,7 +46,7 @@ public class AppManage {
         App query = new App();
         query.setAppId(appId);
         query.setAppSecret(appSecret);
-        App app = appRepository.getByApp(query);
+        App app = appRepository.findByApp(query);
         return AppConvert.INSTANCE.appToAppVO(app);
     }
 }

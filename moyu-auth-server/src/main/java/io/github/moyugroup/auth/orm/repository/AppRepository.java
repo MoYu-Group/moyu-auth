@@ -19,7 +19,7 @@ public interface AppRepository extends JpaRepository<App, Long> {
      * @param queryApp
      * @return
      */
-    default App getByApp(App queryApp) {
+    default App findByApp(App queryApp) {
         Example<App> example = Example.of(queryApp);
         Optional<App> app = this.findOne(example);
         return app.orElse(null);

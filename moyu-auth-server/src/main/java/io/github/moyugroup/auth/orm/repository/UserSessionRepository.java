@@ -14,6 +14,13 @@ import java.time.LocalDateTime;
  */
 public interface UserSessionRepository extends JpaRepository<UserSession, Long> {
 
+    /**
+     * 根据 SessionId 查询用户有效登录态
+     *
+     * @param sessionId 登录 sessionId
+     * @param now       当前时间
+     * @return 用户登录 UserSession
+     */
     @Query("SELECT s FROM UserSession s WHERE s.sessionId = :sessionId AND s.expiresTime > :now")
     UserSession findValidSessionBySessionId(@Param("sessionId") String sessionId, @Param("now") LocalDateTime now);
 

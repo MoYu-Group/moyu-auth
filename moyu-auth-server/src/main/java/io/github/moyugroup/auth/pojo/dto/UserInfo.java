@@ -11,6 +11,14 @@ import lombok.Data;
 @Data
 public class UserInfo {
     /**
+     * 租户ID
+     */
+    String tenantId;
+    /**
+     * 租户名称
+     */
+    String tenantName;
+    /**
      * 用户ID
      */
     String userId;

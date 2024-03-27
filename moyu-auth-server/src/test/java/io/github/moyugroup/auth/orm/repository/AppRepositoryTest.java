@@ -28,8 +28,7 @@ class AppRepositoryTest {
     @Autowired
     AppRepository appRepository;
 
-    @Test
-    public void appSaveTest() {
+    App buildTestApp() {
         String appSecret = KeyGeneratorUtil.generatorAppSecret();
         App app = new App();
         app.setAppId("test-app");
@@ -37,12 +36,32 @@ class AppRepositoryTest {
         app.setAppSecret(appSecret);
         app.setAppAesKey("123");
         app.setIsActive(true);
+        return app;
+    }
+
+    @Test
+    void appSaveTest() {
+        App app = buildTestApp();
 
         appRepository.save(app);
 
         List<App> appList = appRepository.findAll();
-        log.info("appList:{}", JSONUtil.toJsonStr(appList));
+        log.debug("appList:{}", JSONUtil.toJsonStr(appList));
         Assert.notEmpty(appList, "appList can not be empty!");
     }
 
+    @Test
+    void findByAppTest() {
+        App app = buildTestApp();
+        log.debug("insert App:{}", JSONUtil.toJsonStr(app));
+        appRepository.save(app);
+
+        App queryParam = new App();
+        queryParam.setId(app.getId());
+        log.debug("queryParam:{}", JSONUtil.toJsonStr(queryParam));
+        App queryApp = appRepository.findByApp(queryParam);
+        log.debug("queryApp:{}", JSONUtil.toJsonStr(queryApp));
+
+        Assert.notNull(queryApp, "app can not be empty!");
+    }
 }

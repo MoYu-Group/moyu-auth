@@ -1,13 +1,17 @@
 package io.github.moyugroup.auth.web.page;
 
+import io.github.moyugroup.auth.common.context.UserContext;
 import io.github.moyugroup.auth.constant.MoYuOAuthConstant;
 import io.github.moyugroup.auth.pojo.vo.AppVO;
 import io.github.moyugroup.auth.pojo.vo.SwitchTenantVO;
 import io.github.moyugroup.auth.service.AppService;
+import io.github.moyugroup.auth.service.TenantUserService;
 import io.github.moyugroup.auth.util.MoYuLoginUtil;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -25,10 +28,14 @@ import java.util.List;
  */
 @Slf4j
 @Controller
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class LoginPageController {
 
     @Resource
-    private AppService appService;
+    AppService appService;
+
+    @Resource
+    TenantUserService tenantUserService;
 
     /**
      * 登录页渲染
@@ -49,19 +56,11 @@ public class LoginPageController {
      * @param model
      * @param request
      * @param response
-     * @param redirectAttributes
      * @return
      */
     @RequestMapping(value = "/switchTenant.html", method = {RequestMethod.GET, RequestMethod.POST})
-    public String switchTenant(Model model, HttpServletRequest request, HttpServletResponse response, RedirectAttributes redirectAttributes) {
-        List<SwitchTenantVO> switchTenantVOS = Arrays.asList(
-                new SwitchTenantVO("1", "摸鱼开发组"),
-                new SwitchTenantVO("2", "机械工程组织交互"),
-                new SwitchTenantVO("3", "农夫圈区"),
-                new SwitchTenantVO("4", "觅品科技"),
-                new SwitchTenantVO("5", "蜂巢数据中心")
-                // 可以根据需要添加更多租户
-        );
+    public String switchTenant(Model model, HttpServletRequest request, HttpServletResponse response) {
+        List<SwitchTenantVO> switchTenantVOS = tenantUserService.getSwitchTenantVOsByUserId(UserContext.getCurUserId());
         model.addAttribute("tenantList", switchTenantVOS);
         return "switchTenant";
     }
@@ -71,7 +70,7 @@ public class LoginPageController {
      *
      * @param request
      */
-    private void checkAppInfo(HttpServletRequest request) {
+    void checkAppInfo(HttpServletRequest request) {
         // 应用未传应用ID，则认为是在登录一方应用，设置为系统默认的 appId
         String appId = MoYuLoginUtil.getRequestAppId(request);
         // 检查登录 APP 是否存在
@@ -85,7 +84,7 @@ public class LoginPageController {
         request.setAttribute(MoYuOAuthConstant.REQUEST_APP_INFO, appById);
     }
 
-    private void fillPageHideParam(Model model, HttpServletRequest request) {
+    void fillPageHideParam(Model model, HttpServletRequest request) {
         String loginErrorMessage = MoYuLoginUtil.getLoginErrorMessage(request);
         model.addAttribute("errorMessage", loginErrorMessage);
         model.addAttribute(MoYuOAuthConstant.APP_ID_PARAM, request.getParameter(MoYuOAuthConstant.APP_ID_PARAM));

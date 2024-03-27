@@ -2,6 +2,7 @@ package io.github.moyugroup.auth.config;
 
 import io.github.moyugroup.auth.filter.MoYuSSOLoginFilter;
 import io.github.moyugroup.auth.service.SSOLoginService;
+import io.github.moyugroup.auth.service.TenantService;
 import jakarta.annotation.Resource;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
@@ -23,6 +24,9 @@ public class FilterConfig {
     @Resource
     SSOLoginService ssoLoginService;
 
+    @Resource
+    TenantService tenantService;
+
     /**
      * 过滤器注册
      *
@@ -31,7 +35,7 @@ public class FilterConfig {
     @Bean
     public FilterRegistrationBean<MoYuSSOLoginFilter> ssoFilterRegistration() {
         FilterRegistrationBean<MoYuSSOLoginFilter> registration = new FilterRegistrationBean<>();
-        registration.setFilter(new MoYuSSOLoginFilter(ssoLoginService));
+        registration.setFilter(new MoYuSSOLoginFilter(ssoLoginService, tenantService));
         // 配置过滤器的路径
         registration.addUrlPatterns("/*");
         // 设置过滤器的顺序

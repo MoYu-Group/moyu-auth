@@ -9,13 +9,17 @@
     <link href="/favicon.ico" rel="shortcut icon"/>
 </head>
 <body>
-<div>Hello <span th:text="${username}">, thymeleaf</span>!</div>
+<div>Hello <span th:text="${userInfo.username}">, thymeleaf</span>!</div>
 <div>sessionId:<span th:text="${sessionId}"></span></div>
 <div><span th:text="${userInfo}"></span></div>
 <div>welcome moyu-统一登录中心</div>
 
 <form method="post" th:action="@{/ssoLogout}">
     <input type="submit" value="注销"/>
+</form>
+
+<form method="get" th:action="@{/switchTenant.html}">
+    <input type="submit" value="切换租户"/>
 </form>
 </body>
 </html>

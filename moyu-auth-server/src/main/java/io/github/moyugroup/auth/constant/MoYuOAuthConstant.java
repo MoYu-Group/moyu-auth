@@ -33,7 +33,11 @@ public class MoYuOAuthConstant {
     /**
      * MoYu-Auth 默认注销页面路径
      */
-    public final static String LOGIN_OUT_URL = "/ssoLogout.html";
+    public final static String LOGIN_OUT_PATH = "/ssoLogout.html";
+    /**
+     * MoYu-Auth 默认切换租户页面
+     */
+    public final static String SWITCH_TENANT_PATH = "/switchTenant.html";
     /**
      * MoYu-Auth 系统默认登录端点
      */
@@ -42,6 +46,10 @@ public class MoYuOAuthConstant {
      * MoYu-Auth 系统默认注销端点
      */
     public final static String LOGIN_OUT_ENDPOINT = "/ssoLogout";
+    /**
+     * MoYu-Auth 系统默认切换租户端点
+     */
+    public final static String SWITCH_TENANT_ENDPOINT = "/api/switch/tenant/doSwitch";
     /**
      * 登录错误信息 属性名称
      */

@@ -2,6 +2,7 @@ package io.github.moyugroup.auth.web.rest;
 
 import io.github.moyugroup.auth.constant.MoYuOAuthConstant;
 import io.github.moyugroup.auth.pojo.request.SSOLoginRequest;
+import io.github.moyugroup.auth.pojo.request.SwitchTenantRequest;
 import io.github.moyugroup.auth.service.SSOLoginService;
 import io.github.moyugroup.auth.util.MoYuLoginUtil;
 import jakarta.annotation.Resource;
@@ -9,9 +10,11 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.io.IOException;
 
@@ -66,14 +69,19 @@ public class SSOLoginController {
 
     /**
      * 切换租户接口
-     * todo 逻辑待实现
      *
      * @param request
      * @param response
      */
-    @PostMapping("/api/switch/tenant/doSwitch")
-    public void switchTenant(HttpServletRequest request, HttpServletResponse response) {
-
+    @PostMapping(MoYuOAuthConstant.SWITCH_TENANT_ENDPOINT)
+    public void switchTenant(@Valid @RequestBody SwitchTenantRequest switchTenantRequest, HttpServletRequest request, HttpServletResponse response) throws IOException {
+        ssoLoginService.userSwitchTenant(switchTenantRequest, request);
+        String redirectUrl = MoYuOAuthConstant.INDEX_PAGE_PATH;
+        if (StringUtils.isNoneBlank(switchTenantRequest.getBackUrl())) {
+            // 重定向到 backUrl
+            redirectUrl = switchTenantRequest.getBackUrl();
+        }
+        response.sendRedirect(redirectUrl);
     }
 
 }

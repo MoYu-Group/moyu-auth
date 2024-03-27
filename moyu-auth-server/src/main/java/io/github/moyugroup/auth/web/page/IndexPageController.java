@@ -26,7 +26,6 @@ public class IndexPageController {
     @GetMapping(MoYuOAuthConstant.INDEX_PAGE_PATH)
     public String index(Model model, HttpServletRequest request) {
         UserInfo userInfo = UserContext.get();
-        model.addAttribute("username", userInfo.getUsername());
         model.addAttribute("userInfo", userInfo);
         model.addAttribute("sessionId", CookieUtil.getSSOLoginSessionId(request));
         return "index";

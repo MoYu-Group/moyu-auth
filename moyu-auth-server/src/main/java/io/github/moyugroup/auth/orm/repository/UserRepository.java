@@ -19,11 +19,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
      * @param queryUser
      * @return
      */
-    default User getByUser(User queryUser) {
+    default User findByUser(User queryUser) {
         Example<User> example = Example.of(queryUser);
         Optional<User> user = this.findOne(example);
         return user.orElse(null);
     }
-
 
 }
