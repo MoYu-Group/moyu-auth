@@ -7,37 +7,9 @@ package io.github.moyugroup.auth.constant;
  */
 public class MoYuOAuthConstant {
     /**
-     * 应用 AppId 参数名称
-     */
-    public final static String APP_ID_PARAM = "appId";
-    /**
-     * 应用 AppSecret 参数名称
-     */
-    public final static String APP_SECRET_PARAM = "appSecret";
-    /**
-     * 回调地址参数名称
-     */
-    public final static String BACK_URL_PARAM = "backUrl";
-    /**
-     * SSO_TOKEN 参数名称
-     */
-    public final static String SSO_TOKEN_PARAM = "ssoToken";
-    /**
      * MoYu-Auth 主页路径
      */
     public final static String INDEX_PAGE_PATH = "/";
-    /**
-     * MoYu-Auth 默认登录页面路径
-     */
-    public final static String LOGIN_PAGE_PATH = "/ssoLogin.html";
-    /**
-     * MoYu-Auth 默认注销页面路径
-     */
-    public final static String LOGIN_OUT_PATH = "/ssoLogout.html";
-    /**
-     * MoYu-Auth 默认切换租户页面
-     */
-    public final static String SWITCH_TENANT_PATH = "/switchTenant.html";
     /**
      * MoYu-Auth 系统默认登录端点
      */

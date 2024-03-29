@@ -1,12 +1,13 @@
 package io.github.moyugroup.auth.filter;
 
+import io.github.moyugroup.auth.common.constant.SSOLoginConstant;
 import io.github.moyugroup.auth.common.context.UserContext;
+import io.github.moyugroup.auth.common.pojo.dto.UserInfo;
+import io.github.moyugroup.auth.common.util.PathUtil;
 import io.github.moyugroup.auth.constant.MoYuOAuthConstant;
 import io.github.moyugroup.auth.orm.model.UserSession;
-import io.github.moyugroup.auth.pojo.dto.UserInfo;
 import io.github.moyugroup.auth.service.SSOLoginService;
 import io.github.moyugroup.auth.service.TenantService;
-import io.github.moyugroup.auth.util.PathUtil;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -101,7 +102,6 @@ public class MoYuSSOLoginFilter implements Filter {
      * @param httpRequest
      * @param httpResponse
      * @param filterChain
-     * @param path
      * @throws IOException
      * @throws ServletException
      */
@@ -111,29 +111,34 @@ public class MoYuSSOLoginFilter implements Filter {
             // 存在 userSession 则代表用户已经登录，建立用户登录上下文
             try {
                 buildLoginContext(userSession);
-                // 登录租户检查
+                // 检查用户是否选择过租户
                 if (loginTenantCheck(requestPath)) {
                     // 继续执行业务
                     filterChain.doFilter(httpRequest, httpResponse);
                 } else {
                     // 跳转到选择租户页面 todo 携带 backUrl
-                    httpResponse.sendRedirect(MoYuOAuthConstant.SWITCH_TENANT_PATH);
+                    httpResponse.sendRedirect(SSOLoginConstant.SWITCH_TENANT_PATH);
                 }
             } finally {
                 // 业务执行完毕后清理用户上下文
                 UserContext.remove();
             }
         } else {
-            log.debug("user is not logged in, redirect to {}", MoYuOAuthConstant.LOGIN_PAGE_PATH);
+            log.debug("user is not logged in, redirect to {}", SSOLoginConstant.LOGIN_PAGE_PATH);
             // 用户未登录，跳转到登录页 todo 携带 backUrl
-            httpResponse.sendRedirect(MoYuOAuthConstant.LOGIN_PAGE_PATH);
+            httpResponse.sendRedirect(SSOLoginConstant.LOGIN_PAGE_PATH);
         }
     }
 
-
+    /**
+     * 检查是否存在租户信息
+     *
+     * @param requestPath
+     * @return
+     */
     private boolean loginTenantCheck(String requestPath) {
-        // 切换租户页面跳过检查
-        if (PathUtil.isMatch(requestPath, Arrays.asList(MoYuOAuthConstant.SWITCH_TENANT_PATH, MoYuOAuthConstant.SWITCH_TENANT_ENDPOINT))) {
+        // 跳过检查的页面
+        if (PathUtil.isMatch(requestPath, Arrays.asList(SSOLoginConstant.SWITCH_TENANT_PATH, MoYuOAuthConstant.SWITCH_TENANT_ENDPOINT))) {
             return Boolean.TRUE;
         }
         // 检查用户上下文是否存在租户信息

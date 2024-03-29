@@ -1,7 +1,7 @@
 package io.github.moyugroup.auth.util;
 
 import cn.hutool.json.JSONObject;
-import io.github.moyugroup.auth.constant.MoYuOAuthConstant;
+import io.github.moyugroup.auth.common.constant.SSOLoginConstant;
 import io.github.moyugroup.enums.ErrorCodeEnum;
 import io.github.moyugroup.exception.BizException;
 import lombok.extern.slf4j.Slf4j;
@@ -55,7 +55,7 @@ public class OAuth2HttpUtil {
             throw new BizException(ErrorCodeEnum.REQUEST_REQUIRED_PARAMETER_IS_EMPTY);
         }
         JSONObject param = new JSONObject();
-        param.set(MoYuOAuthConstant.SSO_TOKEN_PARAM, ssoToken);
+        param.set(SSOLoginConstant.SSO_TOKEN, ssoToken);
         sendPostHttpRequest(url, param);
     }
 

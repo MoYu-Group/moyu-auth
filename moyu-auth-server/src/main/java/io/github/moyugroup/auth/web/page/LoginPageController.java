@@ -1,5 +1,6 @@
 package io.github.moyugroup.auth.web.page;
 
+import io.github.moyugroup.auth.common.constant.SSOLoginConstant;
 import io.github.moyugroup.auth.common.context.UserContext;
 import io.github.moyugroup.auth.constant.MoYuOAuthConstant;
 import io.github.moyugroup.auth.pojo.vo.AppVO;
@@ -51,7 +52,7 @@ public class LoginPageController {
     }
 
     /**
-     * 切换登录页面渲染
+     * 切换租户页面渲染
      *
      * @param model
      * @param request
@@ -87,8 +88,8 @@ public class LoginPageController {
     void fillPageHideParam(Model model, HttpServletRequest request) {
         String loginErrorMessage = MoYuLoginUtil.getLoginErrorMessage(request);
         model.addAttribute("errorMessage", loginErrorMessage);
-        model.addAttribute(MoYuOAuthConstant.APP_ID_PARAM, request.getParameter(MoYuOAuthConstant.APP_ID_PARAM));
-        model.addAttribute(MoYuOAuthConstant.BACK_URL_PARAM, request.getParameter(MoYuOAuthConstant.BACK_URL_PARAM));
+        model.addAttribute(SSOLoginConstant.APP_ID, request.getParameter(SSOLoginConstant.APP_ID));
+        model.addAttribute(SSOLoginConstant.BACK_URL, request.getParameter(SSOLoginConstant.BACK_URL));
     }
 
 }

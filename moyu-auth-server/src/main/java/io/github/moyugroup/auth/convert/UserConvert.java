@@ -1,7 +1,7 @@
 package io.github.moyugroup.auth.convert;
 
+import io.github.moyugroup.auth.common.pojo.dto.UserInfo;
 import io.github.moyugroup.auth.orm.model.User;
-import io.github.moyugroup.auth.pojo.dto.UserInfo;
 import io.github.moyugroup.auth.pojo.request.UserSaveRequest;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;

@@ -1,5 +1,6 @@
 package io.github.moyugroup.auth.web.rest;
 
+import io.github.moyugroup.auth.common.constant.SSOLoginConstant;
 import io.github.moyugroup.auth.constant.MoYuOAuthConstant;
 import io.github.moyugroup.auth.pojo.request.SSOLoginRequest;
 import io.github.moyugroup.auth.pojo.request.SwitchTenantRequest;
@@ -46,7 +47,7 @@ public class SSOLoginController {
         } catch (Exception ex) {
             // 重定向到登录页面并携带错误信息 todo 处理接口请求返回json
             MoYuLoginUtil.setLoginErrorMessage(request, ex.getMessage());
-            response.sendRedirect(MoYuOAuthConstant.LOGIN_PAGE_PATH);
+            response.sendRedirect(SSOLoginConstant.LOGIN_PAGE_PATH);
             return;
         }
         // 登录成功后重定向到首页
@@ -64,7 +65,7 @@ public class SSOLoginController {
     public void ssoLogout(HttpServletRequest request, HttpServletResponse response) throws IOException {
         ssoLoginService.userLogout(request, response);
         // 重定向到登录页面
-        response.sendRedirect(MoYuOAuthConstant.LOGIN_PAGE_PATH);
+        response.sendRedirect(SSOLoginConstant.LOGIN_PAGE_PATH);
     }
 
     /**

@@ -1,5 +1,6 @@
 package io.github.moyugroup.auth.util;
 
+import io.github.moyugroup.auth.common.constant.SSOLoginConstant;
 import io.github.moyugroup.auth.constant.MoYuOAuthConstant;
 import io.github.moyugroup.auth.pojo.vo.AppVO;
 import jakarta.servlet.http.HttpServletRequest;
@@ -26,7 +27,7 @@ public class MoYuLoginUtil {
      * @return
      */
     public static String getRequestAppId(HttpServletRequest request) {
-        String appId = request.getParameter(MoYuOAuthConstant.APP_ID_PARAM);
+        String appId = request.getParameter(SSOLoginConstant.APP_ID);
         if (StringUtils.isBlank(appId)) {
             appId = MoYuOAuthConstant.MOYU_AUTH;
         }

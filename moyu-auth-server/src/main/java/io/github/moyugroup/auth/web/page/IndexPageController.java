@@ -1,9 +1,9 @@
 package io.github.moyugroup.auth.web.page;
 
 import io.github.moyugroup.auth.common.context.UserContext;
+import io.github.moyugroup.auth.common.pojo.dto.UserInfo;
+import io.github.moyugroup.auth.common.util.CookieUtil;
 import io.github.moyugroup.auth.constant.MoYuOAuthConstant;
-import io.github.moyugroup.auth.pojo.dto.UserInfo;
-import io.github.moyugroup.auth.util.CookieUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -27,7 +27,7 @@ public class IndexPageController {
     public String index(Model model, HttpServletRequest request) {
         UserInfo userInfo = UserContext.get();
         model.addAttribute("userInfo", userInfo);
-        model.addAttribute("sessionId", CookieUtil.getSSOLoginSessionId(request));
+        model.addAttribute("sessionId", CookieUtil.getSSOLoginSessionId(request, MoYuOAuthConstant.MOYU_AUTH));
         return "index";
     }
 }

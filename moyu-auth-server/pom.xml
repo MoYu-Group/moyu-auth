@@ -23,6 +23,11 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
+        <!-- moyu-auth-common -->
+        <dependency>
+            <groupId>io.github.moyu-group.moyu-framework</groupId>
+            <artifactId>moyu-auth-common</artifactId>
+        </dependency>
         <!-- okhttp -->
         <dependency>
             <groupId>com.squareup.okhttp3</groupId>

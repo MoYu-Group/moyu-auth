@@ -22,16 +22,5 @@ public class MoYuOAuthConstant {
     public final static String LOGOUT_ENDPOINT = "/ssoLogout";
     public final static String OAUTH2_ENDPOINT = "/oauth2";
     public final static String OAUTH2_ACCESS_TOKEN_ENDPOINT = "/oauth2/accessToken";
-    /**
-     * OAuth2 登录缓存类型配置名称
-     */
-    public final static String MOYU_AUTH_CACHE = "moyu.auth.server.cache";
-    /**
-     * 启用本地缓存配置值
-     */
-    public final static String MOYU_AUTH_CACHE_LOCAL = "local";
-    /**
-     * Request 对象中储存 ssoToken 的字段名称
-     */
-    public final static String REQUEST_SSO_TOKEN_FIELD_NAME = "REQUEST_SSO_TOKEN_FIELD_NAME";
+
 }

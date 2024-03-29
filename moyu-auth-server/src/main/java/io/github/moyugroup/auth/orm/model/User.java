@@ -55,15 +55,15 @@ public class User extends DeletableEntity {
     @Column(length = 48)
     String email;
     /**
-     * 用户全名
+     * 昵称
      */
     @Column(length = 64)
-    String fullName;
+    String nickname;
     /**
      * 用户状态
      */
+    @Column(length = 16)
     @Enumerated(EnumType.STRING)
-    @Column(length = 64)
     UserStatusEnum userStatus;
     /**
      * 最后登录时间

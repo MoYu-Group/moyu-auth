@@ -1,7 +1,10 @@
 package io.github.moyugroup.auth.service;
 
 import cn.hutool.core.util.IdUtil;
+import io.github.moyugroup.auth.common.pojo.dto.UserInfo;
+import io.github.moyugroup.auth.common.util.CookieUtil;
 import io.github.moyugroup.auth.constant.MoYuLoginConstant;
+import io.github.moyugroup.auth.constant.MoYuOAuthConstant;
 import io.github.moyugroup.auth.constant.enums.SSOLoginErrorEnum;
 import io.github.moyugroup.auth.constant.enums.UserStatusEnum;
 import io.github.moyugroup.auth.convert.UserConvert;
@@ -11,9 +14,7 @@ import io.github.moyugroup.auth.manage.UserSessionManage;
 import io.github.moyugroup.auth.orm.model.TenantUser;
 import io.github.moyugroup.auth.orm.model.User;
 import io.github.moyugroup.auth.orm.model.UserSession;
-import io.github.moyugroup.auth.pojo.dto.UserInfo;
 import io.github.moyugroup.auth.pojo.request.SwitchTenantRequest;
-import io.github.moyugroup.auth.util.CookieUtil;
 import io.github.moyugroup.enums.ErrorCodeEnum;
 import io.github.moyugroup.util.AssertUtil;
 import io.github.moyugroup.web.util.WebUtil;
@@ -88,7 +89,11 @@ public class SSOLoginService {
         userSessionManage.userSessionSave(userSession);
 
         // 写入 Cookie
-        CookieUtil.writeSSOLoginCookie(userSession.getSessionId(), response);
+        CookieUtil.writeSSOLoginCookie(userSession.getSessionId(),
+                MoYuOAuthConstant.MOYU_AUTH,
+                MoYuLoginConstant.LOGIN_EXPIRE_SECONDS,
+                MoYuOAuthConstant.INDEX_PAGE_PATH,
+                response);
 
         // 异步更新用户最后登录时间
         userAsyncService.afterUserLogin(user.getUserId(), loginTime);
@@ -103,7 +108,7 @@ public class SSOLoginService {
      * @return
      */
     public UserSession getUserLoginSession(HttpServletRequest request) {
-        String sessionId = CookieUtil.getSSOLoginSessionId(request);
+        String sessionId = CookieUtil.getSSOLoginSessionId(request, MoYuOAuthConstant.MOYU_AUTH);
         if (StringUtils.isBlank(sessionId)) {
             return null;
         }
@@ -134,7 +139,8 @@ public class SSOLoginService {
             log.debug("removeSessionById:{}", userLoginSession.getId());
             userSessionManage.removeSessionById(userLoginSession.getId());
             // 删除用户登录 cookie
-            CookieUtil.removeSSOLoginCookie(response);
+            CookieUtil.removeSSOLoginCookie(MoYuOAuthConstant.MOYU_AUTH,
+                    MoYuOAuthConstant.INDEX_PAGE_PATH, response);
         }
     }
 

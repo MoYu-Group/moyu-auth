@@ -3,6 +3,7 @@ package io.github.moyugroup.auth.demo.config;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
 
 /**
  * 摸鱼登录 属性配置
@@ -11,8 +12,10 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  */
 @Getter
 @Setter
+@Configuration
 @ConfigurationProperties(prefix = "moyu.auth.client")
 public class MoYuAuthClientProperties {
+
     /**
      * 客户端应用appId
      */
@@ -25,4 +28,5 @@ public class MoYuAuthClientProperties {
      * 登录授权服务器地址
      */
     private String serverUrl;
+
 }
