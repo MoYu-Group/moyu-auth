@@ -15,8 +15,9 @@
     <dependencies>
         <!-- MoYu Web开发能力快速集成 -->
         <dependency>
-            <groupId>io.github.moyu-group.moyu-framework</groupId>
+            <groupId>io.github.moyu-group.moyu-framework.moyu-autoconfiguers</groupId>
             <artifactId>moyu-web-autoconfigure</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <!-- spring security -->
         <dependency>
@@ -25,8 +26,9 @@
         </dependency>
         <!-- moyu-auth-common -->
         <dependency>
-            <groupId>io.github.moyu-group.moyu-framework</groupId>
+            <groupId>io.github.moyu-group.moyu-framework.moyu-autoconfiguers</groupId>
             <artifactId>moyu-auth-common</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <!-- okhttp -->
         <dependency>
@@ -36,8 +38,9 @@
         </dependency>
         <!-- moyu spring data-jpa -->
         <dependency>
-            <groupId>io.github.moyu-group.moyu-framework</groupId>
+            <groupId>io.github.moyu-group.moyu-framework.moyu-autoconfiguers</groupId>
             <artifactId>moyu-spring-data-jpa-autoconfigure</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <!-- spring data jpa test -->
         <dependency>
