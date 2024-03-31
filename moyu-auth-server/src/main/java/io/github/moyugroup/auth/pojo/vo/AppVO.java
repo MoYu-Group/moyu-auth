@@ -31,15 +31,11 @@ public class AppVO {
      */
     String appSecret;
     /**
-     * 应用 AES 加密 KEY
-     */
-    String appAesKey;
-    /**
      * 重定向地址
      */
     String redirectUri;
     /**
-     * 应用是否激活，默认激活
+     * 是否启用
      */
-    Boolean isActive = true;
+    Boolean enabled;
 }

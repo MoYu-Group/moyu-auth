@@ -41,9 +41,7 @@ class AppManageTest {
         app.setAppId(testAppId);
         app.setAppName(testAppId);
         app.setAppSecret(appSecret);
-        app.setAppAesKey("123");
-        app.setIsActive(true);
-
+        app.setEnabled(true);
         entityManager.persist(app);
         entityManager.flush();
 
@@ -58,9 +56,7 @@ class AppManageTest {
         app.setAppId(testAppId);
         app.setAppName(testAppId);
         app.setAppSecret(appSecret);
-        app.setAppAesKey("123");
-        app.setIsActive(true);
-
+        app.setEnabled(true);
         entityManager.persist(app);
         entityManager.flush();
 

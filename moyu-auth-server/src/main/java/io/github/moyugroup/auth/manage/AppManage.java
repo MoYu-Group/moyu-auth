@@ -1,5 +1,6 @@
 package io.github.moyugroup.auth.manage;
 
+import io.github.moyugroup.auth.constant.MoYuOAuthConstant;
 import io.github.moyugroup.auth.convert.AppConvert;
 import io.github.moyugroup.auth.orm.model.App;
 import io.github.moyugroup.auth.orm.repository.AppRepository;
@@ -9,6 +10,8 @@ import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import java.util.Objects;
 
 /**
  * App 表数据操作封装
@@ -48,5 +51,20 @@ public class AppManage {
         query.setAppSecret(appSecret);
         App app = appRepository.findByApp(query);
         return AppConvert.INSTANCE.appToAppVO(app);
+    }
+
+    /**
+     * 获取登录请求的 App
+     * 如果请求的 App 不存在，则获取默认 App
+     *
+     * @param appId
+     * @return
+     */
+    public AppVO getRequestAppVO(String appId) {
+        AppVO appById = getAppById(appId);
+        if (Objects.isNull(appById)) {
+            appById = getAppById(MoYuOAuthConstant.MOYU_AUTH);
+        }
+        return appById;
     }
 }

@@ -47,18 +47,13 @@ public class App extends DeletableEntity {
     @Column(nullable = false)
     String appSecret;
     /**
-     * 应用 AES 加密 KEY
-     */
-    @Column(nullable = false)
-    String appAesKey;
-    /**
      * 重定向地址
      */
     String redirectUri;
     /**
-     * 应用是否激活，默认激活
+     * 是否启用
      */
     @Column(nullable = false)
-    Boolean isActive;
+    Boolean enabled;
 
 }

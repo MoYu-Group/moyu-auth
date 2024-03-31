@@ -34,8 +34,7 @@ class AppRepositoryTest {
         app.setAppId("test-app");
         app.setAppName("test-app");
         app.setAppSecret(appSecret);
-        app.setAppAesKey("123");
-        app.setIsActive(true);
+        app.setEnabled(true);
         return app;
     }
 

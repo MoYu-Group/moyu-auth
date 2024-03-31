@@ -116,15 +116,17 @@
     // 切换租户函数
     function switchTenant(tenantId) {
         console.log('切换至租户ID:', tenantId);
-        const postData = {
-            tenantId: tenantId
-        }
-        fetch(`/api/switch/tenant/doSwitch`, {
+
+        let formData = new FormData();
+        formData.append('tenantId', tenantId);
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const switchUrl = `/api/switch/tenant/doSwitch?${urlParams.toString()}`;
+
+        console.log("switchUrl：" + switchUrl)
+        fetch(switchUrl, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(postData)
+            body: formData
         })
             .then(response => {
                 console.log('response', response);

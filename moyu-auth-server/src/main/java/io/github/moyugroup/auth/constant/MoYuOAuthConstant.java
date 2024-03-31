@@ -25,7 +25,11 @@ public class MoYuOAuthConstant {
     /**
      * 登录错误信息 属性名称
      */
-    public final static String LOGIN_ERROR_MESSAGE = "LOGIN_ERROR_MESSAGE";
+    public final static String LOGIN_ERROR_MESSAGE = "errorMessage";
+    /**
+     * 是否允许继续登录
+     */
+    public final static String ALLOW_LOGIN = "allowLogin";
     /**
      * 登录用户名 参数名称
      */

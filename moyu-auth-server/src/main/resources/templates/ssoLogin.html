@@ -12,30 +12,80 @@
 </head>
 <body>
 <div class="container">
-    <form action="/ssoLogin" class="form-signin" method="post">
+    <form class="form-signin" id="loginForm">
         <h2 class="form-signin-heading">欢迎登录</h2>
-        <div th:if="${!#strings.isEmpty(errorMessage)}">
-            <div class="alert alert-danger" role="alert" th:text="${errorMessage}"></div>
+        <div class="alert alert-danger"
+             id="errorMsgDiv" th:style="${not #strings.isEmpty(errorMessage)} ? 'display:block;' : 'display:none;'"
+             th:text="${errorMessage}"></div>
+
+        <div th:if="${allowLogin}">
+            <p>
+                <label class="sr-only" for="username">用户名</label>
+                <input autofocus class="form-control" id="username" name="username" placeholder="用户名" required
+                       type="text">
+            </p>
+            <p>
+                <label class="sr-only" for="password">密码</label>
+                <input class="form-control" id="password" name="password" placeholder="密码" required type="password">
+            </p>
+            <!--        <input th:name="${_csrf.parameterName}" th:value="${_csrf.token}" type="hidden"/>-->
+            <input name="loginType" type="hidden" value="ACCOUNT"/>
+            <button class="btn btn-lg btn-primary btn-block" id="loginButton">登录</button>
         </div>
-        <p>
-            <label class="sr-only" for="username">用户名</label>
-            <input autofocus class="form-control" id="username" name="username" placeholder="用户名" required
-                   type="text">
-        </p>
-        <p>
-            <label class="sr-only" for="password">密码</label>
-            <input class="form-control" id="password" name="password" placeholder="密码" required type="password">
-        </p>
-        <!--        <input th:name="${_csrf.parameterName}" th:value="${_csrf.token}" type="hidden"/>-->
-        <div th:if="${!#strings.isEmpty(appId)}">
-            <input name="appId" th:value="${appId}" type="hidden"/>
-        </div>
-        <div th:if="${!#strings.isEmpty(appId)}">
-            <input name="backUrl" th:value="${backUrl}" type="hidden"/>
-        </div>
-        <input name="loginType" type="hidden" value="ACCOUNT"/>
-        <button class="btn btn-lg btn-primary btn-block" type="submit">登录</button>
     </form>
 </div>
+
+<script>
+    if (document.getElementById('loginButton') !== null) {
+        document.getElementById('loginButton').addEventListener('click', function (event) {
+            // 阻止按钮的默认动作
+            event.preventDefault();
+
+            const form = document.getElementById('loginForm');
+            // 检查表单是否有效
+            if (!form.checkValidity()) {
+                // 停止函数执行
+                return;
+            }
+
+            const formData = new FormData(form);
+            console.log("formData：" + JSON.stringify(formData))
+
+            // 构造请求URL，将当前页面的查询参数附加到/ssoLogin的URL后面
+            const urlParams = new URLSearchParams(window.location.search);
+            const loginUrl = `/ssoLogin?${urlParams.toString()}`;
+            console.log("loginUrl：" + loginUrl)
+
+            // 发起fetch请求
+            fetch(loginUrl, {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    if (response.redirected || response.status === 302) {
+                        console.log('请求将被重定向到:', response.url);
+                        window.location.href = response.url;
+                        return;
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // 处理成功的响应
+                    console.log('Success:', data);
+                    if (data && !data.success) {
+                        document.getElementById('errorMsgDiv').style.display = 'block';
+                        document.getElementById('errorMsgDiv').textContent = data.message;
+                    }
+                })
+                .catch(error => {
+                    document.getElementById('errorMsgDiv').style.display = 'block';
+                    document.getElementById('errorMsgDiv').textContent = error.message;
+                });
+        });
+    }
+</script>
 </body>
 </html>

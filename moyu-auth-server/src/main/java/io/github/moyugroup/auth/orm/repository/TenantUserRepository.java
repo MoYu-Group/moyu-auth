@@ -33,7 +33,7 @@ public interface TenantUserRepository extends JpaRepository<TenantUser, Long> {
     TenantUser findTenantUserByUserIdAndTenantId(String userId, String tenantId);
 
     /**
-     * 查询用户关联租户列表
+     * 查询用户关联租户列表，指定租户查询范围
      * todo 是否需要租户状态过滤
      *
      * @param userId
@@ -41,6 +41,6 @@ public interface TenantUserRepository extends JpaRepository<TenantUser, Long> {
      */
     @Query("SELECT new io.github.moyugroup.auth.pojo.vo.SwitchTenantVO(t.tenantId, t.tenantName) FROM TenantUser tu " +
             "INNER JOIN Tenant t ON tu.tenantId = t.tenantId and t.isDeleted = false " +
-            "WHERE tu.userId = :userId")
-    List<SwitchTenantVO> findSwitchTenantVOListByUserId(@Param("userId") String userId);
+            "WHERE tu.userId = :userId and tu.tenantId in :tenantIds")
+    List<SwitchTenantVO> getSwitchTenantVOsByUserIdAndTenantIdIn(@Param("userId") String userId, @Param("tenantIds") List<String> tenantIds);
 }

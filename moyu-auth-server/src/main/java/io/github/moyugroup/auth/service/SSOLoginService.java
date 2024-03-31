@@ -8,13 +8,15 @@ import io.github.moyugroup.auth.constant.MoYuOAuthConstant;
 import io.github.moyugroup.auth.constant.enums.SSOLoginErrorEnum;
 import io.github.moyugroup.auth.constant.enums.UserStatusEnum;
 import io.github.moyugroup.auth.convert.UserConvert;
+import io.github.moyugroup.auth.manage.AppTenantManage;
 import io.github.moyugroup.auth.manage.TenantUserManage;
 import io.github.moyugroup.auth.manage.UserManage;
 import io.github.moyugroup.auth.manage.UserSessionManage;
+import io.github.moyugroup.auth.orm.model.AppTenant;
 import io.github.moyugroup.auth.orm.model.TenantUser;
 import io.github.moyugroup.auth.orm.model.User;
 import io.github.moyugroup.auth.orm.model.UserSession;
-import io.github.moyugroup.auth.pojo.request.SwitchTenantRequest;
+import io.github.moyugroup.auth.util.MoYuLoginUtil;
 import io.github.moyugroup.enums.ErrorCodeEnum;
 import io.github.moyugroup.util.AssertUtil;
 import io.github.moyugroup.web.util.WebUtil;
@@ -55,6 +57,9 @@ public class SSOLoginService {
 
     @Resource
     TenantUserManage tenantUserManage;
+
+    @Resource
+    AppTenantManage appTenantManage;
 
     /**
      * 用户账户登录
@@ -147,15 +152,23 @@ public class SSOLoginService {
     /**
      * 用户切换租户
      *
-     * @param switchTenant 请求参数
-     * @param request
+     * @param tenantId 切换租户ID
+     * @param request  请求对象
      */
-    public void userSwitchTenant(SwitchTenantRequest switchTenant, HttpServletRequest request) {
+    public void userSwitchTenant(String tenantId, HttpServletRequest request) {
         UserSession userLoginSession = getUserLoginSession(request);
-        // 查询是否存在用户和租户关系
-        TenantUser tenantUser = tenantUserManage.findTenantUserByUserIdAndTenantId(userLoginSession.getUserId(), switchTenant.getTenantId());
+        String requestAppId = MoYuLoginUtil.getRequestAppId(request);
+
+        // 查询切换的租户是否是应用已开通租户
+        AppTenant appTenant = appTenantManage.getByAppIdAndTenantId(requestAppId, tenantId);
+        AssertUtil.notNull(appTenant, SSOLoginErrorEnum.SWITCH_TENANT_INVALID);
+
+        // 查询是否存在用户和切换租户关系
+        TenantUser tenantUser = tenantUserManage.getTenantUserByUserIdAndTenantId(userLoginSession.getUserId(), tenantId);
         AssertUtil.notNull(tenantUser, SSOLoginErrorEnum.SWITCH_TENANT_INVALID);
+
         // todo 是否需要租户状态检查
+
         // 切换租户
         userLoginSession.setTenantId(tenantUser.getTenantId());
         userSessionManage.userSessionSave(userLoginSession);

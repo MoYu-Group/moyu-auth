@@ -2,17 +2,16 @@ package io.github.moyugroup.auth.util;
 
 import io.github.moyugroup.auth.common.constant.SSOLoginConstant;
 import io.github.moyugroup.auth.constant.MoYuOAuthConstant;
+import io.github.moyugroup.auth.constant.enums.SSOLoginErrorEnum;
 import io.github.moyugroup.auth.pojo.vo.AppVO;
+import io.github.moyugroup.util.AssertUtil;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.security.authentication.BadCredentialsException;
-
-import java.util.Objects;
+import org.springframework.ui.Model;
 
 /**
- * 登录工具类
+ * 登录过程 工具类封装
  * <p>
  * Created by fanfan on 2023/09/03.
  */
@@ -40,14 +39,13 @@ public class MoYuLoginUtil {
      * @param appVO
      */
     public static void checkAppIsOk(AppVO appVO) {
-        // 应用存在判断
-        if (Objects.isNull(appVO)) {
-            throw new BadCredentialsException("应用未在统一登录中心注册");
-        }
-        // 二方应用的应用地址必须配置
-        if (!MoYuLoginUtil.checkIsMoYuAuthApp(appVO.getAppId()) && StringUtils.isBlank(appVO.getRedirectUri())) {
-            throw new BadCredentialsException("应用配置错误，AppUrl 不能为空");
-        }
+        // 应用是否存在判断
+        AssertUtil.notNull(appVO, SSOLoginErrorEnum.APP_NOT_FOUND);
+        // 当通过二方应用登录时，应用的回调地址必须配置
+        AssertUtil.isFalse(!MoYuLoginUtil.checkIsMoYuAuthApp(appVO.getAppId())
+                && StringUtils.isBlank(appVO.getRedirectUri()), SSOLoginErrorEnum.APP_CONFIG_ERROR);
+        // 应用是否启用
+        AssertUtil.isTrue(appVO.getEnabled(), SSOLoginErrorEnum.APP_STATE_ERROR);
     }
 
     /**
@@ -61,33 +59,14 @@ public class MoYuLoginUtil {
     }
 
     /**
-     * 获取登录错误信息
+     * 填充页面隐藏参数
      *
-     * @param request
-     * @return
+     * @param model
+     * @param allowLogin
+     * @param errorMsg
      */
-    public static String getLoginErrorMessage(HttpServletRequest request) {
-        HttpSession session = request.getSession();
-        Object loginErrorMsg = session.getAttribute(MoYuOAuthConstant.LOGIN_ERROR_MESSAGE);
-        if (Objects.nonNull(loginErrorMsg)) {
-            session.removeAttribute(MoYuOAuthConstant.LOGIN_ERROR_MESSAGE);
-            return (String) loginErrorMsg;
-        }
-        return null;
-    }
-
-    /**
-     * 设置登录错误信息
-     *
-     * @param request
-     * @param errorMessage
-     * @return
-     */
-    public static void setLoginErrorMessage(HttpServletRequest request, String errorMessage) {
-        HttpSession session = request.getSession();
-        if (StringUtils.isBlank(errorMessage)) {
-            return;
-        }
-        session.setAttribute(MoYuOAuthConstant.LOGIN_ERROR_MESSAGE, errorMessage);
+    public static void fillPageParam(Model model, Boolean allowLogin, String errorMsg) {
+        model.addAttribute(MoYuOAuthConstant.LOGIN_ERROR_MESSAGE, errorMsg);
+        model.addAttribute(MoYuOAuthConstant.ALLOW_LOGIN, allowLogin);
     }
 }

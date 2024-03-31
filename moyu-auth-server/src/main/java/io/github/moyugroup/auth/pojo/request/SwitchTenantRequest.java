@@ -17,5 +17,4 @@ public class SwitchTenantRequest {
     @NotBlank
     String tenantId;
 
-    String backUrl;
 }

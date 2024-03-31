@@ -161,7 +161,7 @@ public class MoYuSSOLoginFilter implements Filter {
             userInfo.setTenantId(userSession.getTenantId());
             userInfo.setTenantName(tenantService.getTenantNameByTenantId(userSession.getTenantId()));
         }
-        log.debug("user is logged in with UserInfo:{}", userInfo);
+        log.debug("user is logged in with {}", userInfo);
         UserContext.set(userInfo);
     }
 

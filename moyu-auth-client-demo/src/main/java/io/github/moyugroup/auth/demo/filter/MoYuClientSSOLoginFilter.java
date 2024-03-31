@@ -126,7 +126,7 @@ public class MoYuClientSSOLoginFilter implements Filter {
      * @param userInfo 用户信息
      */
     private void buildLoginContext(UserInfo userInfo) {
-        log.debug("user is logged in with UserInfo:{}", userInfo);
+        log.debug("user is logged in with {}", userInfo);
         UserContext.set(userInfo);
     }
 

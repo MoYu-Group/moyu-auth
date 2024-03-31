@@ -42,13 +42,13 @@ public class HelloRestController {
         return save;
     }
 
-    @GetMapping("addApp")
+    @GetMapping("/open/addApp")
     public Object app(String appId) {
         App app = new App();
-        app.setAppName("test");
+        app.setAppName(appId);
         app.setAppSecret("1234");
-        app.setAppAesKey("1234");
         app.setAppId(appId);
+        app.setEnabled(true);
         App save = appRepository.save(app);
         log.info("save save:{}", JSONUtil.toJsonStr(save));
         return save;

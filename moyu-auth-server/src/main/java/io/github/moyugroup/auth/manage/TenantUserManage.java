@@ -25,13 +25,14 @@ public class TenantUserManage {
     TenantUserRepository tenantUserRepository;
 
     /**
-     * 根据 UserId 查询
+     * 根据 UserId 和 指定租户列表查询
      *
      * @param userId
+     * @param tenantIds
      * @return
      */
-    public List<SwitchTenantVO> getSwitchTenantVOsByUserId(String userId) {
-        return tenantUserRepository.findSwitchTenantVOListByUserId(userId);
+    public List<SwitchTenantVO> getSwitchTenantVOsByUserIdAndTenantIdIn(String userId, List<String> tenantIds) {
+        return tenantUserRepository.getSwitchTenantVOsByUserIdAndTenantIdIn(userId, tenantIds);
     }
 
     /**
@@ -41,7 +42,7 @@ public class TenantUserManage {
      * @param tenantId 租户ID
      * @return 关联信息
      */
-    public TenantUser findTenantUserByUserIdAndTenantId(String userId, String tenantId) {
+    public TenantUser getTenantUserByUserIdAndTenantId(String userId, String tenantId) {
         return tenantUserRepository.findTenantUserByUserIdAndTenantId(userId, tenantId);
     }
 }
