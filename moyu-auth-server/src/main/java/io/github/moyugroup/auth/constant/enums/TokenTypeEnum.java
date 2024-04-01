@@ -7,20 +7,18 @@ import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
 /**
- * 用户状态枚举
+ * 令牌类型枚举
  * <p>
- * Created by fanfan on 2024/01/16.
+ * Created by fanfan on 2024/04/01.
  */
 @AllArgsConstructor
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public enum UserStatusEnum implements BaseEnum {
+public enum TokenTypeEnum implements BaseEnum {
 
-    INACTIVE("Inactive", "未激活"),
-    ACTIVE("Active", "已激活"),
-    LOCKED("Locked", "已锁定"),
-    RESTRICTED("Restricted", "账户受限"),
-    FROZEN("Frozen", "冻结"),
+    BEARER_TOKEN("BearerToken", "授权令牌"),
+    REFRESH_TOKEN("RefreshToken", "刷新令牌"),
+    ID_TOKEN("IDToken", "携带用户信息的 JWT Token"),
     ;
 
     /**

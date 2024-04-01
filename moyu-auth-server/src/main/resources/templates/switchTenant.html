@@ -143,9 +143,18 @@
             .then(data => {
                 // 处理解析后的数据
                 console.log('处理解析后的数据 data', data);
-                const alertBox = document.getElementById('alertBox');
-                // 显示弹框
-                alertBox.innerHTML = '<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><span id="alertMsg">' + data.message + '</span></div>'
+                if (data) {
+                    if (data.success) {
+                        // 切换租户成功
+                        if (data.content.redirectUrl) {
+                            window.location.href = data.content.redirectUrl
+                        }
+                    } else {
+                        const alertBox = document.getElementById('alertBox');
+                        // 切换租户失败，显示报错弹框和错误信息
+                        alertBox.innerHTML = '<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><span id="alertMsg">' + data.message + '</span></div>'
+                    }
+                }
             })
             .catch(error => {
                 // 处理请求过程中发生的错误

@@ -50,7 +50,7 @@ public class UserSession extends BaseIdEntity {
      * 会话过期时间
      */
     @Column(nullable = false)
-    LocalDateTime expiresTime;
+    LocalDateTime expireTime;
     /**
      * 用户IP地址
      */

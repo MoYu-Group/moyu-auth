@@ -43,7 +43,7 @@ public class MoYuClientSSOLoginFilter implements Filter {
             "/ssoLogin",
             "/ssoLogin.html",
             "/ssoLogout",
-            "/oauth2/getUser",
+            "/oauth2",
             "/open/**"
     );
 

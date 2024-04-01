@@ -88,7 +88,7 @@ public class SSOLoginService {
                 .setUserId(user.getUserId())
                 .setTenantId(null)
                 .setCreatedTime(loginTime)
-                .setExpiresTime(loginTime.plusSeconds(MoYuLoginConstant.LOGIN_EXPIRE_SECONDS))
+                .setExpireTime(loginTime.plusSeconds(MoYuLoginConstant.LOGIN_EXPIRE_SECONDS))
                 .setUserIp(WebUtil.getIpAddress())
                 .setUserAgent(null);
         userSessionManage.userSessionSave(userSession);
@@ -157,7 +157,7 @@ public class SSOLoginService {
      */
     public void userSwitchTenant(String tenantId, HttpServletRequest request) {
         UserSession userLoginSession = getUserLoginSession(request);
-        String requestAppId = MoYuLoginUtil.getRequestAppId(request);
+        String requestAppId = MoYuLoginUtil.getRequestParamAppId(request);
 
         // 查询切换的租户是否是应用已开通租户
         AppTenant appTenant = appTenantManage.getByAppIdAndTenantId(requestAppId, tenantId);

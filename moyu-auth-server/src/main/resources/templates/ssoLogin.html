@@ -74,10 +74,18 @@
                 })
                 .then(data => {
                     // 处理成功的响应
-                    console.log('Success:', data);
-                    if (data && !data.success) {
-                        document.getElementById('errorMsgDiv').style.display = 'block';
-                        document.getElementById('errorMsgDiv').textContent = data.message;
+                    console.log('Login Success:', data);
+                    if (data) {
+                        if (data.success) {
+                            // 登录成功
+                            if (data.content.redirectUrl) {
+                                window.location.href = data.content.redirectUrl
+                            }
+                        } else {
+                            // 登录失败，显示错误信息
+                            document.getElementById('errorMsgDiv').style.display = 'block';
+                            document.getElementById('errorMsgDiv').textContent = data.message;
+                        }
                     }
                 })
                 .catch(error => {

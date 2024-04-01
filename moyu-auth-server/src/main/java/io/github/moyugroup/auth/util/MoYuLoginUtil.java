@@ -25,7 +25,7 @@ public class MoYuLoginUtil {
      * @param request
      * @return
      */
-    public static String getRequestAppId(HttpServletRequest request) {
+    public static String getRequestParamAppId(HttpServletRequest request) {
         String appId = request.getParameter(SSOLoginConstant.APP_ID);
         if (StringUtils.isBlank(appId)) {
             appId = MoYuOAuthConstant.MOYU_AUTH;
@@ -59,14 +59,23 @@ public class MoYuLoginUtil {
     }
 
     /**
-     * 填充页面隐藏参数
+     * 加载登录页面
      *
-     * @param model
-     * @param allowLogin
-     * @param errorMsg
+     * @param model 页面模型
+     * @param appVO 登录应用
      */
-    public static void fillPageParam(Model model, Boolean allowLogin, String errorMsg) {
+    public static void loadLoginPage(Model model, AppVO appVO) {
+        boolean allowLogin = true;
+        String errorMsg = "";
+        try {
+            MoYuLoginUtil.checkAppIsOk(appVO);
+        } catch (Exception ex) {
+            // APP验证失败，禁止继续登录，返回错误信息
+            allowLogin = false;
+            errorMsg = ex.getMessage();
+        }
         model.addAttribute(MoYuOAuthConstant.LOGIN_ERROR_MESSAGE, errorMsg);
         model.addAttribute(MoYuOAuthConstant.ALLOW_LOGIN, allowLogin);
     }
+
 }
