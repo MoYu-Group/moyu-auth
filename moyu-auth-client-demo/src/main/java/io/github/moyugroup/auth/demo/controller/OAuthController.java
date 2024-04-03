@@ -19,4 +19,5 @@ public class OAuthController {
         String queryString = request.getQueryString();
         System.out.println(queryString);
     }
+
 }

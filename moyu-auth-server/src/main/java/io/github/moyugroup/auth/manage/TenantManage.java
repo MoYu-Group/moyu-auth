@@ -5,6 +5,7 @@ import jakarta.annotation.Resource;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 /**
@@ -27,6 +28,9 @@ public class TenantManage {
      * @return 租户名称
      */
     public String getTenantNameByTenantId(String tenantId) {
+        if (StringUtils.isBlank(tenantId)) {
+            return null;
+        }
         return tenantRepository.findTenantNameByTenantId(tenantId);
     }
 

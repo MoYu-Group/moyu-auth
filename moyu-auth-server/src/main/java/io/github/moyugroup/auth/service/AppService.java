@@ -2,6 +2,7 @@ package io.github.moyugroup.auth.service;
 
 import io.github.moyugroup.auth.manage.AppManage;
 import io.github.moyugroup.auth.pojo.vo.AppVO;
+import io.github.moyugroup.auth.util.MoYuLoginUtil;
 import jakarta.annotation.Resource;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
@@ -40,5 +41,16 @@ public class AppService {
      */
     public AppVO getByAppIdAndAppSecret(String appId, String appSecret) {
         return appManager.getAppByIdAndAppSecret(appId, appSecret);
+    }
+
+    /**
+     * 查询应用是否存在，并校验应用是否可登录
+     *
+     * @param appId
+     * @param appSecret
+     */
+    public void queryAndCheckApp(String appId, String appSecret) {
+        AppVO appVO = getByAppIdAndAppSecret(appId, appSecret);
+        MoYuLoginUtil.checkAppIsOk(appVO);
     }
 }

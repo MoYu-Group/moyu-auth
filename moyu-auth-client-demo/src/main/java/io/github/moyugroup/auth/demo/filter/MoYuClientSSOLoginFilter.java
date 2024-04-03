@@ -6,10 +6,15 @@ import io.github.moyugroup.auth.common.pojo.dto.UserInfo;
 import io.github.moyugroup.auth.common.util.PathUtil;
 import io.github.moyugroup.auth.demo.config.MoYuAuthClientProperties;
 import io.github.moyugroup.auth.demo.util.SSOLoginUtil;
+import io.github.moyugroup.enums.ErrorCodeEnum;
+import io.github.moyugroup.exception.BizException;
+import io.github.moyugroup.util.AssertUtil;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.util.AntPathMatcher;
 
 import java.io.IOException;
 import java.net.URLEncoder;
@@ -29,13 +34,13 @@ public class MoYuClientSSOLoginFilter implements Filter {
     /**
      * 默认拦截路径
      */
-    private final List<String> protectedPaths = List.of("/**");
+    private static final List<String> protectedPaths = List.of("/**");
 
     /**
      * 白名单路径，不拦截
      * todo 后续可从应用配置读取
      */
-    private final List<String> whitePathList = Arrays.asList(
+    private static final List<String> whitePathList = Arrays.asList(
             "/css/**",
             "/js/**",
             "/static/**",
@@ -66,32 +71,76 @@ public class MoYuClientSSOLoginFilter implements Filter {
     }
 
     /**
+     * 判断请求路径是否是不需要拦截的路径
+     *
+     * @param requestPath
+     * @return
+     */
+    private static boolean isUnMatchRequest(String requestPath) {
+        return !PathUtil.isMatch(protectedPaths, requestPath) || PathUtil.isMatch(whitePathList, requestPath);
+    }
+
+    public static void main(String[] args) {
+        System.out.println(isUnMatchRequest("/"));
+        System.out.println(new AntPathMatcher().match("/**", "/"));
+    }
+
+    /**
      * 过滤逻辑
      *
-     * @param request
-     * @param response
+     * @param servletRequest
+     * @param servletResponse
      * @param filterChain
      * @throws IOException
      * @throws ServletException
      */
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain) throws IOException, ServletException {
-        HttpServletRequest httpRequest = (HttpServletRequest) request;
-        HttpServletResponse httpResponse = (HttpServletResponse) response;
+    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+        HttpServletRequest request = (HttpServletRequest) servletRequest;
+        HttpServletResponse response = (HttpServletResponse) servletResponse;
 
         // 获取请求的路径
-        String requestPath = httpRequest.getRequestURI();
+        String requestPath = request.getRequestURI();
 
-        // 处理受保护且不在白名单的路径
-        if (PathUtil.isMatch(requestPath, protectedPaths) && !PathUtil.isMatch(requestPath, whitePathList)) {
-            log.debug("doFilter match path：{}", requestPath);
-            // 匹配到登录保护路径，进行登录检查
-            userLoginCheck(httpRequest, httpResponse, filterChain);
-        } else {
+        // 不需要 SDK 拦截的请求
+        if (isUnMatchRequest(requestPath)) {
             log.debug("doFilter not match path：{}", requestPath);
             // 对于不匹配的路径，直接继续请求
-            filterChain.doFilter(httpRequest, httpResponse);
+            filterChain.doFilter(request, response);
+            return;
         }
+
+        // 处理SSO登陆成功后的回调，通过 ssoToken 重建登录态
+        if (PathUtil.isMatch(SSOLoginConstant.SSO_VERIFY_ENDPOINT, requestPath)) {
+            // 获取必要参数
+            String ssoToken = request.getParameter(SSOLoginConstant.SSO_TOKEN);
+            String backUrl = request.getParameter(SSOLoginConstant.BACK_URL);
+            AssertUtil.isFalse(StringUtils.isAnyBlank(ssoToken, backUrl), ErrorCodeEnum.SSO_LOGIN_PARAM_ERROR);
+            log.debug("doFilter match {} with ssoToken={} backUrl={}", requestPath, ssoToken, backUrl);
+
+            // 如果登录回调的 host 与当前应用 host 不一致，则说明有钓鱼风险，提示登录失败
+            String requestHost = SSOLoginUtil.getRequestHost(request);
+            String backUrlHost = SSOLoginUtil.getHostByUrl(backUrl);
+            if (!StringUtils.equals(requestHost, backUrlHost)) {
+                log.error("SSO 登录回调的 host:{} 与当前应用 host:{} 不一致", backUrlHost, requestHost);
+                throw new BizException(ErrorCodeEnum.SSO_LOGIN_ERROR);
+            }
+            // 根据ssoToken获取用户信息，建立登录态
+            SSOLoginUtil.handleSSOToken(ssoToken, request, response);
+
+            // 登录成功后，重定向回 backUrl
+            return;
+        }
+
+        // 处理注销登录请求
+
+        // 删除登录相关cookue
+
+        // 如果有backUrl，则调回登录中心退出登录，携带appId和backUrl参数
+
+        log.debug("doFilter match path：{}", requestPath);
+        // 匹配到登录保护路径，进行登录检查
+        userLoginCheck(request, response, filterChain);
     }
 
     /**
@@ -104,17 +153,17 @@ public class MoYuClientSSOLoginFilter implements Filter {
     private void userLoginCheck(HttpServletRequest httpRequest, HttpServletResponse httpResponse, FilterChain filterChain) throws ServletException, IOException {
         UserInfo userInfo = SSOLoginUtil.getUserFromCookie(httpRequest, properties.getAppId(), properties.getAppSecret());
         if (Objects.nonNull(userInfo)) {
-            // 建立用户登录上下文
+            // 已登录，建立用户登录上下文
             buildLoginContext(userInfo);
             // 继续执行业务
             filterChain.doFilter(httpRequest, httpResponse);
         } else {
+            // 用户未登录，跳转到sso登录页面进行登录
             String backUrl = SSOLoginUtil.getFullUrl(httpRequest);
             String appId = properties.getAppId();
             String redirectUrl = properties.getServerUrl() + SSOLoginConstant.LOGIN_PAGE_PATH
                     + "?" + SSOLoginConstant.APP_ID + "=" + appId
                     + "&" + SSOLoginConstant.BACK_URL + "=" + URLEncoder.encode(backUrl, StandardCharsets.UTF_8);
-            // 用户未登录，跳转到sso登录页面
             log.debug("user is not logged in, redirect to {}", redirectUrl);
             httpResponse.sendRedirect(redirectUrl);
         }

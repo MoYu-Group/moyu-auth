@@ -1,9 +1,9 @@
 package io.github.moyugroup.auth.util;
 
+import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.RandomUtil;
 
 import java.security.SecureRandom;
-import java.util.Base64;
 
 /**
  * key 生成器
@@ -30,23 +30,12 @@ public class KeyGeneratorUtil {
     }
 
     /**
-     * 生成86位 Token
+     * Token使用UUID
      *
-     * @return 86位 Token
+     * @return UUID
      */
     public static String generateToken() {
-        byte[] bytes = new byte[64];
-        random.nextBytes(bytes);
-        return Base64.getUrlEncoder().withoutPadding().encodeToString(bytes);
-    }
-
-    public static void main(String[] args) {
-        for (int i = 0; i < 10; i++) {
-            System.out.println("appSecret:" + generatorAppSecret());
-        }
-        for (int i = 0; i < 10; i++) {
-            System.out.println("token:" + generateToken());
-        }
+        return IdUtil.fastSimpleUUID();
     }
 
 }

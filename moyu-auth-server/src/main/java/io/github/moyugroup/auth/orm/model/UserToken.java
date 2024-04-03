@@ -26,10 +26,10 @@ import java.time.LocalDateTime;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserToken extends BaseIdEntity {
     /**
-     * 用户ID
+     * 用户中心登录态会话ID
      */
     @Column(length = 32, nullable = false)
-    String userId;
+    String sessionId;
     /**
      * 访问令牌
      */

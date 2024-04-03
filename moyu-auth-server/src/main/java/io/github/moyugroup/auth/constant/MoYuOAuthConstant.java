@@ -11,14 +11,6 @@ public class MoYuOAuthConstant {
      */
     public final static String INDEX_PAGE_PATH = "/";
     /**
-     * MoYu-Auth 系统默认登录端点
-     */
-    public final static String LOGIN_ENDPOINT = "/ssoLogin";
-    /**
-     * MoYu-Auth 系统默认注销端点
-     */
-    public final static String LOGIN_OUT_ENDPOINT = "/ssoLogout";
-    /**
      * MoYu-Auth 系统默认切换租户端点
      */
     public final static String SWITCH_TENANT_ENDPOINT = "/api/switch/tenant/doSwitch";
@@ -46,10 +38,6 @@ public class MoYuOAuthConstant {
      * App 信息在 Request 中的属性名称
      */
     public final static String REQUEST_APP_INFO = "REQUEST_APP_INFO";
-    /**
-     * OAuth2 登陆回调路径
-     */
-    public final static String SSO_CALLBACK_PATH = "oauth2";
     /**
      * OAuth2 登录缓存类型配置名称
      */

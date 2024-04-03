@@ -43,7 +43,7 @@ public class MoYuSSOLoginFilter implements Filter {
             "/ssoLogin",
             "/ssoLogin.html",
             "/ssoLogout",
-            "/oauth2/getUser",
+            "/api/sso/**",
             "/open/**"
     );
 
@@ -85,7 +85,7 @@ public class MoYuSSOLoginFilter implements Filter {
         String requestPath = httpRequest.getRequestURI();
 
         // 处理受保护且不在白名单的路径
-        if (PathUtil.isMatch(requestPath, protectedPaths) && !PathUtil.isMatch(requestPath, whitePathList)) {
+        if (PathUtil.isMatch(protectedPaths, requestPath) && !PathUtil.isMatch(whitePathList, requestPath)) {
             log.debug("doFilter match path：{}", requestPath);
             // 匹配到登录保护路径，进行登录检查
             userLoginCheck(httpRequest, httpResponse, filterChain, requestPath);
@@ -138,7 +138,7 @@ public class MoYuSSOLoginFilter implements Filter {
      */
     private boolean loginTenantCheck(String requestPath) {
         // 跳过检查的页面
-        if (PathUtil.isMatch(requestPath, Arrays.asList(SSOLoginConstant.SWITCH_TENANT_PATH, MoYuOAuthConstant.SWITCH_TENANT_ENDPOINT))) {
+        if (PathUtil.isMatch(Arrays.asList(SSOLoginConstant.SWITCH_TENANT_PATH, MoYuOAuthConstant.SWITCH_TENANT_ENDPOINT), requestPath)) {
             return Boolean.TRUE;
         }
         // 检查用户上下文是否存在租户信息

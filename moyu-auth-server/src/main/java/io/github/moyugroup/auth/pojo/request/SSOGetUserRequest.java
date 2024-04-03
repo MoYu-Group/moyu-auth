@@ -4,15 +4,12 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 /**
- * 校验 AccessToken 入参
+ * 校验ssoToken，并获取登录的用户信息
  * <p>
- * Created by fanfan on 2023/09/05.
+ * Created by fanfan on 2024/04/04.
  */
 @Data
-public class AccessTokenRequest {
-
-    @NotBlank
-    private String grantType;
+public class SSOGetUserRequest {
 
     @NotBlank
     private String appId;

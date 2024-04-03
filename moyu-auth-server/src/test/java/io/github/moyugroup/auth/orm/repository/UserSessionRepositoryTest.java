@@ -35,7 +35,7 @@ class UserSessionRepositoryTest {
                 .setSessionId(IdUtil.fastSimpleUUID().toUpperCase())
                 .setUserId("10000")
                 .setCreatedTime(now)
-                .setExpiresTime(now.plusSeconds(MoYuLoginConstant.LOGIN_EXPIRE_SECONDS))
+                .setExpireTime(now.plusSeconds(MoYuLoginConstant.LOGIN_EXPIRE_SECONDS))
                 .setUserIp(null)
                 .setUserAgent(null);
     }
@@ -46,7 +46,7 @@ class UserSessionRepositoryTest {
         log.debug("insert UserSession:{}", JSONUtil.toJsonStr(userSession));
         userSessionRepository.save(userSession);
 
-        UserSession validSessionBySessionId = userSessionRepository.findValidSessionBySessionId(userSession.getSessionId(), LocalDateTime.now());
+        UserSession validSessionBySessionId = userSessionRepository.getValidSessionBySessionId(userSession.getSessionId(), LocalDateTime.now());
         log.debug("validSessionBySessionId:{}", JSONUtil.toJsonStr(validSessionBySessionId));
 
         Assert.notNull(validSessionBySessionId, "validSessionBySessionId is null!");

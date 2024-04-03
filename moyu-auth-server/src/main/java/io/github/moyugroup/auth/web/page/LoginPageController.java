@@ -87,9 +87,9 @@ public class LoginPageController {
             return null;
         } else {
             // 二方应用，发放sso令牌，并携带sso参数重定向回应用，建立应用登录态
-            String ssoToken = userTokenService.generateSSOToken(userLoginSession.getUserId());
+            String ssoToken = userTokenService.generateSSOToken(userLoginSession.getSessionId());
             StringBuilder url = new StringBuilder();
-            url.append(UrlUtil.getOAuth2Url(appVO.getRedirectUri()))
+            url.append(UrlUtil.getOAuthSSOTokenHandlerUrl(appVO.getRedirectUri()))
                     .append("?").append(SSOLoginConstant.SSO_TOKEN).append("=").append(ssoToken);
             if (StringUtils.isNoneBlank(backUrl)) {
                 url.append("&").append(SSOLoginConstant.BACK_URL).append("=").append(URLEncoder.encode(backUrl, StandardCharsets.UTF_8));

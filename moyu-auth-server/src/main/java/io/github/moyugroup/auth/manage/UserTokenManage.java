@@ -8,6 +8,8 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 /**
  * 用户令牌表数据操作封装
  * <p>
@@ -29,6 +31,25 @@ public class UserTokenManage {
      */
     public UserToken userTokenSave(UserToken userToken) {
         return userTokenRepository.save(userToken);
+    }
+
+    /**
+     * 根据 accessToken 查询有效 UserToken
+     *
+     * @param accessToken
+     * @return
+     */
+    public UserToken getValidUserTokenByAccessToken(String accessToken) {
+        return userTokenRepository.getValidUserTokenByAccessToken(accessToken, LocalDateTime.now());
+    }
+
+    /**
+     * 删除 userToken
+     *
+     * @param id
+     */
+    public void removeUserTokenById(Long id) {
+        userTokenRepository.deleteById(id);
     }
 
 }

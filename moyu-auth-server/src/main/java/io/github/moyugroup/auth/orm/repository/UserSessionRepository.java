@@ -22,6 +22,6 @@ public interface UserSessionRepository extends JpaRepository<UserSession, Long> 
      * @return 用户登录 UserSession
      */
     @Query("SELECT s FROM UserSession s WHERE s.sessionId = :sessionId AND s.expireTime > :now")
-    UserSession findValidSessionBySessionId(@Param("sessionId") String sessionId, @Param("now") LocalDateTime now);
+    UserSession getValidSessionBySessionId(@Param("sessionId") String sessionId, @Param("now") LocalDateTime now);
 
 }

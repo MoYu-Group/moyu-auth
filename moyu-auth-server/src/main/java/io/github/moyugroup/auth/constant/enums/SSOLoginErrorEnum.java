@@ -22,6 +22,8 @@ public enum SSOLoginErrorEnum implements ExceptionEnum {
     SWITCH_TENANT_INVALID("A1104", "切换租户无效", ExceptionLevel.INFO),
     APP_CONFIG_ERROR("A1105", "应用配置错误，请检查应用配置", ExceptionLevel.INFO),
     APP_STATE_ERROR("A1106", "应用状态异常，请联系管理员", ExceptionLevel.INFO),
+    GET_USER_SESSION_ERROR("A1107", "获取用户登录态失败，请尝试重新登录", ExceptionLevel.INFO),
+    GET_USER_INFO_ERROR("A1108", "获取用户信息失败，请联系管理员", ExceptionLevel.INFO),
 
     ;
 

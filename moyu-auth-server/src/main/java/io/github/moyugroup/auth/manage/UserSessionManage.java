@@ -40,7 +40,7 @@ public class UserSessionManage {
      * @return
      */
     public UserSession getValidSessionBySessionId(String sessionId) {
-        return userSessionRepository.findValidSessionBySessionId(sessionId, LocalDateTime.now());
+        return userSessionRepository.getValidSessionBySessionId(sessionId, LocalDateTime.now());
     }
 
     /**

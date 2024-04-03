@@ -51,7 +51,7 @@ public class SSOLoginController {
      * @return
      */
     @ResponseBody
-    @PostMapping(MoYuOAuthConstant.LOGIN_ENDPOINT)
+    @PostMapping(SSOLoginConstant.LOGIN_ENDPOINT)
     public Result<RedirectUrlVO> ssoLogin(@Valid SSOLoginRequest param, HttpServletRequest request, HttpServletResponse response) {
         String appId = MoYuLoginUtil.getRequestParamAppId(request);
         AppVO appVO = appService.getAppById(appId);
@@ -82,12 +82,13 @@ public class SSOLoginController {
 
     /**
      * 退出登录
+     * todo 支持sso退出登录，检查AppId并重定向回backUrl
      *
      * @param request
      * @param response
      * @throws IOException
      */
-    @PostMapping(MoYuOAuthConstant.LOGIN_OUT_ENDPOINT)
+    @PostMapping(SSOLoginConstant.LOGIN_OUT_ENDPOINT)
     public void ssoLogout(HttpServletRequest request, HttpServletResponse response) throws IOException {
         ssoLoginService.userLogout(request, response);
         // 重定向到登录页面
