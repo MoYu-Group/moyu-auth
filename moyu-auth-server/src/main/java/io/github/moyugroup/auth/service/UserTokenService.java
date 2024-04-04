@@ -62,6 +62,7 @@ public class UserTokenService {
 
     /**
      * 根据 ssoToken 获取登录用户信息
+     * todo app sso 登录 限制
      *
      * @param ssoToken
      * @return
@@ -71,7 +72,7 @@ public class UserTokenService {
         UserToken userToken = userTokenManage.getValidUserTokenByAccessToken(ssoToken);
         AssertUtil.notNull(userToken, SSOLoginErrorEnum.SSO_TOKEN_INVALID);
         // 获取成功后删除 UserToken
-        userTokenManage.removeUserTokenById(userToken.getId());
+//        userTokenManage.removeUserTokenById(userToken.getId());
 
         // 获取用户登录session
         UserSession userSession = userSessionManage.getValidSessionBySessionId(userToken.getSessionId());
@@ -89,7 +90,7 @@ public class UserTokenService {
                 .setUserId(user.getUserId())
                 .setUsername(user.getUsername())
                 .setNickname(user.getNickname());
-        // todo 用户敏感信息授权后返回
+        // todo 用户敏感信息需要用户授权后返回
         return userInfo;
     }
 
