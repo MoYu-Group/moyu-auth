@@ -1,5 +1,8 @@
 package io.github.moyugroup.auth.demo.controller;
 
+import io.github.moyugroup.auth.common.constant.SSOLoginConstant;
+import io.github.moyugroup.auth.common.context.UserContext;
+import io.github.moyugroup.auth.common.pojo.dto.UserInfo;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,10 +21,11 @@ public class IndexController {
      * @param model
      * @return
      */
-    @GetMapping("/")
+    @GetMapping(SSOLoginConstant.INDEX_PAGE_PATH)
     public String index(Model model) {
-//        model.addAttribute("name", Objects.isNull(authentication) ? "" : authentication.getName());
-//        model.addAttribute("sessionId", session.getId());
+        UserInfo userInfo = UserContext.get();
+        model.addAttribute("name", userInfo.getNickname());
+        model.addAttribute("user", userInfo);
         return "index";
     }
 }

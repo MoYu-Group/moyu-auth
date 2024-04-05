@@ -1,6 +1,6 @@
 package io.github.moyugroup.auth.demo.controller;
 
-import io.github.moyugroup.auth.demo.config.MoYuAuthClientProperties;
+import io.github.moyugroup.auth.demo.config.SSOClientProperties;
 import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -12,11 +12,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class HelloController {
 
     @Resource
-    private MoYuAuthClientProperties moYuAuthClientProperties;
+    private SSOClientProperties SSOClientProperties;
 
     @GetMapping("hello")
     public String helleWorld() {
-        String appId = moYuAuthClientProperties.getAppId();
+        String appId = SSOClientProperties.getAppId();
         return "hello Moyu-Auth-Client !!!";
     }
 

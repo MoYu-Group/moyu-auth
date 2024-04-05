@@ -2,7 +2,6 @@ package io.github.moyugroup.auth.web.page;
 
 import io.github.moyugroup.auth.common.constant.SSOLoginConstant;
 import io.github.moyugroup.auth.common.context.UserContext;
-import io.github.moyugroup.auth.constant.MoYuOAuthConstant;
 import io.github.moyugroup.auth.orm.model.UserSession;
 import io.github.moyugroup.auth.pojo.vo.AppVO;
 import io.github.moyugroup.auth.pojo.vo.SwitchTenantVO;
@@ -83,7 +82,7 @@ public class LoginPageController {
         // 已选择租户，判断登录应用类型
         if (MoYuLoginUtil.checkIsMoYuAuthApp(appId)) {
             // 一方应用，直接重定向回首页
-            response.sendRedirect(MoYuOAuthConstant.INDEX_PAGE_PATH);
+            response.sendRedirect(SSOLoginConstant.INDEX_PAGE_PATH);
             return null;
         } else {
             // 二方应用，发放sso令牌，并携带sso参数重定向回应用，建立应用登录态

@@ -47,10 +47,10 @@ public enum GrantTypeEnum {
     /**
      * 根据值查找
      *
-     * @param value
+     * @param code
      * @return
      */
-    public static GrantTypeEnum getByValue(String value) {
-        return Arrays.stream(GrantTypeEnum.values()).filter(x -> x.getCode().equals(value)).findFirst().orElse(null);
+    public static GrantTypeEnum getByCode(String code) {
+        return Arrays.stream(GrantTypeEnum.values()).filter(x -> x.getCode().equals(code)).findFirst().orElse(null);
     }
 }

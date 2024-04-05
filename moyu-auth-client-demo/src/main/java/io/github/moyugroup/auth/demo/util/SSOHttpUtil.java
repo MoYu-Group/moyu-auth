@@ -3,8 +3,8 @@ package io.github.moyugroup.auth.demo.util;
 import cn.hutool.core.lang.TypeReference;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
+import io.github.moyugroup.auth.common.constant.SSOLoginConstant;
 import io.github.moyugroup.auth.common.pojo.dto.SSOUserDTO;
-import io.github.moyugroup.auth.demo.config.MoYuOAuthConstant;
 import io.github.moyugroup.base.model.pojo.Result;
 import io.github.moyugroup.enums.ErrorCodeEnum;
 import io.github.moyugroup.exception.BizException;
@@ -44,15 +44,16 @@ public class SSOHttpUtil {
      * @param ssoToken
      * @return
      */
-    public static SSOUserDTO getLoginUserBySSOToken(String url, String appId, String appSecret, String ssoToken) {
-        if (StringUtils.isAnyBlank(url, appId, appSecret, ssoToken)) {
+    public static SSOUserDTO getLoginUserBySSOToken(String serverUrl, String appId, String appSecret, String ssoToken) {
+        if (StringUtils.isAnyBlank(serverUrl, appId, appSecret, ssoToken)) {
             throw new BizException(ErrorCodeEnum.REQUEST_REQUIRED_PARAMETER_IS_EMPTY);
         }
+        serverUrl = serverUrl + SSOLoginConstant.OAUTH2_GET_USER_ENDPOINT;
         JSONObject param = new JSONObject();
-        param.set(MoYuOAuthConstant.APP_ID_PARAM, appId);
-        param.set(MoYuOAuthConstant.APP_SECRET_PARAM, appSecret);
-        param.set(MoYuOAuthConstant.SSO_TOKEN_PARAM, ssoToken);
-        Result<JSONObject> result = sendPostRequest(url, param);
+        param.set(SSOLoginConstant.APP_ID, appId);
+        param.set(SSOLoginConstant.APP_SECRET, appSecret);
+        param.set(SSOLoginConstant.SSO_TOKEN, ssoToken);
+        Result<JSONObject> result = sendPostRequest(serverUrl, param);
         if (result.isSuccess()) {
             return JSONUtil.toBean(result.getContent(), SSOUserDTO.class);
         }

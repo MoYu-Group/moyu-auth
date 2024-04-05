@@ -7,10 +7,6 @@ package io.github.moyugroup.auth.constant;
  */
 public class MoYuOAuthConstant {
     /**
-     * MoYu-Auth 主页路径
-     */
-    public final static String INDEX_PAGE_PATH = "/";
-    /**
      * MoYu-Auth 系统默认切换租户端点
      */
     public final static String SWITCH_TENANT_ENDPOINT = "/api/switch/tenant/doSwitch";

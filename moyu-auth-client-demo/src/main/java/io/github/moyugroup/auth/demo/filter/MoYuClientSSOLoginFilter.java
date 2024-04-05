@@ -4,7 +4,8 @@ import io.github.moyugroup.auth.common.constant.SSOLoginConstant;
 import io.github.moyugroup.auth.common.context.UserContext;
 import io.github.moyugroup.auth.common.pojo.dto.UserInfo;
 import io.github.moyugroup.auth.common.util.PathUtil;
-import io.github.moyugroup.auth.demo.config.MoYuAuthClientProperties;
+import io.github.moyugroup.auth.demo.config.SSOClientProperties;
+import io.github.moyugroup.auth.demo.constant.enums.SSOLoginErrorEnum;
 import io.github.moyugroup.auth.demo.util.SSOLoginUtil;
 import io.github.moyugroup.enums.ErrorCodeEnum;
 import io.github.moyugroup.exception.BizException;
@@ -52,10 +53,12 @@ public class MoYuClientSSOLoginFilter implements Filter {
             "/open/**"
     );
 
-    private final MoYuAuthClientProperties properties;
+    private final SSOClientProperties properties;
 
-    public MoYuClientSSOLoginFilter(MoYuAuthClientProperties moYuAuthClientProperties) {
-        this.properties = moYuAuthClientProperties;
+    public MoYuClientSSOLoginFilter(SSOClientProperties ssoClientProperties) {
+        // 检查配置项是否正确
+        SSOLoginUtil.ssoClientPropertiesCheck(ssoClientProperties);
+        this.properties = ssoClientProperties;
     }
 
     /**
@@ -123,20 +126,21 @@ public class MoYuClientSSOLoginFilter implements Filter {
             String backUrlHost = SSOLoginUtil.getHostByUrl(backUrl);
             if (!StringUtils.equals(requestHost, backUrlHost)) {
                 log.error("SSO 登录回调的 host:{} 与当前应用 host:{} 不一致", backUrlHost, requestHost);
-                throw new BizException(ErrorCodeEnum.SSO_LOGIN_ERROR);
+                throw new BizException(SSOLoginErrorEnum.SSO_HOST_CHANGE);
             }
             // 根据ssoToken获取用户信息，建立登录态
-            SSOLoginUtil.handleSSOToken(ssoToken, request, response);
+            SSOLoginUtil.handleSSOToken(properties, ssoToken, request, response);
 
             // 登录成功后，重定向回 backUrl
+            response.sendRedirect(backUrl);
             return;
         }
 
         // 处理注销登录请求
 
-        // 删除登录相关cookue
+        // 1.删除登录相关cookie
 
-        // 如果有backUrl，则调回登录中心退出登录，携带appId和backUrl参数
+        // 2.如果有backUrl，则调回登录中心退出登录，携带appId和backUrl参数
 
         log.debug("doFilter match path：{}", requestPath);
         // 匹配到登录保护路径，进行登录检查

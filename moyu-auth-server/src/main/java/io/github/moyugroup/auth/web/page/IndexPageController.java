@@ -1,5 +1,6 @@
 package io.github.moyugroup.auth.web.page;
 
+import io.github.moyugroup.auth.common.constant.SSOLoginConstant;
 import io.github.moyugroup.auth.common.context.UserContext;
 import io.github.moyugroup.auth.common.pojo.dto.UserInfo;
 import io.github.moyugroup.auth.common.util.CookieUtil;
@@ -23,7 +24,7 @@ public class IndexPageController {
      * @param model
      * @return
      */
-    @GetMapping(MoYuOAuthConstant.INDEX_PAGE_PATH)
+    @GetMapping(SSOLoginConstant.INDEX_PAGE_PATH)
     public String index(Model model, HttpServletRequest request) {
         UserInfo userInfo = UserContext.get();
         model.addAttribute("userInfo", userInfo);

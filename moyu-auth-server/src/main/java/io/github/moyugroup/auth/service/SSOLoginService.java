@@ -1,6 +1,7 @@
 package io.github.moyugroup.auth.service;
 
 import cn.hutool.core.util.IdUtil;
+import io.github.moyugroup.auth.common.constant.SSOLoginConstant;
 import io.github.moyugroup.auth.common.pojo.dto.UserInfo;
 import io.github.moyugroup.auth.common.util.CookieUtil;
 import io.github.moyugroup.auth.constant.MoYuLoginConstant;
@@ -97,7 +98,7 @@ public class SSOLoginService {
         CookieUtil.writeSSOLoginCookie(userSession.getSessionId(),
                 MoYuOAuthConstant.MOYU_AUTH,
                 MoYuLoginConstant.LOGIN_EXPIRE_SECONDS,
-                MoYuOAuthConstant.INDEX_PAGE_PATH,
+                SSOLoginConstant.INDEX_PAGE_PATH,
                 response);
 
         // 异步更新用户最后登录时间
@@ -145,7 +146,7 @@ public class SSOLoginService {
             userSessionManage.removeSessionById(userLoginSession.getId());
             // 删除用户登录 cookie
             CookieUtil.removeSSOLoginCookie(MoYuOAuthConstant.MOYU_AUTH,
-                    MoYuOAuthConstant.INDEX_PAGE_PATH, response);
+                    SSOLoginConstant.INDEX_PAGE_PATH, response);
         }
     }
 

@@ -20,7 +20,7 @@ import org.springframework.context.annotation.Configuration;
 public class FilterConfig {
 
     @Resource
-    MoYuAuthClientProperties moYuAuthClientProperties;
+    SSOClientProperties ssoClientProperties;
 
     /**
      * 过滤器注册
@@ -30,7 +30,7 @@ public class FilterConfig {
     @Bean
     public FilterRegistrationBean<MoYuClientSSOLoginFilter> ssoFilterRegistration() {
         FilterRegistrationBean<MoYuClientSSOLoginFilter> registration = new FilterRegistrationBean<>();
-        registration.setFilter(new MoYuClientSSOLoginFilter(moYuAuthClientProperties));
+        registration.setFilter(new MoYuClientSSOLoginFilter(ssoClientProperties));
         // 配置过滤器的路径
         registration.addUrlPatterns("/*");
         // 设置过滤器的顺序
