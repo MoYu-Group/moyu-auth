@@ -61,7 +61,7 @@ public class SSOLoginController {
         MoYuLoginUtil.checkAppIsOk(appVO);
         // 用户账密登录
         ssoLoginService.userLoginByAccount(param.getUsername(), param.getPassword(), response);
-        // 登录成功后重定向到登录页面
+        // 登录成功后返回重定向地址
         String redirectUrl = SSOLoginConstant.LOGIN_PAGE_PATH + UrlUtil.getRedirectParam(request);
         return Result.success(new RedirectUrlVO().setRedirectUrl(redirectUrl));
     }
@@ -77,7 +77,7 @@ public class SSOLoginController {
     public Result<RedirectUrlVO> switchTenant(@Valid SwitchTenantRequest switchTenantRequest, HttpServletRequest request, HttpServletResponse response) {
         // 用户切换租户
         ssoLoginService.userSwitchTenant(switchTenantRequest.getTenantId(), request);
-        // 登录成功后重定向到登录页面
+        // 切换租户成功后返回重定向地址
         String redirectUrl = SSOLoginConstant.LOGIN_PAGE_PATH + UrlUtil.getRedirectParam(request);
         return Result.success(new RedirectUrlVO().setRedirectUrl(redirectUrl));
     }

@@ -8,6 +8,7 @@ import io.github.moyugroup.auth.constant.MoYuOAuthConstant;
 import io.github.moyugroup.auth.orm.model.UserSession;
 import io.github.moyugroup.auth.service.SSOLoginService;
 import io.github.moyugroup.auth.service.TenantService;
+import io.github.moyugroup.auth.util.UrlUtil;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -116,17 +117,17 @@ public class MoYuSSOLoginFilter implements Filter {
                     // 继续执行业务
                     filterChain.doFilter(httpRequest, httpResponse);
                 } else {
-                    // 跳转到选择租户页面 todo 携带 backUrl
-                    httpResponse.sendRedirect(SSOLoginConstant.SWITCH_TENANT_PATH);
+                    // 跳转到选择租户页面
+                    httpResponse.sendRedirect(SSOLoginConstant.SWITCH_TENANT_PATH + UrlUtil.getRedirectParam(httpRequest));
                 }
             } finally {
                 // 业务执行完毕后清理用户上下文
                 UserContext.remove();
             }
         } else {
-            log.debug("user is not logged in, redirect to {}", SSOLoginConstant.LOGIN_PAGE_PATH);
-            // 用户未登录，跳转到登录页 todo 携带 backUrl
-            httpResponse.sendRedirect(SSOLoginConstant.LOGIN_PAGE_PATH);
+            log.debug("user is not logged in, redirect to {}", SSOLoginConstant.LOGIN_PAGE_PATH + UrlUtil.getRedirectParam(httpRequest));
+            // 用户未登录，跳转到登录页
+            httpResponse.sendRedirect(SSOLoginConstant.LOGIN_PAGE_PATH + UrlUtil.getRedirectParam(httpRequest));
         }
     }
 

@@ -60,7 +60,7 @@ public class LoginPageController {
      * @param response 响应对象
      * @return 页面模版名称
      */
-    @RequestMapping(value = "/ssoLogin.html", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = SSOLoginConstant.LOGIN_PAGE_PATH, method = {RequestMethod.GET, RequestMethod.POST})
     public String ssoLogin(Model model, HttpServletRequest request, HttpServletResponse response) throws IOException {
         // 获取登录应用
         String appId = MoYuLoginUtil.getRequestParamAppId(request);
@@ -107,7 +107,7 @@ public class LoginPageController {
      * @param response 响应对象
      * @return 页面模版名称
      */
-    @RequestMapping(value = "/switchTenant.html", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = SSOLoginConstant.SWITCH_TENANT_PATH, method = {RequestMethod.GET, RequestMethod.POST})
     public String switchTenant(Model model, HttpServletRequest request, HttpServletResponse response) {
         List<SwitchTenantVO> switchTenantVOS = tenantUserService.getSwitchTenantVOsByUserId(UserContext.getCurUserId(),
                 MoYuLoginUtil.getRequestParamAppId(request));
