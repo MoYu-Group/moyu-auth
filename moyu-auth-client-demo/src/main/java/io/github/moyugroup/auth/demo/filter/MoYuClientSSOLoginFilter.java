@@ -46,9 +46,6 @@ public class MoYuClientSSOLoginFilter implements Filter {
             "/js/**",
             "/static/**",
             "/favicon.ico",
-            "/ssoLogin",
-            "/ssoLogin.html",
-            "/ssoLogout",
             "/oauth2",
             "/open/**"
     );
@@ -107,7 +104,7 @@ public class MoYuClientSSOLoginFilter implements Filter {
 
         // 不需要 SDK 拦截的请求
         if (isUnMatchRequest(requestPath)) {
-            log.debug("doFilter not match path：{}", requestPath);
+            log.debug("doFilter not match path: {}", requestPath);
             // 对于不匹配的路径，直接继续请求
             filterChain.doFilter(request, response);
             return;
@@ -119,7 +116,7 @@ public class MoYuClientSSOLoginFilter implements Filter {
             String ssoToken = request.getParameter(SSOLoginConstant.SSO_TOKEN);
             String backUrl = request.getParameter(SSOLoginConstant.BACK_URL);
             AssertUtil.isFalse(StringUtils.isAnyBlank(ssoToken, backUrl), ErrorCodeEnum.SSO_LOGIN_PARAM_ERROR);
-            log.debug("doFilter match {} with ssoToken={} backUrl={}", requestPath, ssoToken, backUrl);
+            log.debug("doFilter match path: {} with ssoToken={} backUrl={}", requestPath, ssoToken, backUrl);
 
             // 如果登录回调的 host 与当前应用 host 不一致，则说明有钓鱼风险，提示登录失败
             String requestHost = SSOLoginUtil.getRequestHost(request);
@@ -137,12 +134,14 @@ public class MoYuClientSSOLoginFilter implements Filter {
         }
 
         // 处理注销登录请求
+        if (PathUtil.isMatch(SSOLoginConstant.LOGOUT_ENDPOINT, requestPath)) {
+            String backUrl = request.getParameter(SSOLoginConstant.BACK_URL);
+            log.debug("doFilter match path: {} with backUrl={}", requestPath, backUrl);
+            SSOLoginUtil.handleSSOLogout(properties, response, backUrl);
+            return;
+        }
 
-        // 1.删除登录相关cookie
-
-        // 2.如果有backUrl，则调回登录中心退出登录，携带appId和backUrl参数
-
-        log.debug("doFilter match path：{}", requestPath);
+        log.debug("doFilter match path: {}", requestPath);
         // 匹配到登录保护路径，进行登录检查
         userLoginCheck(request, response, filterChain);
     }

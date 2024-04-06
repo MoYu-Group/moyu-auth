@@ -10,12 +10,17 @@ import io.github.moyugroup.auth.common.util.CookieUtil;
 import io.github.moyugroup.auth.demo.config.SSOClientProperties;
 import io.github.moyugroup.auth.demo.constant.enums.EnvironmentEnum;
 import io.github.moyugroup.auth.demo.constant.enums.SSOLoginErrorEnum;
+import io.github.moyugroup.base.model.pojo.Result;
 import io.github.moyugroup.util.AssertUtil;
+import io.github.moyugroup.web.util.WebUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
+import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
 /**
@@ -137,6 +142,27 @@ public class SSOLoginUtil {
             if (EnvironmentEnum.PRODUCTION.equals(environmentEnum)) {
                 ssoClientProperties.setServerUrl(prodServerUrl);
             }
+        }
+    }
+
+    /**
+     * 处理退出登录
+     *
+     * @param properties
+     * @param response
+     * @param backUrl
+     */
+    public static void handleSSOLogout(SSOClientProperties properties, HttpServletResponse response, String backUrl) throws IOException {
+        // 1.删除登录相关cookie
+        CookieUtil.removeSSOLoginCookie(properties.getAppId(), SSOLoginConstant.INDEX_PAGE_PATH, response);
+        // 2.如果有backUrl，则重定向到登录中心退出登录，携带appId和backUrl参数
+        if (StringUtils.isNoneBlank(backUrl)) {
+            String sb = properties.getServerUrl() + SSOLoginConstant.LOGOUT_ENDPOINT + "?" + SSOLoginConstant.APP_ID + "=" + properties.getAppId() +
+                    "&" + SSOLoginConstant.BACK_URL + "=" + URLEncoder.encode(backUrl, StandardCharsets.UTF_8);
+            response.sendRedirect(sb);
+        } else {
+            // 否则返回默认操作成功的json
+            WebUtil.writeJsonResponse(Result.success());
         }
     }
 }

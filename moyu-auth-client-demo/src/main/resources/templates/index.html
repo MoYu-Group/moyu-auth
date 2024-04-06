@@ -12,8 +12,8 @@
 <div>LoginUser:<span th:text="${user}"></span></div>
 <div>welcome moyu-auth-demo</div>
 
-<form action="http://server.ffis.me:9001/ssoLogout?backUrl=http%3A%2F%2Fdemo.ffis.me%3A8001%2F" method="post">
-    <input type="submit" value="注销"/>
+<form action="/ssoLogout?backUrl=http%3A%2F%2Fdemo.ffis.me%3A8001%2F" method="post">
+    <input type="submit" value="全局注销"/>
 </form>
 </body>
 </html>

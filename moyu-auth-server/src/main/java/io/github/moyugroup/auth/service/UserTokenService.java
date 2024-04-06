@@ -72,7 +72,7 @@ public class UserTokenService {
         UserToken userToken = userTokenManage.getValidUserTokenByAccessToken(ssoToken);
         AssertUtil.notNull(userToken, SSOLoginErrorEnum.SSO_TOKEN_INVALID);
         // 获取成功后删除 UserToken
-//        userTokenManage.removeUserTokenById(userToken.getId());
+        userTokenManage.removeUserTokenById(userToken.getId());
 
         // 获取用户登录session
         UserSession userSession = userSessionManage.getValidSessionBySessionId(userToken.getSessionId());

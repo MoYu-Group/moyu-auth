@@ -18,9 +18,11 @@ import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.io.IOException;
@@ -82,17 +84,30 @@ public class SSOLoginController {
 
     /**
      * 退出登录
-     * todo 支持sso退出登录，检查AppId并重定向回backUrl
      *
      * @param request
      * @param response
      * @throws IOException
      */
-    @PostMapping(SSOLoginConstant.LOGIN_OUT_ENDPOINT)
+    @RequestMapping(SSOLoginConstant.LOGOUT_ENDPOINT)
     public void ssoLogout(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        // 参数准备
+        String appId = MoYuLoginUtil.getRequestParamAppId(request);
+        String backUrl = request.getParameter(SSOLoginConstant.BACK_URL);
+        AppVO appVO = appService.getAppById(appId);
+        MoYuLoginUtil.checkAppIsOk(appVO);
+
+        // MoYu 登录中心退出登录
         ssoLoginService.userLogout(request, response);
-        // 重定向到登录页面
-        response.sendRedirect(SSOLoginConstant.LOGIN_PAGE_PATH);
+
+        // 登录完成后重定向
+        if (StringUtils.isNoneBlank(backUrl)) {
+            // 重定向回应用 backUrl
+            response.sendRedirect(backUrl);
+        } else {
+            // 没有携带 backUrl，则重定向回应用配置回调地址
+            response.sendRedirect(appVO.getRedirectUri());
+        }
     }
 
 }
