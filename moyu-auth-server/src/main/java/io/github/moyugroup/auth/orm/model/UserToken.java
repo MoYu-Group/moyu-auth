@@ -1,7 +1,7 @@
 package io.github.moyugroup.auth.orm.model;
 
 import io.github.moyugroup.auth.constant.enums.TokenTypeEnum;
-import io.github.moyugroup.spring.data.jpa.model.BaseIdEntity;
+import io.github.moyugroup.orm.jpa.model.BaseIdEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;

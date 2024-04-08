@@ -34,12 +34,11 @@
         <dependency>
             <groupId>com.squareup.okhttp3</groupId>
             <artifactId>okhttp</artifactId>
-            <version>4.12.0</version>
         </dependency>
         <!-- moyu spring data-jpa -->
         <dependency>
             <groupId>io.github.moyu-group.framework.autoconfiguers</groupId>
-            <artifactId>moyu-spring-data-jpa-autoconfigure</artifactId>
+            <artifactId>moyu-orm-jpa-autoconfigure</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <!-- spring data jpa test -->

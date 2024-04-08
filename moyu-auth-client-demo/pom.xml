@@ -24,15 +24,9 @@
             <groupId>io.github.moyu-group.framework.autoconfiguers</groupId>
             <artifactId>moyu-web-autoconfigure</artifactId>
         </dependency>
-        <!-- moyu-auth-common -->
         <dependency>
-            <groupId>io.github.moyu-group.framework.autoconfiguers</groupId>
-            <artifactId>moyu-auth-common</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.squareup.okhttp3</groupId>
-            <artifactId>okhttp</artifactId>
-            <version>4.12.0</version>
+            <groupId>io.github.moyu-group.framework.sdk</groupId>
+            <artifactId>moyu-sso-client-sdk</artifactId>
         </dependency>
     </dependencies>
 

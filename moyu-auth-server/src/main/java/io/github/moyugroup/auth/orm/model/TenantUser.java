@@ -1,6 +1,6 @@
 package io.github.moyugroup.auth.orm.model;
 
-import io.github.moyugroup.spring.data.jpa.model.BaseIdEntity;
+import io.github.moyugroup.orm.jpa.model.BaseIdEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;

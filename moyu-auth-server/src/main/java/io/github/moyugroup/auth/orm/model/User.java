@@ -1,7 +1,7 @@
 package io.github.moyugroup.auth.orm.model;
 
 import io.github.moyugroup.auth.constant.enums.UserStatusEnum;
-import io.github.moyugroup.spring.data.jpa.model.DeletableEntity;
+import io.github.moyugroup.orm.jpa.model.DeletableEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
