@@ -82,8 +82,10 @@ public class LoginPageController {
         // 已选择租户，判断登录应用类型
         if (MoYuLoginUtil.checkIsMoYuAuthApp(appId)) {
             // 一方应用，直接重定向回首页
-            response.sendRedirect(SSOLoginConstant.INDEX_PAGE_PATH);
-            return null;
+            if (StringUtils.isBlank(backUrl)) {
+                backUrl = SSOLoginConstant.INDEX_PAGE_PATH;
+            }
+            response.sendRedirect(backUrl);
         } else {
             // 二方应用，发放sso令牌，并携带sso参数重定向回应用，建立应用登录态
             String ssoToken = userTokenService.generateSSOToken(userLoginSession.getSessionId());
@@ -94,8 +96,8 @@ public class LoginPageController {
                 url.append("&").append(SSOLoginConstant.BACK_URL).append("=").append(URLEncoder.encode(backUrl, StandardCharsets.UTF_8));
             }
             response.sendRedirect(url.toString());
-            return null;
         }
+        return null;
     }
 
     /**
