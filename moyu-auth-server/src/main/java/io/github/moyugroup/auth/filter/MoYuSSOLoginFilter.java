@@ -9,6 +9,9 @@ import io.github.moyugroup.auth.orm.model.UserSession;
 import io.github.moyugroup.auth.service.SSOLoginService;
 import io.github.moyugroup.auth.service.TenantService;
 import io.github.moyugroup.auth.util.UrlUtil;
+import io.github.moyugroup.base.model.pojo.Result;
+import io.github.moyugroup.enums.ErrorCodeEnum;
+import io.github.moyugroup.web.util.WebUtil;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -61,11 +64,10 @@ public class MoYuSSOLoginFilter implements Filter {
      * 过滤器初始化逻辑
      *
      * @param filterConfig
-     * @throws ServletException
      */
     @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
-        log.debug("MoYuSSOLoginFilter init...");
+    public void init(FilterConfig filterConfig) {
+        log.debug("[init] MoYuSSOLoginFilter...");
     }
 
     /**
@@ -87,11 +89,11 @@ public class MoYuSSOLoginFilter implements Filter {
 
         // 处理受保护且不在白名单的路径
         if (PathUtil.isMatch(protectedPaths, requestPath) && !PathUtil.isMatch(whitePathList, requestPath)) {
-            log.debug("doFilter match path：{}", requestPath);
+            log.debug("[doFilter] match path：{}", requestPath);
             // 匹配到登录保护路径，进行登录检查
             userLoginCheck(httpRequest, httpResponse, filterChain, requestPath);
         } else {
-            log.debug("doFilter not match path：{}", requestPath);
+            log.debug("[doFilter] not match path：{}", requestPath);
             // 对于不匹配的路径，直接继续请求
             filterChain.doFilter(httpRequest, httpResponse);
         }
@@ -108,26 +110,54 @@ public class MoYuSSOLoginFilter implements Filter {
      */
     private void userLoginCheck(HttpServletRequest httpRequest, HttpServletResponse httpResponse, FilterChain filterChain, String requestPath) throws IOException, ServletException {
         UserSession userSession = ssoLoginService.getUserLoginSession(httpRequest);
-        if (Objects.nonNull(userSession)) {
-            // 存在 userSession 则代表用户已经登录，建立用户登录上下文
-            try {
-                buildLoginContext(userSession);
-                // 检查用户是否选择过租户
-                if (loginTenantCheck(requestPath)) {
-                    // 继续执行业务
-                    filterChain.doFilter(httpRequest, httpResponse);
-                } else {
-                    // 跳转到选择租户页面
-                    httpResponse.sendRedirect(SSOLoginConstant.SWITCH_TENANT_PATH + UrlUtil.getRedirectParam(httpRequest));
-                }
-            } finally {
-                // 业务执行完毕后清理用户上下文
-                UserContext.remove();
-            }
+
+        // 用户未登录处理
+        if (Objects.isNull(userSession)) {
+            handleNotLogin(httpRequest, httpResponse, requestPath);
+            return;
+        }
+
+        // 用户已登录处理
+        try {
+            buildLoginContext(userSession);
+            handleLoggedInUser(httpRequest, httpResponse, filterChain, requestPath);
+        } finally {
+            // 清理用户上下文
+            UserContext.remove();
+        }
+    }
+
+    /**
+     * 处理未登录情况
+     */
+    private void handleNotLogin(HttpServletRequest request, HttpServletResponse response, String requestPath) throws IOException {
+        log.debug("[userLoginCheck] user is not logged in, path: {}", requestPath);
+
+        log.info("Content-Type: {}", response.getContentType());
+        if (WebUtil.isAjaxRequest()) {
+            // API请求返回JSON
+            Result<?> error = Result.error(ErrorCodeEnum.USER_LOGIN_HAS_EXPIRED);
+            WebUtil.writeJsonResponse(error);
+            log.info("Content-Type: {}", response.getContentType());
         } else {
-            log.debug("user is not logged in, redirect to {}", SSOLoginConstant.LOGIN_PAGE_PATH + UrlUtil.getRedirectParam(httpRequest));
-            // 用户未登录，跳转到登录页
-            httpResponse.sendRedirect(SSOLoginConstant.LOGIN_PAGE_PATH + UrlUtil.getRedirectParam(httpRequest));
+            // 页面请求重定向到登录页
+            String loginUrl = SSOLoginConstant.LOGIN_PAGE_PATH + UrlUtil.getRedirectParam(request);
+            response.sendRedirect(loginUrl);
+        }
+    }
+
+    /**
+     * 处理已登录用户
+     */
+    private void handleLoggedInUser(HttpServletRequest request, HttpServletResponse response,
+                                    FilterChain filterChain, String requestPath) throws IOException, ServletException {
+        if (loginTenantCheck(requestPath)) {
+            // 已选择租户，继续执行业务
+            filterChain.doFilter(request, response);
+        } else {
+            // 未选择租户，跳转到选择租户页面
+            String switchTenantUrl = SSOLoginConstant.SWITCH_TENANT_PATH + UrlUtil.getRedirectParam(request);
+            response.sendRedirect(switchTenantUrl);
         }
     }
 
@@ -162,7 +192,7 @@ public class MoYuSSOLoginFilter implements Filter {
             userInfo.setTenantId(userSession.getTenantId());
             userInfo.setTenantName(tenantService.getTenantNameByTenantId(userSession.getTenantId()));
         }
-        log.debug("user is logged in with {}", userInfo);
+        log.debug("[buildLoginContext] user is logged in with {}", userInfo);
         UserContext.set(userInfo);
     }
 
@@ -171,6 +201,7 @@ public class MoYuSSOLoginFilter implements Filter {
      */
     @Override
     public void destroy() {
+        log.debug("[destroy] MoYuSSOLoginFilter...");
 
     }
 
