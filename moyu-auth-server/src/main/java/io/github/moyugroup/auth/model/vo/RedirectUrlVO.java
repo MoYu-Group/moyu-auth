@@ -1,4 +1,4 @@
-package io.github.moyugroup.auth.pojo.vo;
+package io.github.moyugroup.auth.model.vo;
 
 import lombok.Data;
 import lombok.experimental.Accessors;

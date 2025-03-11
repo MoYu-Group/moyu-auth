@@ -1,8 +1,8 @@
 package io.github.moyugroup.auth.manage;
 
+import io.github.moyugroup.auth.model.vo.SwitchTenantVO;
 import io.github.moyugroup.auth.orm.model.TenantUser;
 import io.github.moyugroup.auth.orm.repository.TenantUserRepository;
-import io.github.moyugroup.auth.pojo.vo.SwitchTenantVO;
 import jakarta.annotation.Resource;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;

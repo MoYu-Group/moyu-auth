@@ -1,9 +1,9 @@
 package io.github.moyugroup.auth.orm.repository;
 
 import cn.hutool.json.JSONUtil;
+import io.github.moyugroup.auth.model.vo.SwitchTenantVO;
 import io.github.moyugroup.auth.orm.model.Tenant;
 import io.github.moyugroup.auth.orm.model.TenantUser;
-import io.github.moyugroup.auth.pojo.vo.SwitchTenantVO;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;

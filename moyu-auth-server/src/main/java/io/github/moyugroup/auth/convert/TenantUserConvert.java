@@ -1,7 +1,7 @@
 package io.github.moyugroup.auth.convert;
 
+import io.github.moyugroup.auth.model.vo.SwitchTenantVO;
 import io.github.moyugroup.auth.orm.model.TenantUser;
-import io.github.moyugroup.auth.pojo.vo.SwitchTenantVO;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 

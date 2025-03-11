@@ -1,7 +1,7 @@
 package io.github.moyugroup.auth.orm.repository;
 
+import io.github.moyugroup.auth.model.vo.SwitchTenantVO;
 import io.github.moyugroup.auth.orm.model.TenantUser;
-import io.github.moyugroup.auth.pojo.vo.SwitchTenantVO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -39,7 +39,7 @@ public interface TenantUserRepository extends JpaRepository<TenantUser, Long> {
      * @param userId
      * @return
      */
-    @Query("SELECT new io.github.moyugroup.auth.pojo.vo.SwitchTenantVO(t.tenantId, t.tenantName) FROM TenantUser tu " +
+    @Query("SELECT new io.github.moyugroup.auth.model.vo.SwitchTenantVO(t.tenantId, t.tenantName) FROM TenantUser tu " +
             "INNER JOIN Tenant t ON tu.tenantId = t.tenantId and t.isDeleted = false " +
             "WHERE tu.userId = :userId and tu.tenantId in :tenantIds")
     List<SwitchTenantVO> getSwitchTenantVOsByUserIdAndTenantIdIn(@Param("userId") String userId, @Param("tenantIds") List<String> tenantIds);

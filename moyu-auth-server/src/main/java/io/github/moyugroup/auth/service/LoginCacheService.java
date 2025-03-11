@@ -1,6 +1,6 @@
 package io.github.moyugroup.auth.service;
 
-import io.github.moyugroup.auth.pojo.vo.OAuth2UserVO;
+import io.github.moyugroup.auth.model.vo.OAuth2UserVO;
 
 import java.util.List;
 

@@ -3,7 +3,7 @@ package io.github.moyugroup.auth.web.rest;
 import io.github.moyugroup.auth.common.constant.SSOLoginConstant;
 import io.github.moyugroup.auth.common.pojo.dto.SSOUserDTO;
 import io.github.moyugroup.auth.common.pojo.dto.UserInfo;
-import io.github.moyugroup.auth.pojo.request.SSOGetUserRequest;
+import io.github.moyugroup.auth.model.request.SSOGetUserRequest;
 import io.github.moyugroup.auth.service.AppService;
 import io.github.moyugroup.auth.service.UserTokenService;
 import io.github.moyugroup.base.model.pojo.Result;

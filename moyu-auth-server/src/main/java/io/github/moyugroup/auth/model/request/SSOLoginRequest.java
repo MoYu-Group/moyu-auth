@@ -1,4 +1,4 @@
-package io.github.moyugroup.auth.pojo.request;
+package io.github.moyugroup.auth.model.request;
 
 import io.github.moyugroup.auth.constant.enums.SSOLoginTypeEnum;
 import jakarta.validation.constraints.NotBlank;

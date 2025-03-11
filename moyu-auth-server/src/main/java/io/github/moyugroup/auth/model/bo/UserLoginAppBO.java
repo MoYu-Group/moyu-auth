@@ -1,4 +1,4 @@
-package io.github.moyugroup.auth.pojo.bo;
+package io.github.moyugroup.auth.model.bo;
 
 import lombok.Data;
 

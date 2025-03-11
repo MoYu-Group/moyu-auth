@@ -2,9 +2,9 @@ package io.github.moyugroup.auth.web.page;
 
 import io.github.moyugroup.auth.common.constant.SSOLoginConstant;
 import io.github.moyugroup.auth.common.context.UserContext;
+import io.github.moyugroup.auth.model.vo.AppVO;
+import io.github.moyugroup.auth.model.vo.SwitchTenantVO;
 import io.github.moyugroup.auth.orm.model.UserSession;
-import io.github.moyugroup.auth.pojo.vo.AppVO;
-import io.github.moyugroup.auth.pojo.vo.SwitchTenantVO;
 import io.github.moyugroup.auth.service.AppService;
 import io.github.moyugroup.auth.service.SSOLoginService;
 import io.github.moyugroup.auth.service.TenantUserService;

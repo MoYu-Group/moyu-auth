@@ -1,7 +1,7 @@
 package io.github.moyugroup.auth.convert;
 
+import io.github.moyugroup.auth.model.vo.AppVO;
 import io.github.moyugroup.auth.orm.model.App;
-import io.github.moyugroup.auth.pojo.vo.AppVO;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 

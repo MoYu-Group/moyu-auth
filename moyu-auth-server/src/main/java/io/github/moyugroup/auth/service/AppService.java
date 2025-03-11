@@ -1,7 +1,7 @@
 package io.github.moyugroup.auth.service;
 
 import io.github.moyugroup.auth.manage.AppManage;
-import io.github.moyugroup.auth.pojo.vo.AppVO;
+import io.github.moyugroup.auth.model.vo.AppVO;
 import io.github.moyugroup.auth.util.MoYuLoginUtil;
 import jakarta.annotation.Resource;
 import lombok.AccessLevel;
